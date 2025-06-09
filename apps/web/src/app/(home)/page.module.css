@@ -2,9 +2,12 @@
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+  --primary-color: #4F46E5;
+  --secondary-color: #E5E7EB;
+  --accent-color: #EC4899;
 
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
+  --button-primary-hover: #6366F1;
+  --button-secondary-hover: #F3F4F6;
 
   display: grid;
   grid-template-rows: 20px 1fr 20px;
@@ -21,9 +24,12 @@
     --gray-rgb: 255, 255, 255;
     --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
     --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+    --primary-color: #6366F1;
+    --secondary-color: #374151;
+    --accent-color: #F472B6;
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
+    --button-primary-hover: #818CF8;
+    --button-secondary-hover: #1F2937;
   }
 }
 
@@ -32,6 +38,7 @@
   flex-direction: column;
   gap: 32px;
   grid-row-start: 2;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .main ol {
@@ -42,6 +49,10 @@
   line-height: 24px;
   letter-spacing: -0.01em;
   list-style-position: inside;
+  background: var(--gray-alpha-100);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .main li:not(:last-of-type) {
@@ -54,6 +65,7 @@
   padding: 2px 4px;
   border-radius: 4px;
   font-weight: 600;
+  color: var(--accent-color);
 }
 
 .ctas {
@@ -80,14 +92,20 @@
 }
 
 a.primary {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--primary-color);
+  color: white;
   gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+  transition: all 0.2s ease;
 }
 
 a.secondary {
+  background: var(--secondary-color);
   border-color: var(--gray-alpha-200);
   min-width: 180px;
+  transform: translateY(0);
+  transition: all 0.2s ease;
 }
 
 button.secondary {
@@ -132,12 +150,14 @@ button.secondary {
 @media (hover: hover) and (pointer: fine) {
   a.primary:hover {
     background: var(--button-primary-hover);
-    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   a.secondary:hover {
     background: var(--button-secondary-hover);
-    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .footer a:hover {
@@ -184,5 +204,16 @@ button.secondary {
 @media (prefers-color-scheme: dark) {
   .logo {
     filter: invert();
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
