@@ -1,0 +1,43 @@
+name: ✨ Feature Request
+description: Suggest an idea or enhancement for this project.
+title: "[Feature Request]: "
+labels: ["enhancement", "needs triage"]
+assignees:
+  -  # Optional: add default assignee(s)
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please take a moment to fill this out as thoroughly as possible.
+
+  - type: input
+    id: related-problem
+    attributes:
+      label: Is your feature request related to a problem?
+      description: |
+        If this feature solves a specific problem, describe it here.
+      placeholder: "I'm frustrated when..."
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Describe the solution you'd like
+      description: |
+        Clearly describe what you want to happen. Include examples or mockups if helpful.
+      placeholder: "I'd like the app to..."
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Describe alternatives you've considered
+      description: |
+        Have you considered other approaches or tools? Let us know what you've tried or thought of.
+      placeholder: "I also thought of..."
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context, screenshots, or references here.
