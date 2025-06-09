@@ -11,7 +11,9 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/backend": "workspace:*",
     "@repo/ui": "workspace:*",
+    "hono": "^4.7.11",
     "next": "^15.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
