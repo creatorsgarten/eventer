@@ -15,8 +15,8 @@ importers:
         specifier: ^2.5.4
         version: 2.5.4
       typescript:
-        specifier: 5.8.2
-        version: 5.8.2
+        specifier: 5.8.3
+        version: 5.8.3
 
   apps/docs:
     dependencies:
@@ -52,8 +52,8 @@ importers:
         specifier: ^9.28.0
         version: 9.28.0
       typescript:
-        specifier: 5.8.2
-        version: 5.8.2
+        specifier: 5.8.3
+        version: 5.8.3
 
   apps/web:
     dependencies:
@@ -89,8 +89,8 @@ importers:
         specifier: ^9.28.0
         version: 9.28.0
       typescript:
-        specifier: 5.8.2
-        version: 5.8.2
+        specifier: 5.8.3
+        version: 5.8.3
 
   packages/eslint-config:
     devDependencies:
@@ -147,7 +147,7 @@ importers:
         version: link:../typescript-config
       '@turbo/gen':
         specifier: ^2.5.0
-        version: 2.5.0(@types/node@22.15.3)(typescript@5.8.2)
+        version: 2.5.0(@types/node@22.15.3)(typescript@5.8.3)
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
@@ -161,8 +161,8 @@ importers:
         specifier: ^9.28.0
         version: 9.28.0
       typescript:
-        specifier: 5.8.2
-        version: 5.8.2
+        specifier: 5.8.3
+        version: 5.8.3
 
 packages:
 
@@ -2024,6 +2024,11 @@ packages:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
     engines: {node: '>=14.17'}
 
+  typescript@5.8.3:
+    resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   uglify-js@3.19.3:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
     engines: {node: '>=0.8.0'}
@@ -2324,7 +2329,7 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@turbo/gen@2.5.0(@types/node@22.15.3)(typescript@5.8.2)':
+  '@turbo/gen@2.5.0(@types/node@22.15.3)(typescript@5.8.3)':
     dependencies:
       '@turbo/workspaces': 2.5.0
       commander: 10.0.1
@@ -2334,7 +2339,7 @@ snapshots:
       node-plop: 0.26.3
       picocolors: 1.0.1
       proxy-agent: 6.5.0
-      ts-node: 10.9.2(@types/node@22.15.3)(typescript@5.8.2)
+      ts-node: 10.9.2(@types/node@22.15.3)(typescript@5.8.3)
       update-check: 1.5.4
       validate-npm-package-name: 5.0.1
     transitivePeerDependencies:
@@ -4200,7 +4205,7 @@ snapshots:
     dependencies:
       typescript: 5.8.2
 
-  ts-node@10.9.2(@types/node@22.15.3)(typescript@5.8.2):
+  ts-node@10.9.2(@types/node@22.15.3)(typescript@5.8.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -4214,7 +4219,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.8.2
+      typescript: 5.8.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
@@ -4299,6 +4304,8 @@ snapshots:
       - supports-color
 
   typescript@5.8.2: {}
+
+  typescript@5.8.3: {}
 
   uglify-js@3.19.3:
     optional: true
