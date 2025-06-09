@@ -1,0 +1,58 @@
+name: Epic
+description: Track a large body of related work with multiple features and tasks.
+title: "[Epic] <Epic title here>"
+labels: [epic, planning]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧩 Epic Overview
+        Describe the high-level goal or objective of this epic.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📌 Description
+      description: What problem does this epic solve? What's the scope?
+      placeholder: |
+        This epic aims to implement authentication and user onboarding...
+    validations:
+      required: true
+
+  - type: textarea
+    id: goals
+    attributes:
+      label: 🎯 Goals
+      description: What do we want to achieve?
+      placeholder: |
+        - Allow users to sign in via OAuth
+        - Support onboarding flow
+        - Ensure auth works on mobile
+    validations:
+      required: false
+
+  - type: textarea
+    id: features
+    attributes:
+      label: 📋 Related Feature Issues / Tasks
+      description: Link to the child issues that fall under this epic.
+      placeholder: |
+        - #45 Sign in with Google
+        - #46 User onboarding modal
+        - #47 Session handling
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚦 Priority
+      options:
+        - P0 - Critical
+        - P1 - High
+        - P2 - Medium
+        - P3 - Low
+    validations:
+      required: true

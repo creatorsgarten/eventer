@@ -1,0 +1,49 @@
+name: Feature / User Story
+description: Create a new feature issue based on a user story.
+title: "[Feature] <Feature name here>"
+labels: [feature, user-story]
+assignees: []
+
+body:
+  - type: input
+    id: userstory
+    attributes:
+      label: 🧍‍♂️ User Story
+      placeholder: "As a <user>, I want to <action> so that <benefit>."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: ✅ Acceptance Criteria
+      description: List of conditions that must be true for this feature to be considered done.
+      placeholder: |
+        - The user can click the "Sign in with Google" button
+        - If the user is new, a new account is created
+        - Redirects to dashboard on success
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 🔨 Implementation Tasks
+      options:
+        - label: Design and display UI components
+        - label: Implement backend functionality
+        - label: Handle edge cases and errors
+        - label: Pass QA testing
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: ⚙️ Complexity / Estimate
+      options:
+        - XS
+        - S
+        - M
+        - L
+        - XL
+    validations:
+      required: false

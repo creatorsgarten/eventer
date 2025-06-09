@@ -1,0 +1,64 @@
+name: Task
+description: Create a granular, actionable development or design task.
+title: "[Task] <Descriptive task title here>"
+labels: [task]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧰 Task Overview
+        A clearly scoped unit of work contributing to a feature, bugfix, or epic.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📌 Description
+      description: What needs to be done? Include any relevant context, goals, or expected behavior.
+      placeholder: |
+        This task involves refactoring the auth modal to support third-party provider selection...
+    validations:
+      required: true
+
+  - type: input
+    id: related
+    attributes:
+      label: 🔗 Related Issue(s)
+      placeholder: "#123, #456"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 🔨 Subtasks (if applicable)
+      options:
+        - label: Write implementation logic
+        - label: Create/modify UI components
+        - label: Add relevant documentation
+        - label: Ensure lint/build/test pass
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚦 Priority
+      options:
+        - P0 - Critical
+        - P1 - High
+        - P2 - Medium
+        - P3 - Low
+    validations:
+      required: false
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: 🏁 Current Status
+      options:
+        - To Do
+        - In Progress
+        - Blocked
+        - Done
+    validations:
+      required: false
