@@ -6,6 +6,7 @@ Eventer (temporary name) is a collection of versatile event management tools mad
 
 ### Set up
 
+- [ ] Set up Database
 - [ ] Set up Biome
 - [ ] Set up vitest
 - [ ] Set up playwright
