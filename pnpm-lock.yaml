@@ -16,7 +16,7 @@ importers:
         version: 2.5.4
       typescript:
         specifier: 5.8.2
-        version: 5.8.2
+        version: 5.8.3
 
   apps/docs:
     dependencies:
