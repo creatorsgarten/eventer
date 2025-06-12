@@ -135,15 +135,6 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  packages/contact:
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-
   packages/eslint-config:
     devDependencies:
       '@eslint/js':
