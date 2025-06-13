@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { Button } from "@repo/ui/button";
 import styles from "./page.module.css";
+import express from "express";
+import dotenv from "dotenv";
+
 
 export default function Home() {
   return (
@@ -35,3 +38,9 @@ export default function Home() {
     </div>
   );
 }
+
+await fetch('/api/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password }),
+});

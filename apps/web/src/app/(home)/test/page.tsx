@@ -23,3 +23,16 @@ export default async function TestPage() {
     </div>
   );
 }
+
+
+// export const getEvents = async () => {
+//   return await client.api.events.$get().then((res) => res.json());
+// };
+
+// export const createEvents = async () => {
+//   return await client.api.events.$post({ json: { title: "New Event", date: "2025-01-01" } })
+//     .then((res) => res.json());
+    
+// };
+
+
