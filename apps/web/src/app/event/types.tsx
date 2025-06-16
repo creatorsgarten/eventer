@@ -1,5 +1,12 @@
-export type NewEvent = {
+// event/types.ts
+
+
+export type Event = {
+  id: string;
   name: string;
-  date: Date;
+  startDate: Date;
+  endDate: Date;
   location: string;
+  description?: string;
+  createdBy: string;
 };

@@ -1,11 +1,17 @@
+import { Event } from './types';
+
+
 export class EventEntity {
-    constructor(
-        public id : string,
-        public name: string,
-        public date: Date,
-        public location: string) {}
-    
+    constructor(private event: Event) {}
+
     isUpcoming(): boolean {
-        return this.date > new Date();
+        return new Date() < this.event.startDate;
+    }
+    durationIndays(): number {
+        const diff =+this.event.endDate - +this.event.startDate;
+        return diff/ (1000 * 60 * 60 * 24);
+}
+    getSummary(): string {
+        return `${this.event.name} @ ${this.event.location}`;
     }
 }
