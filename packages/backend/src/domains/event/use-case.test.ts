@@ -1,25 +1,24 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { db } from "../infrastructure/db";
-import {events} from "../infrastructure/schema";
-import {createEvent, listEvents} from "./usecase";
+import { db } from "../../infrastructure/db";
+import { events } from "../../infrastructure/schema";
+import { createEvent, listEvents } from "./use-case";
 import type { Event } from "./types";
 
 // async function createEvent(data: AppEvent) {
 //   return await db.insert(EventEntity).values(data);
 // }
 
-
 const fakeEvent: Event = {
-    id: "test-event-1",
-    name: "Test Event",
-    description: "This is a test event",
-    startDate: new Date("2025-07-01"),
-    endDate: new Date("2025-07-02"),
-    location: "Chulalongkorn University",
-    createdBy: "admin-1",
+  id: "test-event-1",
+  name: "Test Event",
+  description: "This is a test event",
+  startDate: new Date("2025-07-01"),
+  endDate: new Date("2025-07-02"),
+  location: "Chulalongkorn University",
+  createdBy: "admin-1",
 };
 
-describe('Event Usecase', () => {
+describe("Event Usecase", () => {
   beforeAll(async () => {
     // Optionally clear or seed table
     await db.delete(events);
@@ -29,7 +28,7 @@ describe('Event Usecase', () => {
     await db.delete(events); // Clean up after tests
   });
 
-  it('should create a new event', async () => {
+  it("should create a new event", async () => {
     await createEvent(fakeEvent);
 
     const results = await listEvents();

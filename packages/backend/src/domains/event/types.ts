@@ -1,6 +1,5 @@
 // event/types.ts
 
-
 export type Event = {
   id: string;
   name: string;

@@ -1,9 +1,7 @@
 // event/usecase.ts
-import { db } from '../infrastructure/db';
-import { events } from '../infrastructure/schema';
-import { Event } from './types';
-
-
+import { db } from "../../infrastructure/db";
+import { events } from "../../infrastructure/schema";
+import type { Event } from "./types";
 
 export async function createEvent(data: Event) {
   // Convert Dates to numbers (Unix timestamp in milliseconds)
@@ -30,8 +28,6 @@ export async function listEvents(): Promise<Event[]> {
     createdBy: row.createdBy,
   }));
 }
-
-
 
 // export const createEvent = async (data: NewEvent) => {
 //   const id = crypto.randomUUID();
