@@ -86,7 +86,7 @@ importers:
         version: 16.5.0
       drizzle-orm:
         specifier: ^0.44.2
-        version: 0.44.2(@libsql/client@0.15.9)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)
+        version: 0.44.2(@libsql/client@0.15.9)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)
       hono:
         specifier: ^4.7.11
         version: 4.7.11
@@ -157,9 +157,12 @@ importers:
       '@libsql/client':
         specifier: ^0.15.9
         version: 0.15.9
+      better-sqlite3:
+        specifier: ^11.10.0
+        version: 11.10.0
       drizzle-orm:
         specifier: ^0.44.2
-        version: 0.44.2(@libsql/client@0.15.9)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)
+        version: 0.44.2(@libsql/client@0.15.9)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)
       hono:
         specifier: ^4.7.11
         version: 4.7.11
@@ -167,6 +170,9 @@ importers:
         specifier: ^3.2.3
         version: 3.2.4(@types/node@20.19.0)
     devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.13
+        version: 7.6.13
       '@types/node':
         specifier: ^20.11.17
         version: 20.19.0
@@ -971,6 +977,9 @@ packages:
 
   '@turbo/workspaces@2.5.0':
     resolution: {integrity: sha512-u/IOgWVJ6orFG0MDJ8UeIEOWjhfEBsMskhxC8pg2nRlu1qbEAGIerjhZFk+bEqSTHW1o+fxYr8ix0KEtX4M9Vg==}
+
+  '@types/better-sqlite3@7.6.13':
+    resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
 
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
@@ -3913,6 +3922,10 @@ snapshots:
       semver: 7.6.2
       update-check: 1.5.4
 
+  '@types/better-sqlite3@7.6.13':
+    dependencies:
+      '@types/node': 22.15.3
+
   '@types/chai@5.2.2':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -4548,9 +4561,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.2(@libsql/client@0.15.9)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0):
+  drizzle-orm@0.44.2(@libsql/client@0.15.9)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0):
     optionalDependencies:
       '@libsql/client': 0.15.9
+      '@types/better-sqlite3': 7.6.13
       better-sqlite3: 11.10.0
       mysql2: 3.14.1
       pg: 8.16.0
