@@ -1,7 +1,7 @@
 // event/usecase.ts
 import { db } from "../../infrastructure/db";
 import { events } from "../../infrastructure/schema";
-import type { Event } from "./types";
+import type { Event } from "./dto/types";
 
 export async function createEvent(data: Event) {
   // Convert Dates to numbers (Unix timestamp in milliseconds)

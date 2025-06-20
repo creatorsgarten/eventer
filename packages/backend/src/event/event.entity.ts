@@ -1,4 +1,4 @@
-import type { Event } from "./types";
+import type { Event } from "./interface/event.interface";
 
 export class EventEntity {
   constructor(private event: Event) {}

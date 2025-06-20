@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { db } from "../../infrastructure/db";
 import { events } from "../../infrastructure/schema";
-import { createEvent, listEvents } from "./use-case";
-import type { Event } from "./types";
+import { createEvent, listEvents } from "./event.service";
+import type { Event } from "./dto/types";
 
 // async function createEvent(data: AppEvent) {
 //   return await db.insert(EventEntity).values(data);
