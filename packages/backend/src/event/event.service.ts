@@ -1,5 +1,5 @@
 // event/usecase.ts
-import { db } from "../../infrastructure/db";
+import { db } from "../../infra/db";
 import { events } from "../../infrastructure/schema";
 import type { Event } from "./dto/types";
 

@@ -18,6 +18,7 @@ const fakeEvent: Event = {
   createdBy: "admin-1",
 };
 
+
 describe("Event Usecase", () => {
   beforeAll(async () => {
     // Optionally clear or seed table
