@@ -1,7 +1,7 @@
-import type { Event } from "./interface/event.interface";
+import type { EventType } from "./event.model";
 
 export class EventEntity {
-  constructor(private event: Event) {}
+  constructor(private event: EventType) {}
 
   isUpcoming(): boolean {
     return new Date() < this.event.startDate;

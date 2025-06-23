@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { db } from "../../infrastructure/db";
-import { events } from "../../infrastructure/schema";
-import { createEvent, listEvents } from "./event.service";
-import type { Event } from "./dto/types";
+import { db } from "@/infrastructure/db";
+import { events, type EventType } from "../event.model";
+import { createEvent, listEvents } from "./create-event.service";
+import { EventRepository } from "../event.repository";
 
 // async function createEvent(data: AppEvent) {
 //   return await db.insert(EventEntity).values(data);
 // }
 
-const fakeEvent: Event = {
+const fakeEvent: EventType = {
   id: "test-event-1",
   name: "Test Event",
   description: "This is a test event",
@@ -29,9 +29,11 @@ describe("Event Usecase", () => {
   });
 
   it("should create a new event", async () => {
-    await createEvent(fakeEvent);
+    const eventRepository = new EventRepository(db);
 
-    const results = await listEvents();
+    await createEvent(eventRepository, fakeEvent);
+
+    const results = await listEvents(eventRepository);
     expect(results.length).toBe(1);
     //expect(results[0].name).toBe('Test Conference');
   });

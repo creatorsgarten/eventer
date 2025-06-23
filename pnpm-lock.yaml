@@ -166,9 +166,15 @@ importers:
       hono:
         specifier: ^4.7.11
         version: 4.7.11
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
       vitest:
         specifier: ^3.2.3
         version: 3.2.4(@types/node@20.19.0)
+      zod:
+        specifier: ^3.25.56
+        version: 3.25.56
     devDependencies:
       '@types/better-sqlite3':
         specifier: ^7.6.13
@@ -3214,6 +3220,10 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
 
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
@@ -6495,6 +6505,8 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
+
+  uuid@11.1.0: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
