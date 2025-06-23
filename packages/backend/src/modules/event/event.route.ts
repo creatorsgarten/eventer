@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { createEvent, listEvents } from "./services/crud-event.service";
 import { EventRepository } from "./event.repository";
-import { db } from "~/infrastructure/db";
+import { db } from "#backend/infrastructure/db";
 import { zValidator } from "@hono/zod-validator";
 import { queryEventDTO } from "./dtos/query-event.dto";
 import { createEventDTO } from "./dtos/create-event.dto";

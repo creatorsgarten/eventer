@@ -14,8 +14,8 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@repo/backend": "workspace:*",
-    "@repo/ui": "workspace:*",
+    "@eventer/backend": "workspace:*",
+    "@eventer/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.7",
     "better-sqlite3": "^11.10.0",
     "dotenv": "^16.5.0",
@@ -29,8 +29,8 @@
     "zod": "^3.25.56"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@eventer/eslint-config": "workspace:*",
+    "@eventer/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",

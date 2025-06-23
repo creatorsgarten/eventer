@@ -1,5 +1,5 @@
 {
-  "name": "@repo/backend",
+  "name": "@eventer/backend",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -8,6 +8,9 @@
     "db:push": "drizzle-kit push --config=drizzle.config.ts",
     "db:pull": "drizzle-kit pull --config=drizzle.config.ts",
     "db:studio": "drizzle-kit studio --host=0.0.0.0 --port=3000"
+  },
+  "imports": {
+    "#backend/*": "./src/*"
   },
   "exports": {
     ".": {
@@ -36,6 +39,7 @@
     "@types/node": "^20.11.17",
     "drizzle-kit": "^0.31.1",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@eventer/typescript-config": "workspace:^"
   }
 }
