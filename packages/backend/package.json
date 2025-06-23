@@ -18,10 +18,18 @@
   "dependencies": {
     "@hono/node-server": "^1.14.4",
     "@hono/zod-validator": "^0.7.0",
-    "hono": "^4.7.11"
+    "@libsql/client": "^0.15.9",
+    "better-sqlite3": "^11.10.0",
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.7.11",
+    "uuid": "^11.1.0",
+    "vitest": "^3.2.3",
+    "zod": "^3.25.56"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.17",
+    "drizzle-kit": "^0.31.1",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }
