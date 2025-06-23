@@ -1,15 +1,7 @@
 import type { EventRepository } from "../event.repository";
 import type { CreateEventDTO } from "../dtos/create-event.dto";
 import type { EventType } from "../event.model";
-
-type ListEventQuery = {
-  name?: string;
-  startDate?: Date;
-  endDate?: Date;
-  location?: string;
-  desciption?: string;
-  createdBy?: string;
-};
+import type { UpdateEventDTO } from "../dtos/update-event.dto";
 
 export async function createEvent(
   eventRepository: EventRepository,
@@ -27,11 +19,11 @@ export async function createEvent(
 
 export async function listEvents(
   eventRepository: EventRepository,
-  query?:ListEventQuery
+  query?:CreateEventDTO
 ): Promise<EventType[]> {
   // TODO implement query CRUD 
   // TODO Refactor pls
-  // get all events
+
   const allEvents = await eventRepository.list(); 
   // in memory filtering
   let filtered = allEvents;
@@ -72,7 +64,7 @@ export async function getEventById(
 export async function updateEvent(
   eventRepository: EventRepository,
   id: string,
-  data: CreateEventDTO
+  data: UpdateEventDTO
 ) {
   return await eventRepository.update(id, data);
 }
@@ -84,9 +76,10 @@ export async function deleteEvent(
   return await eventRepository.delete(id);
 }
 
-export async function listEventsByIds(
-  eventRepository: EventRepository,
-  ids: string[]
-) {
-  return await eventRepository.listByIds(ids);
-}
+// export async function listEventsByIds(
+//   eventRepository: EventRepository,
+//   ids: string[]
+// ) {
+//   return await eventRepository.list(ids);
+// }
+// s
