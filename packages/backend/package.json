@@ -2,7 +2,12 @@
   "name": "@repo/backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
+    "db:push": "drizzle-kit push --config=drizzle.config.ts",
+    "db:pull": "drizzle-kit pull --config=drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --host=0.0.0.0 --port=3000"
   },
   "exports": {
     ".": {
