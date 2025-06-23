@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { db } from "~/infrastructure/db";
 import { events, type EventType } from "../event.model";
-import { createEvent, listEvents } from "./create-event.service";
+import { createEvent, listEvents } from "./crud-event.service";
 import { EventRepository } from "../event.repository";
 
 // async function createEvent(data: AppEvent) {

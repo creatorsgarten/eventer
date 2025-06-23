@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import type { DrizzleClient } from "~/infrastructure/db";
 import type { CreateEventDTO } from "./dtos/create-event.dto";
 import { v4 as uuidv4 } from "uuid";
+import type { UpdateEventDTO } from "./dtos/update-event.dto";
 
 class EventRepository {
   constructor(private db: DrizzleClient) {}
@@ -44,7 +45,7 @@ class EventRepository {
     }
   }
 
-  async update(id: string, event: EventType): Promise<EventType> {
+  async update(id: string, event: UpdateEventDTO): Promise<EventType> {
     try {
       const updated = await this.db
         .update(events)

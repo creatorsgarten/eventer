@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { eventRouter } from "./modules/event";
 
 const app = new Hono()
   .basePath("/api")
@@ -14,6 +15,7 @@ const app = new Hono()
       ],
       200
     );
-  });
+  })
+  .route("/event", eventRouter);
 
 export { app };
