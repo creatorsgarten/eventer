@@ -1,5 +1,5 @@
 {
-  "name": "@repo/contact",
+  "name": "@eventer/contact",
   "version": "1.0.0",
   "type": "module",
   "exports": {
@@ -10,7 +10,7 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
+    "@eventer/eslint-config": "workspace:*",
+    "@eventer/typescript-config": "workspace:*"
   }
 }

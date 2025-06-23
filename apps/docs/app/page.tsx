@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { Button } from "@repo/ui/button";
+import { Button } from "@eventer/ui/button";
 import styles from "./page.module.css";
 import express from "express";
 import dotenv from "dotenv";
-
 
 export default function Home() {
   return (
@@ -14,7 +13,7 @@ export default function Home() {
           src="/assets/images/eventer-cover.png"
           alt="Your Logo2"
           width={160}
-          height={40}  
+          height={40}
           priority
         />
         <h1 className={styles.title}>Eventer</h1>
@@ -39,8 +38,8 @@ export default function Home() {
   );
 }
 
-await fetch('/api/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+await fetch("/api/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ email, password }),
 });

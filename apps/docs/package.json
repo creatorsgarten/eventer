@@ -10,15 +10,18 @@
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
+  "imports": {
+    "#backend/*": "@eventer/backend/src/*"
+  },
   "dependencies": {
-    "@repo/ui": "workspace:*",
+    "@eventer/ui": "workspace:*",
     "next": "^15.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@eventer/eslint-config": "workspace:*",
+    "@eventer/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",

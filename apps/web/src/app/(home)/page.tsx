@@ -2,7 +2,7 @@
 
 import Image, { type ImageProps } from "next/image";
 import Link from "next/link";
-import { Button } from "@repo/ui/button";
+import { Button } from "@eventer/ui/button";
 import styles from "./page.module.css";
 
 type ThemeImageProps = Omit<ImageProps, "src"> & {
@@ -26,7 +26,7 @@ export default function Home() {
         <ThemeImage
           className={styles.logo}
           srcLight="/pic/logo-light.webp"
-          srcDark="/pic/logo-dark.webp" 
+          srcDark="/pic/logo-dark.webp"
           alt="Eventer Logo"
           width={100}
           height={100}

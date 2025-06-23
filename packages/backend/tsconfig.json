@@ -16,7 +16,7 @@
     "lib": ["es2022"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "#backend/*": ["./src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

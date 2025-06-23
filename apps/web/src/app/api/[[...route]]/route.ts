@@ -1,4 +1,4 @@
-import { app } from "@repo/backend";
+import { app } from "@eventer/backend";
 import { handle } from "hono/vercel";
 
 export const runtime = "nodejs";
