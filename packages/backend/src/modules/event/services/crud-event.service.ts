@@ -19,40 +19,41 @@ export async function createEvent(
 
 export async function listEvents(
   eventRepository: EventRepository,
-  query?:CreateEventDTO
+  query?: CreateEventDTO
 ): Promise<EventType[]> {
-  // TODO implement query CRUD 
+  // TODO implement query CRUD
   // TODO Refactor pls
 
-  const allEvents = await eventRepository.list(); 
+  const allEvents = await eventRepository.list();
   // in memory filtering
   let filtered = allEvents;
   if (query?.name) {
     filtered = filtered.filter((event) =>
-      event.name.toLowerCase().includes(query.name!.toLowerCase())
+      event.name.toLowerCase().includes(query.name.toLowerCase())
     );
   }
   if (query?.startDate) {
-    filtered = filtered.filter((event) =>
-      new Date(event.startDate) >=query.startDate!);
+    filtered = filtered.filter(
+      (event) => new Date(event.startDate) >= query.startDate
+    );
   }
   if (query?.endDate) {
-    filtered = filtered.filter(event =>
-      new Date(event.endDate) <= query.endDate!);
+    filtered = filtered.filter(
+      (event) => new Date(event.endDate) <= query.endDate
+    );
   }
   if (query?.location) {
     filtered = filtered.filter((event) =>
-      event.location.toLowerCase().includes(query.location!.toLowerCase())
+      event.location.toLowerCase().includes(query.location.toLowerCase())
     );
-  if (query?.createdBy) {
-    filtered = filtered.filter((event) =>
-      event.createdBy.toLowerCase().includes(query.createdBy!.toLowerCase())
-    );
+    if (query?.createdBy) {
+      filtered = filtered.filter((event) =>
+        event.createdBy.toLowerCase().includes(query.createdBy.toLowerCase())
+      );
+    }
   }
-}
   return filtered;
 }
-
 
 export async function getEventById(
   eventRepository: EventRepository,
