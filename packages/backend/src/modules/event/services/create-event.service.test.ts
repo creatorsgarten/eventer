@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { db } from "@/infrastructure/db";
+import { db } from "~/infrastructure/db";
 import { events, type EventType } from "../event.model";
 import { createEvent, listEvents } from "./create-event.service";
 import { EventRepository } from "../event.repository";

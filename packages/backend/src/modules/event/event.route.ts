@@ -1,13 +1,13 @@
 import { Hono } from "hono";
 import { listEvents } from "./services/create-event.service";
 import { EventRepository } from "./event.repository";
-import { db } from "@/infrastructure/db";
+import { db } from "~/infrastructure/db";
 
 const eventRepository = new EventRepository(db);
 
 const app = new Hono().get("/", async (c) => {
   const q = c.req.query();
-  const query ={
+  const query = {
     name: q.name,
     location: q.location,
     description: q.description,
