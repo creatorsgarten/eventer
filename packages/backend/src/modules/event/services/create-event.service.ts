@@ -62,14 +62,6 @@ export async function listEvents(
 }
 
 
-// export async function listEventsById(
-//   eventRepository: EventRepository,
-//   ids: string[]
-// ): Promise<EventType[]> {
-//   return await eventRepository.list(ids);
-// }
-
-
 export async function getEventById(
   eventRepository: EventRepository,
   id: string
@@ -77,5 +69,24 @@ export async function getEventById(
   return await eventRepository.read(id);
 }
 
+export async function updateEvent(
+  eventRepository: EventRepository,
+  id: string,
+  data: CreateEventDTO
+) {
+  return await eventRepository.update(id, data);
+}
 
+export async function deleteEvent(
+  eventRepository: EventRepository,
+  id: string
+) {
+  return await eventRepository.delete(id);
+}
 
+export async function listEventsByIds(
+  eventRepository: EventRepository,
+  ids: string[]
+) {
+  return await eventRepository.listByIds(ids);
+}
