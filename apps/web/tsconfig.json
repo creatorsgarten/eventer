@@ -16,6 +16,6 @@
     "next-env.d.ts",
     "next.config.js",
     ".next/types/**/*.ts"
-  ],
+, "../../packages/backend/vitest.config.ts"  ],
   "exclude": ["node_modules"]
 }
