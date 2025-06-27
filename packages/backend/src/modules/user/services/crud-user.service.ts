@@ -8,13 +8,13 @@ export async function createUser(
   data: CreateUserDTO
 ): Promise<UserType> {
   // Check if user already exists by email
-  const existingUserByEmail = await userRepository.readByEmail(data.email);
+  const existingUserByEmail = await userRepository.findByEmail(data.email);
   if (existingUserByEmail) {
     throw new Error("User with this email already exists");
   }
 
   // Check if user already exists by username
-  const existingUserByUsername = await userRepository.readByUsername(
+  const existingUserByUsername = await userRepository.findByUsername(
     data.username
   );
   if (existingUserByUsername) {
@@ -57,21 +57,21 @@ export async function getUserById(
   userRepository: UserRepository,
   id: string
 ): Promise<UserType | null> {
-  return await userRepository.read(id);
+  return await userRepository.find(id);
 }
 
 export async function getUserByEmail(
   userRepository: UserRepository,
   email: string
 ): Promise<UserType | null> {
-  return await userRepository.readByEmail(email);
+  return await userRepository.findByEmail(email);
 }
 
 export async function getUserByUsername(
   userRepository: UserRepository,
   username: string
 ): Promise<UserType | null> {
-  return await userRepository.readByUsername(username);
+  return await userRepository.findByUsername(username);
 }
 
 export async function updateUser(
@@ -80,14 +80,14 @@ export async function updateUser(
   data: UpdateUserDTO
 ): Promise<UserType> {
   // Check if user exists
-  const existingUser = await userRepository.read(id);
+  const existingUser = await userRepository.find(id);
   if (!existingUser) {
     throw new Error("User not found");
   }
 
   // Check for email conflicts if email is being updated
   if (data.email && data.email !== existingUser.email) {
-    const existingUserByEmail = await userRepository.readByEmail(data.email);
+    const existingUserByEmail = await userRepository.findByEmail(data.email);
     if (existingUserByEmail && existingUserByEmail.id !== id) {
       throw new Error("Another user with this email already exists");
     }
@@ -95,7 +95,7 @@ export async function updateUser(
 
   // Check for username conflicts if username is being updated
   if (data.username && data.username !== existingUser.username) {
-    const existingUserByUsername = await userRepository.readByUsername(
+    const existingUserByUsername = await userRepository.findByUsername(
       data.username
     );
     if (existingUserByUsername && existingUserByUsername.id !== id) {
@@ -111,7 +111,7 @@ export async function deleteUser(
   id: string
 ): Promise<void> {
   // Check if user exists before deletion
-  const existingUser = await userRepository.read(id);
+  const existingUser = await userRepository.find(id);
   if (!existingUser) {
     throw new Error("User not found");
   }

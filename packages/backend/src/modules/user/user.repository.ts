@@ -31,7 +31,7 @@ class UserRepository {
     }
   }
 
-  async read(id: string): Promise<UserType | null> {
+  async find(id: string): Promise<UserType | null> {
     try {
       const user = await this.db.query.users.findFirst({
         where: (users, { eq }) => eq(users.id, id),
@@ -40,14 +40,14 @@ class UserRepository {
       return user || null;
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error reading user:", error.message);
+        console.error("Error finding user:", error.message);
         throw error;
       }
-      throw new Error("Failed to read user");
+      throw new Error("Failed to find user");
     }
   }
 
-  async readByEmail(email: string): Promise<UserType | null> {
+  async findByEmail(email: string): Promise<UserType | null> {
     try {
       const user = await this.db.query.users.findFirst({
         where: (users, { eq }) => eq(users.email, email),
@@ -56,14 +56,14 @@ class UserRepository {
       return user || null;
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error reading user by email:", error.message);
+        console.error("Error finding user by email:", error.message);
         throw error;
       }
-      throw new Error("Failed to read user by email");
+      throw new Error("Failed to find user by email");
     }
   }
 
-  async readByUsername(username: string): Promise<UserType | null> {
+  async findByUsername(username: string): Promise<UserType | null> {
     try {
       const user = await this.db.query.users.findFirst({
         where: (users, { eq }) => eq(users.username, username),
@@ -72,10 +72,10 @@ class UserRepository {
       return user || null;
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error reading user by username:", error.message);
+        console.error("Error finding user by username:", error.message);
         throw error;
       }
-      throw new Error("Failed to read user by username");
+      throw new Error("Failed to find user by username");
     }
   }
 
