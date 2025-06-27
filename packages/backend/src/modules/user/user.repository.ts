@@ -10,15 +10,15 @@ class UserRepository {
 
   async create(user: CreateUserDTO): Promise<UserType> {
     try {
-      const created = await this.db.insert(users).values({
+      const id = uuidv4();
+      await this.db.insert(users).values({
         ...user,
-        id: uuidv4(),
+        id,
       });
-      const id = created.lastInsertRowid;
 
       return {
         ...user,
-        id: id.toString(),
+        id,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

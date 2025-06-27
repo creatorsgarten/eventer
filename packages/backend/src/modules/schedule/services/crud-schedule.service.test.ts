@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { db } from "#backend/infrastructure/db";
 import { events, type EventType } from "../agenda.model";
 import { createEvent, listEvents } from "./crud-schedule.service";
@@ -9,7 +9,7 @@ import { EventRepository } from "../agenda.repository";
 // }
 
 const fakeEvent: EventType = {
-  id: "test-event-1",
+  id: "test-event-crud-schedule",
   name: "Test Event",
   description: "This is a test event",
   startDate: new Date("2025-07-01"),
@@ -19,13 +19,13 @@ const fakeEvent: EventType = {
 };
 
 describe("Event Usecase", () => {
-  beforeAll(async () => {
-    // Optionally clear or seed table
+  beforeEach(async () => {
+    // Clear table before each test
     await db.delete(events);
   });
 
-  afterAll(async () => {
-    await db.delete(events); // Clean up after tests
+  afterEach(async () => {
+    await db.delete(events); // Clean up after each test
   });
 
   it("should create a new event", async () => {
