@@ -7,7 +7,8 @@
     "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
     "db:push": "drizzle-kit push --config=drizzle.config.ts",
     "db:pull": "drizzle-kit pull --config=drizzle.config.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest run --config=vitest.config.ts"
   },
   "imports": {
     "#backend/*": "./src/*"
@@ -38,6 +39,7 @@
     "@eventer/typescript-config": "workspace:^",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.17",
+    "dotenv": "^16.5.0",
     "drizzle-kit": "^0.31.1",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
