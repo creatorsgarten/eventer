@@ -16,6 +16,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "inputs": ["src/**/*.ts", "test/**/*.ts", "src/**/*.tsx", "test/**/*.tsx"]
     }
   }
 }

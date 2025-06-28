@@ -10,15 +10,15 @@ class EventRepository {
 
   async create(event: CreateEventDTO): Promise<EventType> {
     try {
-      const created = await this.db.insert(events).values({
+      const id = uuidv4();
+      await this.db.insert(events).values({
         ...event,
-        id: uuidv4(),
+        id,
       });
-      const id = created.lastInsertRowid;
 
       return {
         ...event,
-        id: id.toString(),
+        id,
       };
     } catch (error) {
       if (error instanceof Error) {
