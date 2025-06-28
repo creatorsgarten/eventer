@@ -13,7 +13,7 @@
     "e2e:report": "playwright show-report"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.5.0",
+    "@biomejs/biome": "^2.0.0",
     "@playwright/test": "^1.44.0",
     "prettier": "^3.5.3",
     "turbo": "^2.5.4",
