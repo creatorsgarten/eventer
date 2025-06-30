@@ -22,13 +22,13 @@ importers:
         version: 9.1.7
       prettier:
         specifier: ^3.5.3
-        version: 3.6.2
+        version: 3.5.3
       turbo:
         specifier: ^2.5.4
         version: 2.5.4
       typescript:
         specifier: 5.8.2
-        version: 5.8.3
+        version: 5.8.2
       vitest:
         specifier: ^1.5.0
         version: 1.6.1(@types/node@22.15.3)
@@ -1518,6 +1518,10 @@ packages:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
 
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+    engines: {node: '>=12'}
+
   dotenv@17.0.0:
     resolution: {integrity: sha512-A0BJ5lrpJVSfnMMXjmeO0xUnoxqsBHWCoqqTnGwGYVdnctqXXUEhJOO7LxmgxJon9tEZFGpe0xPRX0h2v3AANQ==}
     engines: {node: '>=12'}
@@ -2690,8 +2694,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -4587,6 +4591,8 @@ snapshots:
 
   dotenv@16.0.3: {}
 
+  dotenv@16.5.0: {}
+
   dotenv@17.0.0: {}
 
   drizzle-kit@0.31.1:
@@ -5885,7 +5891,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.6.2: {}
+  prettier@3.5.3: {}
 
   pretty-format@29.7.0:
     dependencies:
