@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Set up db
+        run: cd packages/backend && pnpm db:push
+
       - name: Create .env file for local DB
         run: |
           echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/testdb" > packages/backend/.env
