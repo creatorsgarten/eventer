@@ -11,3 +11,12 @@ export const agenda = table("agenda", {
   activity: t.text("activity").notNull(),    // e.g., "Keynote"
   remarks: t.text("remarks").default(""),
 });
+
+
+//npx drizzle-kit migrate
+
+// npx drizzle-kit generate
+
+// pnpm db:push
+// pnpm db:migrate
+// pnpm db:studio
