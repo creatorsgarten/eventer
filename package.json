@@ -7,14 +7,15 @@
     "lint": "biome check .",
     "format": "biome format . --write",
     "check-types": "turbo run check-types",
-    
     "test": "turbo run test",
     "e2e": "playwright test",
-    "e2e:report": "playwright show-report"
+    "e2e:report": "playwright show-report",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.0",
     "@playwright/test": "^1.44.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "turbo": "^2.5.4",
     "typescript": "5.8.2",

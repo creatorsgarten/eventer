@@ -1,3 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect } from "vitest";
 import { db } from "#backend/infrastructure/db";
-import { AgendaRepository } from "../agenda.repository";
+
+describe("agenda", () => {
+  it("should have the correct schema", () => {
+    const agenda = db.query.agenda;
+    expect(agenda).toBeDefined();
+  });
+});

@@ -3,14 +3,12 @@ import type { CreateAgendaDTO } from "../dtos/create-agenda.dto";
 import type { AgendaType } from "../agenda.model";
 import type { UpdateAgendaDTO } from "../dtos/update-agenda.dto";
 
-
-
 export async function createAgenda(
   agendaRepository: AgendaRepository,
   data: CreateAgendaDTO
 ): Promise<AgendaType> {
   return await agendaRepository.create({
-  ...data,
+    ...data,
   });
 }
 
@@ -18,7 +16,6 @@ export async function listAgenda(
   agendaRepository: AgendaRepository,
   query?: CreateAgendaDTO
 ): Promise<AgendaType[]> {
-
   // TODO implement query CRUD
   const all = await agendaRepository.list();
 
@@ -29,10 +26,10 @@ export async function listAgenda(
   }
 
   if (query?.personincharge) {
-    filtered = filtered.filter(
-      (a) =>
-        a.personincharge &&
-        a.personincharge.toLowerCase().includes(query.personincharge.toLowerCase())
+    filtered = filtered.filter((a) =>
+      a.personincharge
+        ?.toLowerCase()
+        .includes(query.personincharge.toLowerCase())
     );
   }
 
@@ -43,9 +40,7 @@ export async function listAgenda(
   }
 
   if (query?.end) {
-    filtered = filtered.filter(
-      (a) => new Date(a.end) <= new Date(query.end)
-    );
+    filtered = filtered.filter((a) => new Date(a.end) <= new Date(query.end));
   }
 
   if (query?.activity) {
@@ -56,7 +51,6 @@ export async function listAgenda(
 
   return filtered;
 }
-
 
 export async function getAgendaById(
   agendaRepository: AgendaRepository,

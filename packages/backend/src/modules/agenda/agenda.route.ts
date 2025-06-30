@@ -19,4 +19,4 @@ const app = new Hono()
     return c.json(createdEvent, 201);
   });
 
-export { app as eventRouter };
+export { app as agendaRouter };

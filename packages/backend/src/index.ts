@@ -1,21 +1,15 @@
 import { Hono } from "hono";
 import { eventRouter } from "./modules/event";
+import { userRouter } from "./modules/user";
+import { agendaRouter } from "./modules/agenda";
 
 const app = new Hono()
   .basePath("/api")
   .get("/", (c) => {
     return c.text("Hello Hono!");
   })
-  .get("/books", (c) => {
-    return c.json(
-      [
-        { id: 1, title: "1984", author: "George Orwell" },
-        { id: 2, title: "Brave New World", author: "Aldous Huxley" },
-        { id: 3, title: "Fahrenheit 451", author: "Ray Bradbury" },
-      ],
-      200
-    );
-  })
-  .route("/event", eventRouter);
+  .route("/event", eventRouter)
+  .route("/user", userRouter)
+  .route("/agenda", agendaRouter);
 
 export { app };
