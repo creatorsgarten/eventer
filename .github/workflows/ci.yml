@@ -6,6 +6,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -16,10 +31,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create .env file
+      - name: Create .env file for local DB
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > packages/backend/.env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > packages/backend/.env.test
-      
+          echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/testdb" > packages/backend/.env
+          echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/testdb" > packages/backend/.env.test
+
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
+
       - name: Run tests
         run: pnpm test
