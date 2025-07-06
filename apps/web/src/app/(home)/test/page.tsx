@@ -1,31 +1,10 @@
-import { client } from "@/lib/client";
+"use client";
 
-export default async function TestPage() {
-  const response = await client.api.event.$get({
-    query: {},
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch data: ${response.statusText}`);
-  }
-
+export default function TestPage() {
   return (
     <div>
       <h1>Test Page</h1>
-      <p>Data fetched from external API:</p>
-      <ul>{JSON.stringify(data, null, 2)}</ul>
+      <a href="http://localhost:4000/api/auth/google">Sign in with Google</a>
     </div>
   );
 }
-
-// export const getEvents = async () => {
-//   return await client.api.events.$get().then((res) => res.json());
-// };
-
-// export const createEvents = async () => {
-//   return await client.api.events.$post({ json: { title: "New Event", date: "2025-01-01" } })
-//     .then((res) => res.json());
-
-// };

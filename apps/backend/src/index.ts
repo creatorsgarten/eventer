@@ -7,6 +7,7 @@ import { openAPISpecs } from "hono-openapi";
 import { agendaRouter } from "./modules/agenda";
 import { eventRouter } from "./modules/event";
 import { userRouter } from "./modules/user";
+import { authRouter } from "./modules/auth";
 
 const app = new Hono()
   .basePath("/api")
@@ -15,7 +16,8 @@ const app = new Hono()
   })
   .route("/event", eventRouter)
   .route("/user", userRouter)
-  .route("/agenda", agendaRouter);
+  .route("/agenda", agendaRouter)
+  .route("/auth", authRouter);
 
 app.get(
   "/openapi",

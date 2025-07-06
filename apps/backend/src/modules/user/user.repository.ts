@@ -10,7 +10,7 @@ class UserRepository {
 
   async create(user: CreateUserDTO): Promise<UserType> {
     try {
-      const id = uuidv4();
+      const id = user.id || uuidv4();
       await this.db.insert(users).values({
         ...user,
         id,
