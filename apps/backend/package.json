@@ -2,7 +2,7 @@
   "name": "@eventer/backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts --port 4000",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",

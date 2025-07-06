@@ -5,34 +5,10 @@ import Link from "next/link";
 import { Button } from "@eventer/ui/button";
 import styles from "./page.module.css";
 
-type ThemeImageProps = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-const ThemeImage = ({ srcLight, srcDark, ...rest }: ThemeImageProps) => {
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
-
 export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="/pic/logo-light.webp"
-          srcDark="/pic/logo-dark.webp"
-          alt="Eventer Logo"
-          width={100}
-          height={100}
-          priority
-        />
-
         <h1 className="text-3xl font-bold mt-6">Welcome to Eventer</h1>
         <p className="text-lg text-gray-600 mt-2">
           Your all-in-one event planning and ticketing platform.
