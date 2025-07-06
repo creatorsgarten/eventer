@@ -32,4 +32,5 @@ app.get(
 
 app.get("/scalar", Scalar({ url: "/api/openapi" }));
 
-export { app };
+type AppType = typeof app;
+export { app, type AppType };

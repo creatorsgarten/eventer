@@ -33,123 +33,7 @@ importers:
         specifier: ^1.5.0
         version: 1.6.1(@types/node@22.15.3)
 
-  apps/docs:
-    dependencies:
-      '@eventer/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: ^15.3.0
-        version: 15.3.0(@playwright/test@1.53.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-    devDependencies:
-      '@eventer/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
-      '@eventer/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@types/node':
-        specifier: ^22.15.3
-        version: 22.15.3
-      '@types/react':
-        specifier: 19.1.8
-        version: 19.1.8
-      '@types/react-dom':
-        specifier: 19.1.6
-        version: 19.1.6(@types/react@19.1.8)
-      eslint:
-        specifier: ^9.28.0
-        version: 9.28.0
-      typescript:
-        specifier: 5.8.2
-        version: 5.8.2
-
-  apps/web:
-    dependencies:
-      '@eventer/backend':
-        specifier: workspace:*
-        version: link:../../packages/backend
-      '@eventer/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@t3-oss/env-nextjs':
-        specifier: ^0.13.7
-        version: 0.13.7(typescript@5.8.2)(zod@3.25.56)
-      better-sqlite3:
-        specifier: ^11.10.0
-        version: 11.10.0
-      dotenv:
-        specifier: ^17.0.0
-        version: 17.0.0
-      drizzle-orm:
-        specifier: ^0.44.2
-        version: 0.44.2(@libsql/client@0.15.9)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)
-      hono:
-        specifier: ^4.7.11
-        version: 4.7.11
-      mysql2:
-        specifier: ^3.14.1
-        version: 3.14.1
-      next:
-        specifier: ^15.3.0
-        version: 15.3.0(@playwright/test@1.53.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      pg:
-        specifier: ^8.16.0
-        version: 8.16.0
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      zod:
-        specifier: ^3.25.56
-        version: 3.25.56
-    devDependencies:
-      '@eventer/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
-      '@eventer/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@types/node':
-        specifier: ^22.15.3
-        version: 22.15.3
-      '@types/react':
-        specifier: 19.1.8
-        version: 19.1.8
-      '@types/react-dom':
-        specifier: 19.1.6
-        version: 19.1.6(@types/react@19.1.8)
-      drizzle-kit:
-        specifier: ^0.31.1
-        version: 0.31.1
-      eslint:
-        specifier: ^9.28.0
-        version: 9.28.0
-      tsx:
-        specifier: ^4.7.1
-        version: 4.19.4
-      typescript:
-        specifier: 5.8.2
-        version: 5.8.2
-
-  packages/_template:
-    devDependencies:
-      '@eventer/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@eventer/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-
-  packages/backend:
+  apps/backend:
     dependencies:
       '@hono/node-server':
         specifier: ^1.14.4
@@ -190,7 +74,7 @@ importers:
     devDependencies:
       '@eventer/typescript-config':
         specifier: workspace:^
-        version: link:../typescript-config
+        version: link:../../packages/typescript-config
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -209,6 +93,122 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+
+  apps/docs:
+    dependencies:
+      '@eventer/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      next:
+        specifier: ^15.3.0
+        version: 15.3.0(@playwright/test@1.53.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+    devDependencies:
+      '@eventer/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@eventer/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      '@types/react':
+        specifier: 19.1.8
+        version: 19.1.8
+      '@types/react-dom':
+        specifier: 19.1.6
+        version: 19.1.6(@types/react@19.1.8)
+      eslint:
+        specifier: ^9.28.0
+        version: 9.28.0
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+
+  apps/web:
+    dependencies:
+      '@eventer/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@t3-oss/env-nextjs':
+        specifier: ^0.13.7
+        version: 0.13.7(typescript@5.8.2)(zod@3.25.56)
+      better-sqlite3:
+        specifier: ^11.10.0
+        version: 11.10.0
+      dotenv:
+        specifier: ^17.0.0
+        version: 17.0.0
+      drizzle-orm:
+        specifier: ^0.44.2
+        version: 0.44.2(@libsql/client@0.15.9)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.16.0)
+      hono:
+        specifier: ^4.7.11
+        version: 4.7.11
+      mysql2:
+        specifier: ^3.14.1
+        version: 3.14.1
+      next:
+        specifier: ^15.3.0
+        version: 15.3.0(@playwright/test@1.53.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      pg:
+        specifier: ^8.16.0
+        version: 8.16.0
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      zod:
+        specifier: ^3.25.56
+        version: 3.25.56
+    devDependencies:
+      '@eventer/backend':
+        specifier: workspace:*
+        version: link:../backend
+      '@eventer/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@eventer/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      '@types/react':
+        specifier: 19.1.8
+        version: 19.1.8
+      '@types/react-dom':
+        specifier: 19.1.6
+        version: 19.1.6(@types/react@19.1.8)
+      drizzle-kit:
+        specifier: ^0.31.1
+        version: 0.31.1
+      eslint:
+        specifier: ^9.28.0
+        version: 9.28.0
+      tsx:
+        specifier: ^4.7.1
+        version: 4.19.4
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+
+  packages/_template:
+    devDependencies:
+      '@eventer/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@eventer/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
   packages/eslint-config:
     devDependencies:
