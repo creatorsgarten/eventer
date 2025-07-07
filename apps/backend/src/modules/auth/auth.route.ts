@@ -44,10 +44,10 @@ const app = new Hono()
       return c.json({ error: "No email provided" }, 400);
     }
 
-    let appUser = await userRepository.findByEmail(user.email);
+    const appUser = await userRepository.findByEmail(user.email);
 
     if (!appUser) {
-      appUser = await userRepository.create({
+      await userRepository.create({
         id: user.id,
         email: user.email,
         username: user.user_metadata.full_name || user.email,
