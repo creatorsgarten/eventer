@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const createUserDTO = z.object({
+  id: z.string().optional(),
   username: z
     .string()
     .min(1, "Username is required")
