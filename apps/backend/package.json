@@ -46,7 +46,7 @@
     "@eventer/typescript-config": "workspace:^",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.0.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.0",
     "drizzle-kit": "^0.31.1",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
