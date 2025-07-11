@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { env } from "@/env";
 
 interface UserInfo {
   id: string;
@@ -23,14 +24,14 @@ export default function TestPage() {
 
   const handleGoogleSignIn = () => {
     // Redirect to your backend's Google auth endpoint
-    window.location.href = "http://localhost:4000/api/auth/google";
+    window.location.href = `${env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`;
   };
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
     setUser(null);
     // Optionally, also clear the backend session
-    fetch("http://localhost:4000/api/auth/logout", {
+    fetch(`${env.NEXT_PUBLIC_BACKEND_URL}api/auth/logout`, {
       method: "POST",
       credentials: "include",
     }).catch(console.error);
@@ -56,7 +57,9 @@ export default function TestPage() {
                   />
                 )}
                 <div className="text-left">
-                  <h3 className="text-lg font-medium text-gray-900">{user.username}</h3>
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {user.username}
+                  </h3>
                   <p className="text-sm text-gray-500">{user.email}</p>
                   <p className="text-xs text-gray-400 mt-1">ID: {user.id}</p>
                 </div>

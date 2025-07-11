@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { env } from "@/env";
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function AuthCallback() {
 
         // Send tokens to backend
         const response = await fetch(
-          "http://localhost:4000/api/auth/callback",
+          `${env.NEXT_PUBLIC_BACKEND_URL}/api/auth/callback`,
           {
             method: "POST",
             headers: {
@@ -128,10 +129,12 @@ export default function AuthCallback() {
               </div>
               <h2 className="text-xl font-semibold text-green-900">Success!</h2>
               <p className="text-green-600 mt-2">{message}</p>
-              
+
               {userInfo && (
                 <div className="mt-6 p-4 bg-white rounded-lg shadow border">
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Welcome!</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Welcome!
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-center">
                       {userInfo.avatar_url && (
@@ -144,12 +147,18 @@ export default function AuthCallback() {
                         />
                       )}
                       <div className="text-left">
-                        <p className="text-sm font-medium text-gray-900">{userInfo.username}</p>
-                        <p className="text-sm text-gray-500">{userInfo.email}</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {userInfo.username}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {userInfo.email}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400 mt-3">Redirecting to dashboard in a few seconds...</p>
+                  <p className="text-xs text-gray-400 mt-3">
+                    Redirecting to dashboard in a few seconds...
+                  </p>
                 </div>
               )}
             </>

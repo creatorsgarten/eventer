@@ -9,12 +9,13 @@ import { eventRouter } from "./modules/event";
 import { userRouter } from "./modules/user";
 import { authRouter } from "./modules/auth";
 import { openApiDocumentation } from "./shared/openapi";
+import { env } from "./env";
 
 const app = new Hono()
   .use(
     "*",
     cors({
-      origin: ["http://localhost:3000"],
+      origin: [env.CORS_ORIGIN],
       credentials: true,
     })
   )
