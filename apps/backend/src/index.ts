@@ -3,12 +3,12 @@ import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
-import { openAPISpecs } from "hono-openapi";
 
 import { agendaRouter } from "./modules/agenda";
 import { eventRouter } from "./modules/event";
 import { userRouter } from "./modules/user";
 import { authRouter } from "./modules/auth";
+import { openApiDocumentation } from "./shared/openapi";
 
 const app = new Hono()
   .use(
@@ -27,20 +27,12 @@ const app = new Hono()
   .route("/agenda", agendaRouter)
   .route("/auth", authRouter);
 
-app.get(
-  "/openapi",
-  openAPISpecs(app, {
-    documentation: {
-      info: {
-        title: "Eventer API",
-        version: "1.0.0",
-        description: "Hey!",
-      },
-      servers: [{ url: "http://localhost:4000", description: "Local Server" }],
-    },
-  })
-);
+// Add OpenAPI documentation endpoint
+app.get("/openapi", (c) => {
+  return c.json(openApiDocumentation);
+});
 
+// Scalar documentation endpoint
 app.get("/scalar", Scalar({ url: "/api/openapi" }));
 
 serve(

@@ -10,15 +10,13 @@ import {
 import { UserRepository } from "./user.repository";
 import { db } from "#backend/infrastructure/db";
 import { zValidator } from "@hono/zod-validator";
-import { queryUserDTO } from "./dtos/query-user.dto";
-import { createUserDTO } from "./dtos/create-user.dto";
-import { updateUserDTO } from "./dtos/update-user.dto";
+import { CreateUserSchema, UpdateUserSchema } from "#backend/shared/schemas";
 
 const userRepository = new UserRepository(db);
 
 const app = new Hono()
   // POST /users - Create a new user
-  .post("/", zValidator("json", createUserDTO), async (c) => {
+  .post("/", zValidator("json", CreateUserSchema), async (c) => {
     try {
       const data = c.req.valid("json");
       const createdUser = await createUser(userRepository, data);
@@ -51,7 +49,7 @@ const app = new Hono()
   })
 
   // PUT /users/:id - Update user
-  .put("/:id", zValidator("json", updateUserDTO), async (c) => {
+  .put("/:id", zValidator("json", UpdateUserSchema), async (c) => {
     try {
       const id = c.req.param("id");
       const data = c.req.valid("json");
@@ -73,7 +71,7 @@ const app = new Hono()
     try {
       const id = c.req.param("id");
       await deleteUser(userRepository, id);
-      return c.json({ message: "User deleted successfully" });
+      return c.json({ success: true, message: "User deleted successfully" });
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === "User not found") {
