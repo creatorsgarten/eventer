@@ -1,6 +1,7 @@
 import { Scalar } from "@scalar/hono-api-reference";
 
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
 import { openAPISpecs } from "hono-openapi";
 
@@ -10,6 +11,13 @@ import { userRouter } from "./modules/user";
 import { authRouter } from "./modules/auth";
 
 const app = new Hono()
+  .use(
+    "*",
+    cors({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    })
+  )
   .basePath("/api")
   .get("/", (c) => {
     return c.text("Hello Hono!");
