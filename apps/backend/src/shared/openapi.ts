@@ -217,6 +217,23 @@ export const openApiDocumentation = {
     },
   ],
   paths: {
+    "/": {
+      get: {
+        tags: ["Home"],
+        summary: "Welcome to the Eventer API",
+        description: "Returns a welcome message",
+        responses: {
+          200: {
+            description: "Welcome message",
+            content: {
+              "text/plain": {
+                schema: { $ref: "#/components/schemas/HomeResponse" },
+              },
+            },
+          },
+        },
+      },
+    },
     "/auth/google": {
       get: {
         tags: ["Authentication"],
