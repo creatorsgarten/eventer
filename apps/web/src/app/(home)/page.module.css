@@ -64,7 +64,9 @@
   z-index: 10;
 }
 
-/* Header Styles */
+/* =================================
+  Header SECTION
+================================= */
 .header {
   display: flex;
   justify-content: space-between;
@@ -90,7 +92,12 @@
   gap: 1rem;
 }
 
-/* Hero Grid */
+
+/* =================================
+  Hero SECTION
+================================= */
+
+
 .heroGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -189,8 +196,12 @@
   height: 25rem;
   z-index: 10;
 }
-/*TODO : fix the feature css */
-/*Feature Section*/
+
+/* =================================
+  Feature SECTION
+================================= */
+
+
 .featureSection {
   display: flex;
   flex-direction: column;
@@ -260,7 +271,9 @@
   line-height: 1.6;
 }
 
-/* Showcase Section */
+/* =================================
+  Showcase SECTION
+================================= */
 .showcaseSection {
   padding: 80px 20px;
   max-width: 1200px;
@@ -279,7 +292,7 @@
 .showcaseRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 300px;
   align-items: center;
 }
 
@@ -311,20 +324,22 @@
 }
 
 .showcaseListBar {
-  width: 4px;
-  height: 60px;
+  /*460*/
+  width: 8px;
+  height: 100px;
+  border-radius: 999px ;
   background-color: #e0e0e0;
   border-radius: 2px;
   transition: background-color 0.3s ease;
   flex-shrink: 0;
-  -webkit-transition: background-color 0.3s ease;
-  -moz-transition: background-color 0.3s ease;
-  -ms-transition: background-color 0.3s ease;
-  -o-transition: background-color 0.3s ease;
+  -webkit-border-radius: 999px ;
+  -moz-border-radius: 999px ;
+  -ms-border-radius: 999px ;
+  -o-border-radius: 999px ;
 }
 
 .showcaseListItemActive .showcaseListBar {
-  background-color: #6366f1;
+  background-color: #7F56D9;
 }
 
 .showcaseListTitle {
@@ -340,13 +355,14 @@
   color: #666;
   line-height: 1.6;
   font-weight: 400;
+  
 }
 
 
 .showcaseImageWrapper {
-  animation: fadeInScale 0.5s ease-out;
+  animation: fadeInScale 0.5s cubic-bezier(.23,1.01,.32,1);
   transform-origin: center;
-  -webkit-animation: fadeInScale 0.5s ease-out;
+  -webkit-animation: fadeInScale 0.5s cubic-bezier(.23,1.01,.32,1);
 }
 
 .showcaseImage {
@@ -354,8 +370,7 @@
   max-height: 500px;
   height: auto;
   border-radius: 12px;
-  scale: 1.1;
-
+  scale: 1.2;
   /*box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   */
 }
@@ -391,7 +406,7 @@
 @keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
@@ -575,7 +590,7 @@
 
 
 /* =================================
-   email SECTION
+  Email SECTION
 ================================= */
 .emailSection {
   background: rgba(255, 255, 255, 0.8);
@@ -660,7 +675,7 @@
 }
 
 /* =================================
-   Footer
+  Footer
 ================================= */
 
 .footer {
@@ -747,5 +762,90 @@
   opacity: 0.8;
   margin-top: 2rem;
   width: 100%;
+}
+
+/* =================================
+  Testimonial SECTION
+================================= */
+.testimonialSection {
+  width: 100%;
+  /* background: #f8f7fc; */
+  padding: 56px 0 48px 0;
+  margin: 0 auto 32px auto;
+  overflow: hidden;
+}
+
+.testimonialTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #161C2D;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.5px;
+}
+
+.testimonialScrollerWrapper {
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.testimonialScroller {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  animation: testimonial-scroll 24s linear infinite;
+  will-change: transform;
+}
+
+.testimonialLogoItem {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  min-height: 200px;
+  opacity: 1;
+  transition: opacity 0.2s;
+  -webkit-transition: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -ms-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+}
+
+.testimonialLogoImg {
+  max-width: 200px;
+  max-height: 200px;
+  width: auto;
+  height: 120px;
+  object-fit: contain;
+
+}
+
+.testimonialLogoItem:hover .testimonialLogoImg {
+  filter: none;
+}
+
+@keyframes testimonial-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 600px) {
+  .testimonialScroller {
+    gap: 24px;
+  }
+  .testimonialLogoImg {
+    max-width: 80px;
+    height: 40px;
+  }
 }
 

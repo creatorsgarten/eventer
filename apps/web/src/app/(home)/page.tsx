@@ -241,6 +241,7 @@ const FeatureSection = () => {
 
 const ShowcaseSection: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [imgKey, setImgKey] = useState(0);
 
   const showcaseItems: ShowcaseItemProps[] = [
     {
@@ -259,6 +260,19 @@ const ShowcaseSection: React.FC = () => {
       imagePath: "/showcase3.svg",
     },
   ];
+
+  // Auto-advance showcase every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % showcaseItems.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [showcaseItems.length]);
+
+  // Change key to trigger animation on image change
+  useEffect(() => {
+    setImgKey(prev => prev + 1);
+  }, [activeIndex]);
 
   return (
     <section className={styles.showcaseSection}>
@@ -292,15 +306,15 @@ const ShowcaseSection: React.FC = () => {
         </div>
 
         {/* Right: Image */}
-          <div className={styles.showcaseImageWrapper}>
-            <Image
-              src={showcaseItems[activeIndex].imagePath}
-              alt={showcaseItems[activeIndex].title}
-              width={400}
-              height={400}
-              className={styles.showcaseImage}
-              priority
-            />
+        <div className={styles.showcaseImageWrapper} key={imgKey}>
+          <Image
+            src={showcaseItems[activeIndex].imagePath}
+            alt={showcaseItems[activeIndex].title}
+            width={400}
+            height={400}
+            className={styles.showcaseImage}
+            priority
+          />
         </div>
       </div>
     </section>
@@ -308,20 +322,44 @@ const ShowcaseSection: React.FC = () => {
 }
 
 const TestimonialSection: React.FC = () => {
+  // Example logos, replace with your own logo paths
+  const logos = [
+    "/cuslogo/creatorsgarten.svg",
+    "/cuslogo/cuee.png",
+    "/cuslogo/ioic_black.png",
+    "/cuslogo/thinc.png",
+    "/cuslogo/esc.png",
+    "/cuslogo/techsauce.png",
+    "/cuslogo/eventpop.png",
+    "/cuslogo/rabbitstart.png",
+  ];
+
+  // Duplicate logos for seamless infinite scroll effect
+  const scrollingLogos = [...logos, ...logos];
+
   return (
     <section className={styles.testimonialSection}>
-      <h2 className={styles.testimonialTitle}>คำชมจากผู้ใช้</h2>
-      <div className={styles.testimonialGrid}>
-        {/* Add testimonial cards here */}
-        <div className={styles.testimonialCard}>
-          <p className={styles.testimonialText}>
-            Eventer ทำให้การจัดงานของเราง่ายขึ้นมาก! ทุกอย่างเป็นระเบียบและเข้าถึงได้ง่าย
-          </p>
-          <p className={styles.testimonialAuthor}>- ผู้จัดงานคนหนึ่ง</p>
+      <h2 className={styles.testimonialTitle}>ลูกค้าของเรา*</h2> 
+      <div className={styles.testimonialScrollerWrapper}>
+        <div className={styles.testimonialScroller}>
+          {scrollingLogos.map((logo, idx) => (
+            <div className={styles.testimonialLogoItem} key={idx}>
+              <Image
+                src={logo}
+                alt={`Company logo ${idx % logos.length + 1}`}
+                width={120}
+                height={60}
+                className={styles.testimonialLogoImg}
+                draggable={false}
+              />
+            </div>
+          ))}
         </div>
       </div>
+      <p className={styles.testimonialNote}>
+        *หมายเหตุ: ลูกค้าในอนาคต (fraud จัด) </p>
     </section>
-  )
+  );
 };
 
 
@@ -445,8 +483,8 @@ export default function Home() {
       <HeroSection />
       <FeatureSection />
       <ShowcaseSection />
-      {/* <TestimonialSection /> */}
       <DemoSection />
+      <TestimonialSection />
       <EmailSection/>
       <FooterSection />
     </div>

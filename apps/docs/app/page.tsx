@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@eventer/ui/button";
+import { Button } from "@eventer/component/button";
 import styles from "./page.module.css";
 import express from "express";
 import dotenv from "dotenv";
