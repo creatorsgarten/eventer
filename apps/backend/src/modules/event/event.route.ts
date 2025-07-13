@@ -1,9 +1,6 @@
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
-import {
-	authMiddleware,
-	optionalAuthMiddleware,
-} from "#backend/shared/middleware/auth.middleware";
+import { authMiddleware, optionalAuthMiddleware } from "#backend/shared/middleware/auth.middleware";
 import {
 	CreateEventSchema,
 	EventListResponseSchema,
@@ -33,7 +30,7 @@ export const eventRouter = new Elysia({ prefix: "/event" })
 		{
 			query: PaginationQuerySchema,
 			response: EventListResponseSchema,
-		},
+		}
 	)
 	.use(authMiddleware)
 	.post(
@@ -51,5 +48,5 @@ export const eventRouter = new Elysia({ prefix: "/event" })
 		{
 			body: CreateEventSchema,
 			response: EventSchema,
-		},
+		}
 	);

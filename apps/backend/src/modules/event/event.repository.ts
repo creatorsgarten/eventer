@@ -47,11 +47,7 @@ class EventRepository {
 
 	async update(id: string, event: UpdateEventDTO): Promise<EventType> {
 		try {
-			const updated = await this.db
-				.update(events)
-				.set(event)
-				.where(eq(events.id, id))
-				.returning();
+			const updated = await this.db.update(events).set(event).where(eq(events.id, id)).returning();
 
 			if (updated.length === 0 || !updated[0]) {
 				throw new Error("Event not found");
@@ -70,11 +66,7 @@ class EventRepository {
 	async delete(id: string): Promise<void> {
 		try {
 			// First check if the event exists
-			const existingEvent = await this.db
-				.select()
-				.from(events)
-				.where(eq(events.id, id))
-				.limit(1);
+			const existingEvent = await this.db.select().from(events).where(eq(events.id, id)).limit(1);
 
 			if (existingEvent.length === 0) {
 				throw new Error("Event not found");

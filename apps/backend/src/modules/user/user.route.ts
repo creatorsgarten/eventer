@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import {
 	CreateUserSchema,
@@ -28,7 +28,7 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		{
 			body: CreateUserSchema,
 			response: UserSchema,
-		},
+		}
 	)
 	.get(
 		"/:id",
@@ -41,7 +41,7 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		},
 		{
 			response: UserWithErrorResponseSchema,
-		},
+		}
 	)
 	.put(
 		"/:id",
@@ -51,7 +51,7 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		{
 			body: UpdateUserSchema,
 			response: UserSchema,
-		},
+		}
 	)
 	.delete(
 		"/:id",
@@ -61,7 +61,7 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		},
 		{
 			response: SuccessResponseSchema,
-		},
+		}
 	)
 	.get(
 		"/email/:email",
@@ -74,7 +74,7 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		},
 		{
 			response: UserWithErrorResponseSchema,
-		},
+		}
 	)
 	.get(
 		"/username/:username",
@@ -87,5 +87,5 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		},
 		{
 			response: UserWithErrorResponseSchema,
-		},
+		}
 	);

@@ -1,8 +1,8 @@
 {
-  "extends": "@eventer/typescript-config/react-library.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+	"extends": "@eventer/typescript-config/react-library.json",
+	"compilerOptions": {
+		"outDir": "dist"
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist"]
 }

@@ -65,11 +65,7 @@ class AgendaRepository {
 	async delete(id: string): Promise<void> {
 		try {
 			// First check if the agenda exists
-			const existingAgenda = await this.db
-				.select()
-				.from(agenda)
-				.where(eq(agenda.id, id))
-				.limit(1);
+			const existingAgenda = await this.db.select().from(agenda).where(eq(agenda.id, id)).limit(1);
 
 			if (existingAgenda.length === 0) {
 				throw new Error("Agenda not found");

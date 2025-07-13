@@ -107,11 +107,7 @@ class UserRepository {
 	async delete(id: string): Promise<void> {
 		try {
 			// First check if the user exists
-			const existingUser = await this.db
-				.select()
-				.from(users)
-				.where(eq(users.id, id))
-				.limit(1);
+			const existingUser = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
 
 			if (existingUser.length === 0) {
 				throw new Error("User not found");

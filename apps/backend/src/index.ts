@@ -12,12 +12,7 @@ const app = new Elysia()
 	.use(cors({ origin: env.CORS_ORIGIN, credentials: true }))
 	.use(swagger())
 	.group("/api", (app) =>
-		app
-			.use(homeRouter)
-			.use(eventRouter)
-			.use(userRouter)
-			.use(agendaRouter)
-			.use(authRouter),
+		app.use(homeRouter).use(eventRouter).use(userRouter).use(agendaRouter).use(authRouter)
 	)
 	.listen(env.PORT, () => {
 		console.log(`Server is running on http://localhost:${env.PORT}/api`);

@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import {
 	AgendaListResponseSchema,
@@ -28,7 +28,7 @@ export const agendaRouter = new Elysia({ prefix: "/agenda" })
 		{
 			query: PaginationQuerySchema,
 			response: AgendaListResponseSchema,
-		},
+		}
 	)
 	.post(
 		"/",
@@ -43,5 +43,5 @@ export const agendaRouter = new Elysia({ prefix: "/agenda" })
 		{
 			body: CreateAgendaSchema,
 			response: AgendaSchema,
-		},
+		}
 	);

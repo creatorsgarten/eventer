@@ -1,16 +1,16 @@
 {
-  "name": "@eventer/contact",
-  "version": "1.0.0",
-  "type": "module",
-  "exports": {
-    "./*": "./src/*.tsx"
-  },
-  "scripts": {
-    "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@eventer/eslint-config": "workspace:*",
-    "@eventer/typescript-config": "workspace:*"
-  }
+	"name": "@eventer/contact",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*.tsx"
+	},
+	"scripts": {
+		"lint": "eslint . --max-warnings 0",
+		"check-types": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@eventer/eslint-config": "workspace:*",
+		"@eventer/typescript-config": "workspace:*"
+	}
 }

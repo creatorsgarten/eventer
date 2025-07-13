@@ -35,7 +35,7 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 				302: t.Void(),
 				500: ErrorResponseSchema,
 			},
-		},
+		}
 	)
 	.post(
 		"/callback",
@@ -85,15 +85,14 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 					id: user.id,
 					email: user.email,
 					username: user.user_metadata.full_name || user.email,
-					avatar_url:
-						user.user_metadata.avatar_url || user.user_metadata.picture,
+					avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture,
 				},
 			};
 		},
 		{
 			body: AuthCallbackSchema,
 			response: AuthSuccessResponseSchema,
-		},
+		}
 	)
 	.post(
 		"/logout",
@@ -112,5 +111,5 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 				200: SuccessResponseSchema,
 				400: ErrorResponseSchema,
 			},
-		},
+		}
 	);
