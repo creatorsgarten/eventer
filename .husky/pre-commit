@@ -1,1 +1,1 @@
-pnpm test
+bunx lint-staged

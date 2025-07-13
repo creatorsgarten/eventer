@@ -1,5 +1,5 @@
+import { edenFetch } from "@elysiajs/eden";
 import type { AppType } from "@eventer/backend";
-import { hc } from "hono/client";
 import { env } from "@/env";
 
-export const client = hc<AppType>(env.NEXT_PUBLIC_BACKEND_URL);
+export const client = edenFetch<AppType>(env.NEXT_PUBLIC_BACKEND_URL);

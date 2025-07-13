@@ -1,176 +1,127 @@
-import { z } from "@hono/zod-openapi";
+import { t } from "elysia";
 
 // User schemas
-export const UserSchema = z
-  .object({
-    id: z.string().openapi({ example: "user_123" }),
-    username: z.string().min(1).openapi({ example: "john_doe" }),
-    email: z.string().email().openapi({ example: "john@example.com" }),
-    createdAt: z
-      .string()
-      .datetime()
-      .openapi({ example: "2023-01-01T00:00:00Z" }),
-    updatedAt: z
-      .string()
-      .datetime()
-      .openapi({ example: "2023-01-01T00:00:00Z" }),
-  })
-  .openapi("User");
+export const UserSchema = t.Object({
+	id: t.String(),
+	username: t.String(),
+	email: t.String({ format: "email" }),
+	createdAt: t.Date(),
+	updatedAt: t.Date(),
+});
 
-export const CreateUserSchema = z
-  .object({
-    id: z.string().openapi({ example: "user_123" }),
-    username: z.string().min(1).openapi({ example: "john_doe" }),
-    email: z.string().email().openapi({ example: "john@example.com" }),
-  })
-  .openapi("CreateUser");
+export const CreateUserSchema = t.Object({
+	id: t.Optional(t.String()),
+	username: t.String(),
+	email: t.String({ format: "email" }),
+});
 
-export const UpdateUserSchema = z
-  .object({
-    username: z
-      .string()
-      .min(1)
-      .optional()
-      .openapi({ example: "john_doe_updated" }),
-    email: z
-      .string()
-      .email()
-      .optional()
-      .openapi({ example: "john.updated@example.com" }),
-  })
-  .openapi("UpdateUser");
+export const UpdateUserSchema = t.Object({
+	username: t.Optional(t.String()),
+	email: t.Optional(t.String({ format: "email" })),
+});
 
 // Event schemas
-export const EventSchema = z
-  .object({
-    id: z.string().openapi({ example: "event_123" }),
-    name: z.string().min(1).openapi({ example: "Tech Conference 2025" }),
-    startDate: z
-      .string()
-      .datetime()
-      .openapi({ example: "2025-07-15T09:00:00Z" }),
-    endDate: z.string().datetime().openapi({ example: "2025-07-15T17:00:00Z" }),
-    location: z
-      .string()
-      .min(1)
-      .openapi({ example: "Convention Center Hall A" }),
-    description: z.string().nullable().openapi({
-      example: "Annual technology conference featuring the latest innovations",
-    }),
-    createdBy: z.string().openapi({ example: "user_123" }),
-  })
-  .openapi("Event");
+export const EventSchema = t.Object({
+	id: t.String(),
+	name: t.String(),
+	startDate: t.Date(),
+	endDate: t.Date(),
+	location: t.String(),
+	description: t.Nullable(t.String()),
+	createdBy: t.String(),
+});
 
-export const CreateEventSchema = z
-  .object({
-    name: z.string().min(1).openapi({ example: "Tech Conference 2025" }),
-    startDate: z
-      .string()
-      .datetime()
-      .openapi({ example: "2025-07-15T09:00:00Z" }),
-    endDate: z.string().datetime().openapi({ example: "2025-07-15T17:00:00Z" }),
-    location: z
-      .string()
-      .min(1)
-      .openapi({ example: "Convention Center Hall A" }),
-    description: z.string().nullable().optional().openapi({
-      example: "Annual technology conference featuring the latest innovations",
-    }),
-  })
-  .openapi("CreateEvent");
+export const CreateEventSchema = t.Object({
+	name: t.String(),
+	startDate: t.String({ format: "date-time" }),
+	endDate: t.String({ format: "date-time" }),
+	location: t.String(),
+	description: t.Optional(t.Nullable(t.String())),
+});
 
 // Agenda schemas
-export const AgendaSchema = z
-  .object({
-    id: z.string().openapi({ example: "agenda_123" }),
-    eventId: z.string().openapi({ example: "event_123" }),
-    start: z.string().openapi({ example: "09:00" }),
-    end: z.string().openapi({ example: "10:30" }),
-    personincharge: z.string().min(1).openapi({ example: "John Doe" }),
-    duration: z.number().int().positive().openapi({ example: 90 }),
-    activity: z.string().min(1).openapi({ example: "Keynote Presentation" }),
-    remarks: z
-      .string()
-      .default("")
-      .openapi({ example: "Special equipment needed" }),
-  })
-  .openapi("Agenda");
+export const AgendaSchema = t.Object({
+	id: t.String(),
+	eventId: t.String(),
+	start: t.String(),
+	end: t.String(),
+	personincharge: t.String(),
+	duration: t.Number(),
+	activity: t.String(),
+	remarks: t.Nullable(t.String()),
+});
 
-export const CreateAgendaSchema = z
-  .object({
-    eventId: z.string().openapi({ example: "event_123" }),
-    start: z.string().openapi({ example: "09:00" }),
-    end: z.string().openapi({ example: "10:30" }),
-    personincharge: z.string().min(1).openapi({ example: "John Doe" }),
-    duration: z.number().int().positive().openapi({ example: 90 }),
-    activity: z.string().min(1).openapi({ example: "Keynote Presentation" }),
-    remarks: z
-      .string()
-      .nullable()
-      .optional()
-      .openapi({ example: "Special equipment needed" }),
-  })
-  .openapi("CreateAgenda");
+export const CreateAgendaSchema = t.Object({
+	eventId: t.String(),
+	start: t.String(),
+	end: t.String(),
+	personincharge: t.String(),
+	duration: t.Number(),
+	activity: t.String(),
+	remarks: t.Optional(t.Nullable(t.String())),
+});
 
 // Auth schemas
-export const AuthUserSchema = z
-  .object({
-    id: z.string().openapi({ example: "user_123" }),
-    email: z.string().email().openapi({ example: "john@example.com" }),
-    username: z.string().openapi({ example: "John Doe" }),
-    avatar_url: z
-      .string()
-      .url()
-      .optional()
-      .openapi({ example: "https://example.com/avatar.jpg" }),
-  })
-  .openapi("AuthUser");
+export const AuthUserSchema = t.Object({
+	id: t.String(),
+	email: t.String({ format: "email" }),
+	username: t.String(),
+	avatar_url: t.Optional(t.String({ format: "uri" })),
+});
 
-export const AuthCallbackSchema = z
-  .object({
-    access_token: z
-      .string()
-      .openapi({ example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }),
-    refresh_token: z
-      .string()
-      .openapi({ example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }),
-  })
-  .openapi("AuthCallback");
+export const AuthCallbackSchema = t.Object({
+	access_token: t.String(),
+	refresh_token: t.String(),
+});
 
 // Query schemas
-export const PaginationQuerySchema = z
-  .object({
-    page: z.string().optional().default("1").openapi({ example: "1" }),
-    limit: z.string().optional().default("10").openapi({ example: "10" }),
-    sortBy: z.string().optional().openapi({ example: "createdAt" }),
-    sortOrder: z
-      .enum(["asc", "desc"])
-      .optional()
-      .default("desc")
-      .openapi({ example: "desc" }),
-  })
-  .openapi("PaginationQuery");
+export const PaginationQuerySchema = t.Object({
+	page: t.Optional(t.String()),
+	limit: t.Optional(t.String()),
+	sortBy: t.Optional(t.String()),
+	sortOrder: t.Optional(t.Enum({ asc: "asc", desc: "desc" })),
+});
 
 // Response schemas
-export const SuccessResponseSchema = z
-  .object({
-    success: z.boolean().openapi({ example: true }),
-    message: z
-      .string()
-      .openapi({ example: "Operation completed successfully" }),
-  })
-  .openapi("SuccessResponse");
+export const PaginationMetaSchema = t.Object({
+	page: t.Number(),
+	limit: t.Number(),
+	total: t.Number(),
+});
 
-export const ErrorResponseSchema = z
-  .object({
-    error: z.string().openapi({ example: "Something went wrong" }),
-  })
-  .openapi("ErrorResponse");
+export const EventListResponseSchema = t.Object({
+	data: t.Array(EventSchema),
+	pagination: PaginationMetaSchema,
+});
 
-export const AuthSuccessResponseSchema = z
-  .object({
-    success: z.boolean().openapi({ example: true }),
-    message: z.string().openapi({ example: "Authentication successful" }),
-    user: AuthUserSchema,
-  })
-  .openapi("AuthSuccessResponse");
+export const AgendaListResponseSchema = t.Object({
+	data: t.Array(AgendaSchema),
+	pagination: PaginationMetaSchema,
+});
+
+export const SuccessResponseSchema = t.Object({
+	success: t.Boolean(),
+	message: t.String(),
+});
+
+export const ErrorResponseSchema = t.Object({
+	error: t.String(),
+});
+
+export const AuthSuccessResponseSchema = t.Object({
+	success: t.Boolean(),
+	message: t.String(),
+	user: AuthUserSchema,
+});
+
+// Optional response schemas for nullable results
+export const UserResponseSchema = t.Union([UserSchema, t.Null()]);
+
+export const UserWithErrorResponseSchema = {
+	200: UserSchema,
+	404: ErrorResponseSchema,
+};
+
+export const NotFoundResponseSchema = t.Object({
+	error: t.Literal("Not found"),
+});
