@@ -23,13 +23,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
+          bun-version: 1.2.8
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Create .env file for local DB
         run: |
@@ -37,7 +36,7 @@ jobs:
           echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/testdb" > apps/backend/.env.test
 
       - name: Set up db
-        run: cd apps/backend && pnpm db:push
+        run: cd apps/backend && bun run db:push
 
       - name: Wait for PostgreSQL
         run: |
@@ -46,5 +45,11 @@ jobs:
             sleep 1
           done
 
+      - name: Lint code
+        run: bun run lint
+
+      - name: Check types
+        run: bun run check-types
+
       - name: Run tests
-        run: pnpm test
+        run: bun test

@@ -1,6 +1,11 @@
 /* Variables */
 :root {
-  --primary-gradient: linear-gradient(to right, #7F56D9 0%, #C091F3 39%, #7F56D9 100%);
+  --primary-gradient: linear-gradient(
+    to right,
+    #7f56d9 0%,
+    #c091f3 39%,
+    #7f56d9 100%
+  );
   --feature-shadow: 0 4px 24px 0 rgba(80, 80, 120, 0.08);
   --feature-shadow-hover: 0 8px 32px 0 rgba(80, 80, 120, 0.14);
   --spacing-base: 8px;
@@ -23,7 +28,7 @@
   min-height: 100svh;
   padding: calc(var(--spacing-base) * 10);
   gap: calc(var(--spacing-base) * 8);
-  font-family: var(--font-inter), 'Inter';
+  font-family: var(--font-inter), "Inter", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -92,19 +97,15 @@
   gap: 1rem;
 }
 
-
 /* =================================
   Hero SECTION
 ================================= */
-
 
 .heroGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: top;
   padding-top: 2rem;
-
-
 }
 
 /* Left Content */
@@ -136,16 +137,15 @@
 
 .ctaButton {
   background: white;
-  color: #A67CEB;
+  color: #a67ceb;
   padding: 11px 50px;
   border-radius: 999px;
   border: none;
   font-weight: 600;
-  font-size: 16px ;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-
 }
 
 .ctaButton:hover {
@@ -159,7 +159,6 @@
   gap: 1rem;
   margin-top: 2rem;
 }
-
 
 /* Right Content - Hero Images */
 .rightContent {
@@ -176,7 +175,6 @@
   left: 0;
   top: 0;
   scale: 1.2;
-  
 }
 
 .mobileImage {
@@ -201,7 +199,6 @@
   Feature SECTION
 ================================= */
 
-
 .featureSection {
   display: flex;
   flex-direction: column;
@@ -217,14 +214,14 @@
 }
 
 .featuresTitle {
-  color: #161C2D;
+  color: #161c2d;
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5em;
 }
 
 .featuresSubtitle {
-  color: #161C2D;
+  color: #161c2d;
   font-size: 1rem;
   margin-bottom: 2.5em;
 }
@@ -327,19 +324,18 @@
   /*460*/
   width: 8px;
   height: 100px;
-  border-radius: 999px ;
   background-color: #e0e0e0;
   border-radius: 2px;
   transition: background-color 0.3s ease;
   flex-shrink: 0;
-  -webkit-border-radius: 999px ;
-  -moz-border-radius: 999px ;
-  -ms-border-radius: 999px ;
-  -o-border-radius: 999px ;
+  -webkit-border-radius: 999px;
+  -moz-border-radius: 999px;
+  -ms-border-radius: 999px;
+  -o-border-radius: 999px;
 }
 
 .showcaseListItemActive .showcaseListBar {
-  background-color: #7F56D9;
+  background-color: #7f56d9;
 }
 
 .showcaseListTitle {
@@ -355,14 +351,12 @@
   color: #666;
   line-height: 1.6;
   font-weight: 400;
-  
 }
 
-
 .showcaseImageWrapper {
-  animation: fadeInScale 0.5s cubic-bezier(.23,1.01,.32,1);
+  animation: fadeInScale 0.5s cubic-bezier(0.23, 1.01, 0.32, 1);
   transform-origin: center;
-  -webkit-animation: fadeInScale 0.5s cubic-bezier(.23,1.01,.32,1);
+  -webkit-animation: fadeInScale 0.5s cubic-bezier(0.23, 1.01, 0.32, 1);
 }
 
 .showcaseImage {
@@ -375,29 +369,40 @@
   */
 }
 
-
 .popUpFromBottom {
   animation: popUpFromBottom 0.8s ease-out forwards;
   -webkit-animation: popUpFromBottom 0.8s ease-out forwards;
 }
 
-
-
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInLeft {
-  from { transform: translateX(-20px); opacity: 0; -webkit-transform: translateX(-20px); -moz-transform: translateX(-20px); -ms-transform: translateX(-20px); -o-transform: translateX(-20px); }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+    -webkit-transform: translateX(-20px);
+    -moz-transform: translateX(-20px);
+    -ms-transform: translateX(-20px);
+    -o-transform: translateX(-20px);
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 @keyframes popUpFromBottom {
   0% {
     opacity: 0;
     transform: translateY(100px);
-}
+  }
   100% {
     opacity: 1;
     transform: translateY(0); /* final position */
@@ -414,13 +419,12 @@
   }
 }
 
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .page {
     padding: 20px;
   }
-  
+
   .heroContainer {
     margin: -20px;
     width: calc(100% + 40px);
@@ -495,11 +499,9 @@
   }
 }
 
-
 /* =================================
    Demo SECTION
 ================================= */
-
 
 .demoSection {
   display: flex;
@@ -521,7 +523,7 @@
 
 .demoImg {
   width: 700px;
-  height:600px;
+  height: 600px;
   object-fit: contain;
 }
 
@@ -536,7 +538,7 @@
 .demoTryTitle {
   font-size: 38px;
   font-weight: 700;
-  color: #161C2D;
+  color: #161c2d;
   margin-bottom: 0.75rem;
   line-height: 1.2;
   letter-spacing: -0.5px;
@@ -578,7 +580,8 @@
     padding: 32px 0;
     max-width: 100%;
   }
-  .demoLeft, .demoRight {
+  .demoLeft,
+  .demoRight {
     align-items: center;
     text-align: center;
     width: 100%;
@@ -587,7 +590,6 @@
     align-items: center;
   }
 }
-
 
 /* =================================
   Email SECTION
@@ -599,14 +601,14 @@
   backdrop-filter: blur(10px);
   /*border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  */display: flex;
+  */
+  display: flex;
   gap: 20rem;
 }
 
 .emailleft {
   max-width: 800px;
   margin: 0 auto;
-  text-align: center;
   margin-left: 3rem;
   text-align: left;
 }
@@ -616,12 +618,11 @@
   text-align: center;
 }
 
-
 .emailTitle {
   display: flex;
   font-size: 32px;
   font-weight: 600;
-  color: #161C2D;
+  color: #161c2d;
   margin-bottom: 30px;
   line-height: 1.3;
   flex-direction: column;
@@ -679,12 +680,12 @@
 ================================= */
 
 .footer {
-  display:flex;
+  display: flex;
   flex-direction: column;
-  background-color: #9F73E5;
+  background-color: #9f73e5;
   color: white;
   padding: 3rem 1.5rem 2rem;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   width: 120%;
   height: 500px;
   box-sizing: border-box;
@@ -692,13 +693,12 @@
 
 .footercontainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
   margin-top: 3rem;
   width: 100%;
-  flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
 }
@@ -715,7 +715,6 @@
 
 .footerdescription {
   font-size: 0.95rem;
-  margin-bottom: 1rem;
   line-height: 1.5;
   margin-bottom: 2rem;
 }
@@ -778,7 +777,7 @@
 .testimonialTitle {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #161C2D;
+  color: #161c2d;
   text-align: center;
   margin-bottom: 2.5rem;
   letter-spacing: -0.5px;
@@ -823,7 +822,6 @@
   width: auto;
   height: 120px;
   object-fit: contain;
-
 }
 
 .testimonialLogoItem:hover .testimonialLogoImg {
@@ -848,4 +846,3 @@
     height: 40px;
   }
 }
-

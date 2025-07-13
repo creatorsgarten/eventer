@@ -9,7 +9,19 @@ Eventer (temporary name) is a collection of versatile event management tools mad
 ### Set up
 
 - [x] Set up Database
-- [ ] Set up Biome
+- [x] Set up Biome
+- [x] Set up lint-staged
 - [ ] Set up vitest
 - [ ] Set up playwright
 - [ ] Set up CI/CD
+
+## Development
+
+### Code Quality
+
+This project uses [Biome](https://biomejs.dev/) for linting and formatting, with [lint-staged](https://github.com/lint-staged/lint-staged) to ensure code quality on commits.
+
+- **Linting & Formatting**: `bun run lint` - Check code style and format
+- **Lint Staged Files**: `bun run lint-staged` - Run linting/formatting on staged files only
+
+The pre-commit hook automatically runs lint-staged to format and lint only the files you've staged for commit, ensuring consistent code quality without slowing down your workflow.
