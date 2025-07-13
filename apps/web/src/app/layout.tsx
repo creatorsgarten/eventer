@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { IBM_Plex_Sans_Thai, Inter } from "next/font/google";
 
 const inter = Inter({
 	subsets: ["latin"],
 	variable: "--font-inter",
 	display: "swap",
 });
-
-const geistSans = localFont({
-	src: "./fonts/GeistVF.woff",
-	variable: "--font-geist-sans",
-});
-const geistMono = localFont({
-	src: "./fonts/GeistMonoVF.woff",
-	variable: "--font-geist-mono",
+const ibmPlexSansThai = IBM_Plex_Sans_Thai({
+	subsets: ["latin", "thai"],
+	display: "swap",
+	variable: "--font-ibm-plex-sans-thai",
+	weight: ["300", "400", "500", "600", "700"],
+	style: ["normal"],
 });
 
 export const metadata: Metadata = {
@@ -30,9 +27,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
-				{children}
-			</body>
+			<body className={`${inter.variable} ${ibmPlexSansThai.variable}`}>{children}</body>
 		</html>
 	);
 }

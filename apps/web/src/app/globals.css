@@ -1,51 +1,90 @@
-:root {
-	--background: #ffffff;
-	--foreground: #171717;
-	font-family: var(--font-inter), sans-serif;
+@import "tailwindcss";
+
+@theme inline {
+	--font-main: var(--font-ibm-plex-sans-thai), var(--font-inter), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
+/* Custom animations for Eventer components */
+@keyframes fadeInScale {
+	from {
+		opacity: 0;
+		transform: scale(0.92);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
 	}
 }
 
-html,
-body {
-	max-width: 100vw;
-	overflow-x: hidden;
+@keyframes scroll {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
 }
 
-body {
-	color: var(--foreground);
-	background: var(--background);
+.animate-fadeInScale {
+	animation: fadeInScale 0.5s cubic-bezier(0.23, 1.01, 0.32, 1);
 }
 
-* {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
+.animate-scroll {
+	animation: scroll 24s linear infinite;
 }
 
-a {
-	color: inherit;
-	text-decoration: none;
+/* Custom utilities */
+.scale-120 {
+	transform: scale(1.2);
 }
 
-.imgDark {
-	display: none;
+.gap-75 {
+	gap: 18.75rem; /* 300px */
 }
 
-@media (prefers-color-scheme: dark) {
-	html {
-		color-scheme: dark;
+.mb-15 {
+	margin-bottom: 3.75rem; /* 60px */
+}
+
+.h-25 {
+	height: 6.25rem; /* 100px */
+}
+
+.gap-80 {
+	gap: 20rem; /* 320px */
+}
+
+/* Responsive overrides for custom utilities */
+@media (max-width: 768px) {
+	.gap-75 {
+		gap: 2rem; /* 32px on mobile */
 	}
 
-	.imgLight {
-		display: none;
+	.gap-80 {
+		gap: 2rem; /* 32px on mobile */
 	}
-	.imgDark {
-		display: unset;
+
+	.scale-120 {
+		transform: scale(1); /* No scale on mobile */
+	}
+
+	.h-25 {
+		height: 4rem; /* 64px on mobile */
+	}
+
+	.mb-15 {
+		margin-bottom: 2rem; /* 32px on mobile */
+	}
+}
+
+/* Responsive design for scroll animation */
+@media (max-width: 600px) {
+	.animate-scroll {
+		gap: 1.5rem;
+	}
+
+	.animate-scroll img {
+		max-width: 5rem;
+		height: 2.5rem;
 	}
 }
