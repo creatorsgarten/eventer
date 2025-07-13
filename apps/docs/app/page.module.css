@@ -66,10 +66,12 @@
   border-radius: 128px;
   height: 48px;
   padding: 0 20px;
-  border: none;
   font-family: var(--font-geist-sans);
   border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -95,10 +97,12 @@ button.secondary {
   border-radius: 128px;
   height: 48px;
   padding: 0 20px;
-  border: none;
   font-family: var(--font-geist-sans);
   border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -187,13 +191,14 @@ button.secondary {
   }
 }
 
-
 .page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   color: #111;
 }
 
@@ -231,7 +236,7 @@ button.secondary {
 }
 
 .primaryButton {
-  background-color: #7F56D9;
+  background-color: #7f56d9;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
@@ -245,8 +250,8 @@ button.secondary {
 }
 
 .secondaryButton {
-  border: 2px solid #F28B14;
-  color: #F28B14;
+  border: 2px solid #f28b14;
+  color: #f28b14;
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
   font-weight: 500;

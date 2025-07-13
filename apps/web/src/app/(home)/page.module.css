@@ -2,12 +2,12 @@
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-  --primary-color: #4F46E5;
-  --secondary-color: #E5E7EB;
-  --accent-color: #EC4899;
+  --primary-color: #4f46e5;
+  --secondary-color: #e5e7eb;
+  --accent-color: #ec4899;
 
-  --button-primary-hover: #6366F1;
-  --button-secondary-hover: #F3F4F6;
+  --button-primary-hover: #6366f1;
+  --button-secondary-hover: #f3f4f6;
 
   display: grid;
   grid-template-rows: 20px 1fr 20px;
@@ -24,12 +24,12 @@
     --gray-rgb: 255, 255, 255;
     --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
     --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
-    --primary-color: #6366F1;
+    --primary-color: #6366f1;
     --secondary-color: #374151;
-    --accent-color: #F472B6;
+    --accent-color: #f472b6;
 
-    --button-primary-hover: #818CF8;
-    --button-secondary-hover: #1F2937;
+    --button-primary-hover: #818cf8;
+    --button-secondary-hover: #1f2937;
   }
 }
 
@@ -43,7 +43,6 @@
 
 .main ol {
   font-family: var(--font-geist-mono);
-  padding-left: 0;
   margin: 0;
   font-size: 14px;
   line-height: 24px;
@@ -78,10 +77,12 @@
   border-radius: 128px;
   height: 48px;
   padding: 0 20px;
-  border: none;
   font-family: var(--font-geist-sans);
   border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -113,10 +114,12 @@ button.secondary {
   border-radius: 128px;
   height: 48px;
   padding: 0 20px;
-  border: none;
   font-family: var(--font-geist-sans);
   border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
