@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, status } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import {
 	CreateUserSchema,
@@ -32,10 +32,10 @@ export const userRouter = new Elysia({ prefix: "/user" })
 	)
 	.get(
 		"/:id",
-		async ({ params, error }) => {
+		async ({ params }) => {
 			const user = await getUserById(userRepository, params.id);
 			if (!user) {
-				return error(404, { error: "User not found" });
+				return status(404, { error: "User not found" });
 			}
 			return user;
 		},
@@ -65,10 +65,10 @@ export const userRouter = new Elysia({ prefix: "/user" })
 	)
 	.get(
 		"/email/:email",
-		async ({ params, error }) => {
+		async ({ params }) => {
 			const user = await getUserByEmail(userRepository, params.email);
 			if (!user) {
-				return error(404, { error: "User not found" });
+				return status(404, { error: "User not found" });
 			}
 			return user;
 		},
@@ -78,10 +78,10 @@ export const userRouter = new Elysia({ prefix: "/user" })
 	)
 	.get(
 		"/username/:username",
-		async ({ params, error }) => {
+		async ({ params }) => {
 			const user = await getUserByUsername(userRepository, params.username);
 			if (!user) {
-				return error(404, { error: "User not found" });
+				return status(404, { error: "User not found" });
 			}
 			return user;
 		},

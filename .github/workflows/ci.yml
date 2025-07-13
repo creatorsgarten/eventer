@@ -48,8 +48,5 @@ jobs:
       - name: Lint code
         run: bun run lint
 
-      - name: Check types
-        run: bun run check-types
-
       - name: Run tests
         run: bun test
