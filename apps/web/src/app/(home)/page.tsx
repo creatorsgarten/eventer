@@ -5,6 +5,7 @@ import Image, { type ImageProps } from "next/image";
 import Link from "next/link";
 import { Button } from "@eventer/ui/button";
 import styles from "./page.module.css";
+
 import { FaTwitter, FaFacebookF, FaInstagram } from "react-icons/fa";
 // Types and Interfaces
 interface ThemeImageProps extends Omit<ImageProps, "src"> {
