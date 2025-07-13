@@ -8,7 +8,6 @@
 		"lint-staged": "lint-staged",
 		"test": "turbo run test",
 		"format": "biome format . --write",
-		"check-types": "turbo run check-types",
 		"e2e": "playwright test",
 		"e2e:report": "playwright show-report",
 		"prepare": "husky"
@@ -39,7 +38,8 @@
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx}": [
 			"biome check --write --no-errors-on-unmatched",
-			"biome format --write --no-errors-on-unmatched"
+			"biome format --write --no-errors-on-unmatched",
+			"biome lint --write --no-errors-on-unmatched"
 		],
 		"*.{json,md,yml,yaml}": [
 			"biome format --write --no-errors-on-unmatched"
