@@ -5,7 +5,7 @@ import {
 	AgendaSchema,
 	CreateAgendaSchema,
 	PaginationQuerySchema,
-} from "#backend/shared/schemas";
+} from "../../shared/schemas";
 import { AgendaRepository } from "./agenda.repository";
 import { createAgenda, listAgenda } from "./services/crud-agenda.service";
 

@@ -7,7 +7,7 @@ import {
 	AuthSuccessResponseSchema,
 	ErrorResponseSchema,
 	SuccessResponseSchema,
-} from "#backend/shared/schemas";
+} from "../../shared/schemas";
 
 const userRepository = new UserRepository(db);
 
