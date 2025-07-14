@@ -6,7 +6,7 @@ import {
 	UpdateUserSchema,
 	UserSchema,
 	UserWithErrorResponseSchema,
-} from "#backend/shared/schemas";
+} from "../../shared/schemas";
 import {
 	createUser,
 	deleteUser,

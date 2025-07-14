@@ -6,7 +6,7 @@ import {
 	EventListResponseSchema,
 	EventSchema,
 	PaginationQuerySchema,
-} from "#backend/shared/schemas";
+} from "../../shared/schemas";
 import { EventRepository } from "./event.repository";
 import { createEvent, listEvents } from "./services/crud-event.service";
 
