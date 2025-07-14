@@ -1,32 +1,48 @@
 {
-  "name": "eventer",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "biome check .",
-    "format": "biome format . --write",
-    "check-types": "turbo run check-types",
-    
-    "test": "turbo run test",
-    "e2e": "playwright test",
-    "e2e:report": "playwright show-report"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.5.0",
-    "@playwright/test": "^1.44.0",
-    "prettier": "^3.5.3",
-    "turbo": "^2.5.4",
-    "typescript": "5.8.2",
-    "vitest": "^1.5.0"
-  },
-  "packageManager": "pnpm@9.0.0",
-  "engines": {
-    "node": ">=18"
-  },
-  "pnpm": {
-    "overrides": {
-      "esbuild": "0.25.5"
-    }
-  }
+	"name": "eventer",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "biome check .",
+		"lint-staged": "lint-staged",
+		"test": "turbo run test",
+		"format": "biome format . --write",
+		"e2e": "playwright test",
+		"e2e:report": "playwright show-report",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.0.0",
+		"@playwright/test": "^1.44.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.1.2",
+		"prettier": "^3.5.3",
+		"turbo": "^2.5.4",
+		"typescript": "5.8.2",
+		"vitest": "^1.5.0"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"packageManager": "bun@1.2.8",
+	"engines": {
+		"node": ">=18"
+	},
+	"pnpm": {
+		"overrides": {
+			"esbuild": "0.25.6"
+		}
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"biome check --write --no-errors-on-unmatched",
+			"biome format --write --no-errors-on-unmatched",
+			"biome lint --write --no-errors-on-unmatched"
+		],
+		"*.{json,md,yml,yaml}": [
+			"biome format --write --no-errors-on-unmatched"
+		]
+	}
 }
