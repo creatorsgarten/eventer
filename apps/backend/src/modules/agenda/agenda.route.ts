@@ -13,7 +13,7 @@ const agendaRepository = new AgendaRepository(db);
 
 export const agendaRouter = new Elysia({ prefix: "/agenda" })
 	.get(
-		"/",
+		"/timer",
 		async ({ query }) => {
 			const agenda = await listAgenda(agendaRepository);
 			return {

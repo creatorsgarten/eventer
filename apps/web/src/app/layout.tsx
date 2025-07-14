@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { IBM_Plex_Sans_Thai, Inter } from "next/font/google";
+import ReactQueryProvider from "@/lib/react-query-provider";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -27,7 +28,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${inter.variable} ${ibmPlexSansThai.variable}`}>{children}</body>
+			<body className={`${inter.variable} ${ibmPlexSansThai.variable}`}>
+				<ReactQueryProvider>{children}</ReactQueryProvider>
+			</body>
 		</html>
 	);
 }
