@@ -3,7 +3,7 @@ import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 
 export const FooterSection = () => {
 	return (
-		<footer className="flex flex-col bg-purple-500 text-white px-6 py-12 w-full h-auto min-h-[500px] box-border w-full md:px-4">
+		<footer className="flex flex-col bg-purple-500 text-white px-6 py-12 w-full h-auto min-h-[500px] box-border md:px-4">
 			<div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto mt-12 w-full justify-between items-start md:mt-6">
 				<div className="w-full">
 					<h2 className="text-2xl font-bold mb-4">Eventer</h2>
@@ -80,7 +80,7 @@ export const FooterSection = () => {
 				</div>
 			</div>
 			<div className="border-t border-white/20 text-center pt-6 text-sm opacity-80 mt-8 w-full">
-				© 2024 Copyright, All Right Reserved, Eventer
+				© 2025 Copyright, All Right Reserved, Eventer
 			</div>
 		</footer>
 	);

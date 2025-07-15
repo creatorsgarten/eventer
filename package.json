@@ -44,5 +44,8 @@
 		"*.{json,md,yml,yaml}": [
 			"biome format --write --no-errors-on-unmatched"
 		]
+	},
+	"dependencies": {
+		"@supabase/supabase-js": "^2.51.0"
 	}
 }

@@ -59,31 +59,34 @@ export const HeroSection = () => {
 								ลดความยุ่งยากจากการใช้หลายเครื่องมือด้วย Eventer
 							</p>
 						</div>
-
-						<button
-							type="button"
-							className="transition-transform duration-100 outline-none self-start"
-							style={{ transition: "transform 0.1s" }}
-							onMouseDown={(e) => {
-								e.currentTarget.style.transform = "scale(0.95)";
-							}}
-							onMouseUp={(e) => {
-								e.currentTarget.style.transform = "scale(1)";
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.transform = "scale(1)";
-							}}
-							onFocus={(e) => {
-								e.currentTarget.style.transform = "scale(1.05)";
-							}}
-							onBlur={(e) => {
-								e.currentTarget.style.transform = "scale(1)";
-							}}
-						>
-							<span className="bg-white text-purple-400 px-12 py-3 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl">
-								ทดลองใช้เลย
-							</span>
-						</button>
+						<div className="flex gap-4 mt-6">
+							<button
+								type="button"
+								className="transition-transform duration-100 outline-none self-start"
+								style={{ transition: "transform 0.1s" }}
+								onMouseDown={(e) => {
+									e.currentTarget.style.transform = "scale(0.95)";
+								}}
+								onMouseUp={(e) => {
+									e.currentTarget.style.transform = "scale(1)";
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.transform = "scale(1)";
+								}}
+								onFocus={(e) => {
+									e.currentTarget.style.transform = "scale(1.05)";
+								}}
+								onBlur={(e) => {
+									e.currentTarget.style.transform = "scale(1)";
+								}}
+							>
+								<a href="/register">
+									<span className="bg-white text-purple-400 px-12 py-3 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl">
+										ทดลองใช้เลย
+									</span>
+								</a>
+							</button>
+						</div>
 					</div>
 
 					{/* Right Content - Hero Images */}
