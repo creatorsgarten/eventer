@@ -1,17 +1,21 @@
-import { z } from "zod";
+import { type Static, Type } from "@sinclair/typebox";
 
-export const queryAgendaDTO = z.object({
-	page: z.number().int().min(1, "Page number must be a positive integer").default(1),
-	limit: z
-		.number()
-		.int()
-		.min(1, "Limit must be a positive integer")
-		.max(100, "Limit cannot exceed 100")
-		.default(10),
-	sortBy: z.string().optional(), // e.g., "startTime"
-	sortOrder: z.enum(["asc", "desc"]).optional(),
-	eventId: z.string().uuid("Invalid event ID").optional(),
-	picUserId: z.string().uuid("Invalid PIC user ID").optional(),
+export const queryAgendaDTO = Type.Object({
+	page: Type.Integer({
+		minimum: 1,
+		description: "Page number must be a positive integer",
+		default: 1,
+	}),
+	limit: Type.Integer({
+		minimum: 1,
+		maximum: 100,
+		description: "Limit must be a positive integer and cannot exceed 100",
+		default: 10,
+	}),
+	sortBy: Type.Optional(Type.String({ description: "e.g., startTime" })),
+	sortOrder: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])),
+	eventId: Type.Optional(Type.String({ format: "uuid", description: "Invalid event ID" })),
+	picUserId: Type.Optional(Type.String({ format: "uuid", description: "Invalid PIC user ID" })),
 });
 
-export type QueryAgendaDTO = z.infer<typeof queryAgendaDTO>;
+export type QueryAgendaDTO = Static<typeof queryAgendaDTO>;

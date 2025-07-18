@@ -1,19 +1,17 @@
-import { z } from "zod";
+import { type Static, Type } from "@sinclair/typebox";
 
-export const createAgendaDTO = z
-	.object({
-		id: z.string().uuid("Invalid agenda ID format"),
-		eventId: z.string().uuid("Invalid event ID"),
-		start: z.date().transform((date) => date.toISOString()), // Can remove ISO
-		end: z.date().transform((date) => date.toISOString()), // Can remove ISO
-		personincharge: z.string().uuid("Invalid user ID format"),
-		duration: z.number().int().min(1, "Duration must be at least 1 minute"),
-		activity: z.string().min(1, "Activity is required"),
-		remarks: z.string().max(500, "Remark cannot exceed 500 characters").nullable(),
-	})
-	.refine((data) => data.start < data.end, {
-		message: "End time must be after start time",
-		path: ["endTime"],
-	});
+export const createAgendaDTO = Type.Object({
+	id: Type.String({ format: "uuid", description: "Invalid agenda ID format" }),
+	eventId: Type.String({ format: "uuid", description: "Invalid event ID" }),
+	start: Type.String({ format: "date-time", description: "Start time in ISO format" }),
+	end: Type.String({ format: "date-time", description: "End time in ISO format" }),
+	personincharge: Type.String({ format: "uuid", description: "Invalid user ID format" }),
+	duration: Type.Integer({ minimum: 1, description: "Duration must be at least 1 minute" }),
+	activity: Type.String({ minLength: 1, description: "Activity is required" }),
+	remarks: Type.Union([
+		Type.String({ maxLength: 500, description: "Remark cannot exceed 500 characters" }),
+		Type.Null(),
+	]),
+});
 
-export type CreateAgendaDTO = z.infer<typeof createAgendaDTO>;
+export type CreateAgendaDTO = Static<typeof createAgendaDTO>;

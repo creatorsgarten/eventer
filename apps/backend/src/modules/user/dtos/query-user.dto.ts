@@ -1,18 +1,22 @@
-import { z } from "zod";
+import { type Static, Type } from "@sinclair/typebox";
 
-export const queryUserDTO = z.object({
-	page: z.number().int().min(1, "Page number must be a positive integer").default(1),
-	limit: z
-		.number()
-		.int()
-		.min(1, "Limit must be a positive integer")
-		.max(100, "Limit cannot exceed 100")
-		.default(10),
-	name: z.string().optional(),
-	email: z.string().optional(),
-	avatar_url: z.string().url().optional(),
-	sortBy: z.string().optional(),
-	sortOrder: z.enum(["asc", "desc"]).optional(),
+export const queryUserDTO = Type.Object({
+	page: Type.Integer({
+		minimum: 1,
+		description: "Page number must be a positive integer",
+		default: 1,
+	}),
+	limit: Type.Integer({
+		minimum: 1,
+		maximum: 100,
+		description: "Limit must be a positive integer and cannot exceed 100",
+		default: 10,
+	}),
+	name: Type.Optional(Type.String()),
+	email: Type.Optional(Type.String()),
+	avatar_url: Type.Optional(Type.String({ format: "uri" })),
+	sortBy: Type.Optional(Type.String()),
+	sortOrder: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])),
 });
 
-export type QueryUserDTO = z.infer<typeof queryUserDTO>;
+export type QueryUserDTO = Static<typeof queryUserDTO>;
