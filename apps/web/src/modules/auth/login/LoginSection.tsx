@@ -38,7 +38,7 @@ export function LoginSection() {
 
 	if (isLoading) {
 		return (
-			<section className="min-h-full flex flex-col items-center justify-center">
+			<section className="min-h-screen flex flex-col items-center justify-center">
 				<Loading />
 			</section>
 		);
