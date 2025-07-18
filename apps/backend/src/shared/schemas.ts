@@ -3,7 +3,7 @@ import { t } from "elysia";
 // User schemas
 export const UserSchema = t.Object({
 	id: t.String(),
-	username: t.String(),
+	name: t.String(),
 	email: t.String({ format: "email" }),
 	createdAt: t.Date(),
 	updatedAt: t.Date(),
@@ -11,13 +11,13 @@ export const UserSchema = t.Object({
 
 export const CreateUserSchema = t.Object({
 	id: t.Optional(t.String()),
-	username: t.String(),
+	name: t.String(),
 	email: t.String({ format: "email" }),
 });
 
 export const UpdateUserSchema = t.Object({
-	username: t.Optional(t.String()),
-	email: t.Optional(t.String({ format: "email" })),
+	name: t.String(),
+	email: t.String({ format: "email" }),
 });
 
 // Event schemas
@@ -65,7 +65,7 @@ export const CreateAgendaSchema = t.Object({
 export const AuthUserSchema = t.Object({
 	id: t.String(),
 	email: t.String({ format: "email" }),
-	username: t.String(),
+	name: t.String(),
 	avatar_url: t.Optional(t.String({ format: "uri" })),
 });
 

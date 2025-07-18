@@ -41,7 +41,7 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 				await userRepository.create({
 					id: user.id,
 					email: user.email,
-					username: user.user_metadata.full_name || user.email,
+					name: user.user_metadata.full_name || user.email,
 				});
 			}
 
@@ -59,7 +59,7 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 				user: {
 					id: user.id,
 					email: user.email,
-					username: user.user_metadata.full_name || user.email,
+					name: user.user_metadata.full_name,
 					avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture,
 				},
 			};

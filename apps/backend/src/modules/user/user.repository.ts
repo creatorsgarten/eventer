@@ -63,22 +63,6 @@ class UserRepository {
 		}
 	}
 
-	async findByUsername(username: string): Promise<UserType | null> {
-		try {
-			const user = await this.db.query.users.findFirst({
-				where: (users, { eq }) => eq(users.username, username),
-			});
-
-			return user || null;
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error("Error finding user by username:", error.message);
-				throw error;
-			}
-			throw new Error("Failed to find user by username");
-		}
-	}
-
 	async update(id: string, user: UpdateUserDTO): Promise<UserType> {
 		try {
 			const updated = await this.db

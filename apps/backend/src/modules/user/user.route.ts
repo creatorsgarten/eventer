@@ -12,7 +12,6 @@ import {
 	deleteUser,
 	getUserByEmail,
 	getUserById,
-	getUserByUsername,
 	updateUser,
 } from "./services/crud-user.service";
 import { UserRepository } from "./user.repository";
@@ -67,19 +66,6 @@ export const userRouter = new Elysia({ prefix: "/user" })
 		"/email/:email",
 		async ({ params }) => {
 			const user = await getUserByEmail(userRepository, params.email);
-			if (!user) {
-				return status(404, { error: "User not found" });
-			}
-			return user;
-		},
-		{
-			response: UserWithErrorResponseSchema,
-		}
-	)
-	.get(
-		"/username/:username",
-		async ({ params }) => {
-			const user = await getUserByUsername(userRepository, params.username);
 			if (!user) {
 				return status(404, { error: "User not found" });
 			}
