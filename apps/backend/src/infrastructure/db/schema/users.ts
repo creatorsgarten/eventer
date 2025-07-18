@@ -6,4 +6,5 @@ export const users = table("users", {
 	email: text("email").notNull().unique(),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
+	avatarUrl: text("avatar_url").notNull().default(""),
 });

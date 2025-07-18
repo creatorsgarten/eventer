@@ -18,6 +18,7 @@ class UserRepository {
 
 			return {
 				...user,
+				avatarUrl: user.avatar_url || "",
 				id,
 				createdAt: new Date(),
 				updatedAt: new Date(),
