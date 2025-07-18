@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { Search, Plus, Calendar, Filter, X, GripVertical } from "lucide-react";
-import { useCreateAgenda } from "@/hooks/use-create-agenda";
+// import { useState, useEffect, useMemo, useCallback } from "react";
+// import { Search, Plus, Calendar, Filter, X, GripVertical } from "lucide-react";
+// import { useCreateAgenda } from "@/hooks/use-create-agenda";
 // import {
 //   Dialog,
 //   DialogContent,
@@ -26,161 +26,162 @@ import { useCreateAgenda } from "@/hooks/use-create-agenda";
 // //TODO : Import components and connect to hooks
 // //TODO : Refactor variable
 
-type AgendaSectionProps = {
-  eventData: {
-    id: string;
-    name: string;
-    startDate: string;
-    endDate: string;
-  };
-};
+// type AgendaSectionProps = {
+//   eventData: {
+//     id: string;
+//     name: string;
+//     startDate: string;
+//     endDate: string;
+//   };
+// };
 
-type AgendaSlot = {
-  id: string;
-  eventId: string;
-  slot: number;
-  order: number;
-  start: string;
-  end: string;
-  title: string;
-  place: string;
-  responsiblePeople: string;
-  day: number;
-  createdAt: string;
-  updatedAt: string;
-};
+// type AgendaSlot = {
+//   id: string;
+//   eventId: string;
+//   slot: number;
+//   order: number;
+//   start: string;
+//   end: string;
+//   title: string;
+//   place: string;
+//   responsiblePeople: string;
+//   day: number;
+//   createdAt: string;
+//   updatedAt: string;
+// };
 
-export function AgendaSection({ eventData }: AgendaSectionProps) {
-  const [agendaSlots, setAgendaSlots] = useState<AgendaSlot[]>([]);
-  const [editingSlot, setEditingSlot] = useState<AgendaSlot | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
+// export function AgendaSection({ eventData }: AgendaSectionProps) {
+//   const [agendaSlots, setAgendaSlots] = useState<AgendaSlot[]>([]);
+//   const [editingSlot, setEditingSlot] = useState<AgendaSlot | null>(null);
+//   const [isDialogOpen, setIsDialogOpen] = useState(false);
+//   const [currentTime, setCurrentTime] = useState(new Date());
 
-  const { createAgenda, isCreating } = useCreateAgenda();
+//   const { createAgenda, isCreating } = useCreateAgenda();
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
+//   useEffect(() => {
+//     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+//     return () => clearInterval(timer);
+//   }, []);
 
-  //   const eventDays = useMemo(() => {
-  //     const start = new Date(eventData.startDate);
-  //     const end = new Date(eventData.endDate);
-  //     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-  //   }, [eventData.startDate, eventData.endDate]);
+//   //   const eventDays = useMemo(() => {
+//   //     const start = new Date(eventData.startDate);
+//   //     const end = new Date(eventData.endDate);
+//   //     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+//   //   }, [eventData.startDate, eventData.endDate]);
 
-  const handleAddSlot = useCallback(() => {
-    const now = new Date().toISOString();
-    const newSlot: AgendaSlot = {
-      id: crypto.randomUUID(),
-      eventId: eventData.id,
-      slot: agendaSlots.length + 1,
-      order: agendaSlots.length + 1,
-      start: "",
-      end: "",
-      title: "",
-      place: "",
-      responsiblePeople: "",
-      day: 1,
-      createdAt: now,
-      updatedAt: now,
-    };
-    setEditingSlot(newSlot);
-    setIsDialogOpen(true);
-  }, [agendaSlots.length, eventData.id]);
+//   const handleAddSlot = useCallback(() => {
+//     const now = new Date().toISOString();
+//     const newSlot: AgendaSlot = {
+//       id: crypto.randomUUID(),
+//       eventId: eventData.id,
+//       slot: agendaSlots.length + 1,
+//       order: agendaSlots.length + 1,
+//       start: "",
+//       end: "",
+//       title: "",
+//       place: "",
+//       responsiblePeople: "",
+//       day: 1,
+//       createdAt: now,
+//       updatedAt: now,
+//     };
+//     setEditingSlot(newSlot);
+//     setIsDialogOpen(true);
+//   }, [agendaSlots.length, eventData.id]);
 
-  const handleSaveSlot = useCallback(() => {
-    if (!editingSlot) return;
+//   const handleSaveSlot = useCallback(() => {
+//     if (!editingSlot) return;
 
-    createAgenda(editingSlot, {
-      onSuccess: () => {
-        setAgendaSlots((prev) => [...prev, editingSlot]);
-        setIsDialogOpen(false);
-        setEditingSlot(null);
-      },
-      onError: (err) => {
-        console.error("Failed to create agenda slot", err);
-      },
-    });
-  }, [createAgenda, editingSlot]);
+//     createAgenda(editingSlot, {
+//       onSuccess: () => {
+//         setAgendaSlots((prev) => [...prev, editingSlot]);
+//         setIsDialogOpen(false);
+//         setEditingSlot(null);
+//       },
+//       onError: (err) => {
+//         console.error("Failed to create agenda slot", err);
+//       },
+//     });
+//   }, [createAgenda, editingSlot]);
 
-  return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h1 className="text-xl font-bold">{eventData.name}</h1>
-          <p className="text-sm text-gray-500">
-            Current Time: {currentTime.toLocaleTimeString()}
-          </p>
-        </div>
-        <button onClick={handleAddSlot}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Slot
-        </button>
-      </div>
+//   return (
+//     <div className="p-8">
+//       <div className="flex justify-between items-center mb-4">
+//         <div>
+//           <h1 className="text-xl font-bold">{eventData.name}</h1>
+//           <p className="text-sm text-gray-500">
+//             Current Time: {currentTime.toLocaleTimeString()}
+//           </p>
+//         </div>
+//         <button onClick={handleAddSlot}>
+//           <Plus className="mr-2 h-4 w-4" />
+//           Add Slot
+//         </button>
+//       </div>
 
-      {/* Simple list for MVP */}
-      <ul className="space-y-2">
-        {agendaSlots.map((slot) => (
-          <li key={slot.id} className="p-4 bg-white shadow rounded">
-            <div className="font-semibold">{slot.title || "Untitled Slot"}</div>
-            <div className="text-sm text-gray-500">
-              {slot.start} - {slot.end}
-            </div>
-          </li>
-        ))}
-      </ul>
+//       {/* Simple list for MVP */}
+//       <ul className="space-y-2">
+//         {agendaSlots.map((slot) => (
+//           <li key={slot.id} className="p-4 bg-white shadow rounded">
+//             <div className="font-semibold">{slot.title || "Untitled Slot"}</div>
+//             <div className="text-sm text-gray-500">
+//               {slot.start} - {slot.end}
+//             </div>
+//           </li>
+//         ))}
+//       </ul>
 
-      {/* Dialog for creating agenda */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Agenda Slot</DialogTitle>
-          </DialogHeader>
+//       {/* Dialog for creating agenda */}
+//       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+//         <DialogContent>
+//           <DialogHeader>
+//             <DialogTitle>Add Agenda Slot</DialogTitle>
+//           </DialogHeader>
 
-          <div className="space-y-2">
-            <Label>Title</Label>
-            <Input
-              value={editingSlot?.title || ""}
-              onChange={(e) =>
-                setEditingSlot((prev) =>
-                  prev ? { ...prev, title: e.target.value } : null
-                )
-              }
-            />
-            <Label>Start Time</Label>
-            <Input
-              value={editingSlot?.start || ""}
-              onChange={(e) =>
-                setEditingSlot((prev) =>
-                  prev ? { ...prev, start: e.target.value } : null
-                )
-              }
-            />
-            <label>End Time</label>
-            <Input
-              value={editingSlot?.end || ""}
-              onChange={(e) =>
-                setEditingSlot((prev) =>
-                  prev ? { ...prev, end: e.target.value } : null
-                )
-              }
-            />
+//           <div className="space-y-2">
+//             <Label>Title</Label>
+//             <Input
+//               value={editingSlot?.title || ""}
+//               onChange={(e) =>
+//                 setEditingSlot((prev) =>
+//                   prev ? { ...prev, title: e.target.value } : null
+//                 )
+//               }
+//             />
+//             <Label>Start Time</Label>
+//             <Input
+//               value={editingSlot?.start || ""}
+//               onChange={(e) =>
+//                 setEditingSlot((prev) =>
+//                   prev ? { ...prev, start: e.target.value } : null
+//                 )
+//               }
+//             />
+//             <label>End Time</label>
+//             <Input
+//               value={editingSlot?.end || ""}
+//               onChange={(e) =>
+//                 setEditingSlot((prev) =>
+//                   prev ? { ...prev, end: e.target.value } : null
+//                 )
+//               }
+//             />
 
-            <button
-              className="w-full bg-purple-600 text-white mt-4"
-              onClick={handleSaveSlot}
-              disabled={isCreating}
-            >
-              {isCreating ? "Saving..." : "Save"}
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
+//             <button
+//               className="w-full bg-purple-600 text-white mt-4"
+//               onClick={handleSaveSlot}
+//               disabled={isCreating}
+//             >
+//               {isCreating ? "Saving..." : "Save"}
+//             </button>
+//           </div>
+//         </DialogContent>
+//       </Dialog>
+//     </div>
+//   );
+// }
 
+// TODO : Other section
 // export default function AgendaSection({ eventData }: AgendaSectionProps) {
 //   const [currentTime, setCurrentTime] = useState(() => new Date());
 //   const [agendaSlots, setAgendaSlots] = useState<AgendaSlot[]>([]);
