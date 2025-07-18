@@ -7,7 +7,6 @@ export const TestimonialSection = () => {
 		"/cuslogo/cuee.png",
 		"/cuslogo/ioic_black.png",
 		"/cuslogo/thinc.png",
-		"/cuslogo/esc.png",
 	];
 
 	// Duplicate logos for seamless infinite scroll effect
