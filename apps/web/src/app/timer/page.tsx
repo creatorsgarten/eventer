@@ -3,6 +3,12 @@
 import { Clock, Flame, QrCode, Timer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTimer } from "@/hooks/use-timer";
+import {
+	calculateProgress,
+	formatTime,
+	parseTime,
+	toDisplayTime,
+} from "../../../../backend/src/shared/utils/time";
 // import Button from "@/components/ui/button";
 
 export default function TimerPage() {
@@ -34,38 +40,32 @@ export default function TimerPage() {
 			</div>
 		);
 	}
+
 	//TODO: change time format to seconds
+	const nowSec =
+		currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentTime.getSeconds();
 
-	const formatTime = (date: Date) =>
-		`${date.getHours().toString().padStart(2, "0")}.${date.getMinutes().toString().padStart(2, "0")}`;
-	const parseTime = (iso: string) => {
-		const date = new Date(iso);
-		return date.getHours() * 60 + date.getMinutes();
-	};
+	const currentIndex =
+		data?.findIndex((t) => {
+			const start = parseTime(t.start);
+			const end = parseTime(t.end);
+			return nowSec >= start && nowSec < end;
+		}) ?? -1;
 
-	const toDisplayTime = (mins: number) =>
-		`${String(Math.floor(mins / 60)).padStart(2, "0")}.${String(mins % 60).padStart(2, "0")}`;
+	const current = data?.[currentIndex];
+	const next = data?.[currentIndex + 1];
 
-	const currentIndex = data?.findIndex((t) => {
-		const now = currentTime.getHours() * 60 + currentTime.getMinutes();
-		return now >= parseTime(t.start) && now < parseTime(t.end);
-	});
-
-	const current = data[currentIndex];
-	const next = data[currentIndex + 1];
-	const progress = (() => {
-		if (!current) return { percent: 0, start: "--.--", end: "--.--" };
-		const startMin = parseTime(current.start);
-		const endMin = parseTime(current.end);
-		const nowMin = currentTime.getHours() * 60 + currentTime.getMinutes();
-		const duration = endMin - startMin;
-		const passed = nowMin - startMin;
-		return {
-			percent: Math.min(100, Math.max(0, (passed / duration) * 100)),
-			start: toDisplayTime(startMin),
-			end: toDisplayTime(endMin),
-		};
-	})();
+	const progress = current
+		? {
+				percent: calculateProgress(parseTime(current.start), parseTime(current.end), nowSec),
+				start: toDisplayTime(parseTime(current.start)),
+				end: toDisplayTime(parseTime(current.end)),
+			}
+		: {
+				percent: 0,
+				start: "--:--",
+				end: "--:--",
+			};
 
 	return (
 		<div className="min-h-screen bg-white">
@@ -108,6 +108,7 @@ export default function TimerPage() {
 									}}
 								></div>
 							</div>
+							{/* Progress Bar*/}
 							<div className="text-xs text-gray-500 mt-2 text-center font-medium">
 								{Math.round(progress.percent)}% complete
 							</div>
@@ -133,36 +134,39 @@ export default function TimerPage() {
 						<h3 className="font-bold text-white text-lg">Agenda</h3>
 					</div>
 					<div className="divide-y divide-gray-100">
-						{data?.map((t, i) => (
-							<div
-								key={t.id}
-								className={`p-5 ${i === currentIndex ? "border-l-4 bg-purple-100" : ""}`}
-								style={{
-									borderLeftColor: i === currentIndex ? "#7F56D9" : "transparent",
-								}}
-							>
-								<div className="flex justify-between items-center">
-									<div className="flex-1">
-										<div className="font-semibold text-gray-900 text-base mb-1 flex items-center gap-2">
-											{t.activity}
-											{i === currentIndex && <Flame className="w-4 h-4 text-orange-500" />}
+						{data
+							?.slice() // create a shallow copy to avoid mutating original
+							.sort((a, b) => Number(a.id) - Number(b.id))
+							.map((t, i) => (
+								<div
+									key={t.id}
+									className={`p-5 ${i === currentIndex ? "border-l-4 bg-purple-100" : ""}`}
+									style={{
+										borderLeftColor: i === currentIndex ? "#7F56D9" : "transparent",
+									}}
+								>
+									<div className="flex justify-between items-center">
+										<div className="flex-1">
+											<div className="font-semibold text-gray-900 text-base mb-1 flex items-center gap-2">
+												{t.activity}
+												{i === currentIndex && <Flame className="w-4 h-4 text-orange-500" />}
+											</div>
+											<div className="text-sm text-gray-600">{t.remarks || t.activity}</div>
 										</div>
-										<div className="text-sm text-gray-600">{t.remarks || t.activity}</div>
-									</div>
-									<div className="ml-4">
-										<div
-											className="text-sm font-semibold px-3 py-2 rounded-lg"
-											style={{
-												backgroundColor: i === currentIndex ? "#7F56D9" : "transparent",
-												color: i === currentIndex ? "white" : "#7F56D9",
-											}}
-										>
-											{toDisplayTime(parseTime(t.start))} - {toDisplayTime(parseTime(t.end))}
+										<div className="ml-4">
+											<div
+												className="text-sm font-semibold px-3 py-2 rounded-lg"
+												style={{
+													backgroundColor: i === currentIndex ? "#7F56D9" : "transparent",
+													color: i === currentIndex ? "white" : "#7F56D9",
+												}}
+											>
+												{toDisplayTime(parseTime(t.start))} - {toDisplayTime(parseTime(t.end))}
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						))}
+							))}
 					</div>
 				</div>
 
