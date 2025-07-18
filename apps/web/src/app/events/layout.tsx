@@ -2,9 +2,9 @@
 
 // Auth Guard for Dashboard Page
 
-import { Button } from "@eventer/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/atoms/button";
 import { client } from "@/lib/client";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

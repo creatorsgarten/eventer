@@ -76,6 +76,7 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 					id: user.id,
 					email: user.email,
 					name: user.user_metadata.full_name || user.email,
+					avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture,
 				});
 			}
 

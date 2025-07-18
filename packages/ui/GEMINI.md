@@ -143,7 +143,7 @@ This export pattern allows importing components directly:
 
 ```typescript
 // In consuming applications
-import { Button } from "@eventer/ui/button";
+import { Button } from "@/components/atoms/button";
 import { Card } from "@eventer/ui/card";
 import { Code } from "@eventer/ui/code";
 ```
@@ -248,7 +248,7 @@ Components are automatically available in monorepo apps through workspace resolu
 
 ```typescript
 // apps/web/src/app/page.tsx
-import { Button } from "@eventer/ui/button";
+import { Button } from "@/components/atoms/button";
 import { Card } from "@eventer/ui/card";
 
 export default function HomePage() {

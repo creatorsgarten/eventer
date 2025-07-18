@@ -13,7 +13,7 @@
 }
 
 // Consumption pattern in applications
-import { Button } from "@eventer/ui/button";  // Direct import, optimal bundling
+import { Button } from "@/components/atoms/button";  // Direct import, optimal bundling
 import { Card } from "@eventer/ui/card";      // Tree-shakeable
 import { Code } from "@eventer/ui/code";      // Zero unused code
 ```
@@ -245,7 +245,7 @@ export * from "./card";
 export * from "./code";
 
 // ✅ Direct imports (optimal tree-shaking)
-import { Button } from "@eventer/ui/button";
+import { Button } from "@/components/atoms/button";
 ```
 
 ### Client-Side Hydration

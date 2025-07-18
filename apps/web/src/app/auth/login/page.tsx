@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@eventer/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/atoms/button";
 import { authHeaders } from "@/config/header";
 import { SIGN_IN_LINK } from "@/config/link";
 import { client } from "@/lib/client";
