@@ -4,12 +4,12 @@ import type React from "react";
 
 import { useState, useEffect } from "react";
 import { Search, MoreHorizontal, Clock } from "lucide-react";
-// import { Button } from "@/components/atoms/button";
-// import { Input } from "@/componinput";
+import { Button } from "@eventer/ui/button";
+// import { Input } from "@eventer/ui";
 import { useParams } from "next/navigation";
 
 // Import all section components
-import OverviewSection from "../../components/event/OverviewSection";
+import OverviewSection from "../../modules/event/OverviewSection";
 // import AgendaSection from "./components/agenda-section";
 // import GanttSection from "./components/gantt-section";
 // import TeamsSection from "./components/teams-section";
@@ -161,7 +161,7 @@ export default function EventManagementSPA() {
             </div>
             <div className="ml-4 space-y-1">
               {navigationItems.map((item) => (
-                <button
+                <Button
                   key={item.id}
                   onClick={() => handleSectionChange(item.id)}
                   className={`w-full text-left text-sm px-3 py-1 rounded cursor-pointer transition-colors ${
@@ -178,7 +178,7 @@ export default function EventManagementSPA() {
                       </span>
                     )}
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
             <div className="text-sm text-gray-600 px-3 py-2 hover:bg-gray-50 rounded cursor-pointer">
@@ -211,15 +211,15 @@ export default function EventManagementSPA() {
               Your team has used 80% of your available space. Need more?
             </div>
             <div className="flex gap-2">
-              <button type="button" className="text-xs h-6 px-2">
+              <Button type="button" className="text-xs h-6 px-2">
                 Dismiss
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className="text-xs h-6 px-2 bg-purple-600 hover:bg-purple-700"
               >
                 Upgrade plan
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -229,9 +229,9 @@ export default function EventManagementSPA() {
               <div className="text-sm font-medium">Olivia Rhye</div>
               <div className="text-xs text-gray-500">olivia@untitledui.com</div>
             </div>
-            <button type="button" className="w-6 h-6 p-0">
+            <Button type="button" className="w-6 h-6 p-0">
               <MoreHorizontal className="w-4 h-4" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -243,12 +243,12 @@ export default function EventManagementSPA() {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                <button
+                <Button
                   onClick={() => (window.location.href = "/")}
                   className="hover:text-purple-600 transition-colors"
                 >
                   หน้าหลัก
-                </button>
+                </Button>
                 <span>/</span>
                 <span>{currentSection?.label || "Overview"}</span>
               </div>
@@ -261,19 +261,19 @@ export default function EventManagementSPA() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button
+              <Button
                 type="button"
                 className="text-gray-700 border-gray-300 bg-transparent"
               >
                 Save
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl px-8 py-2 text-sm font-medium transition-colors duration-200"
               >
                 <div className="w-4 h-4 mr-2 bg-white rounded-full"></div>
                 {eventData.isPublic ? "Public" : "Private"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

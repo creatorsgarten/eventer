@@ -10,7 +10,7 @@
 //   DialogHeader,
 //   DialogTitle,
 //   DialogTrigger,
-// } from "../../../../packages/ui/src/components"
+// } from "@/components/ui/dialog"
 
 // import { Search, Plus, Calendar, Filter, X, GripVertical } from "lucide-react";
 // import {
