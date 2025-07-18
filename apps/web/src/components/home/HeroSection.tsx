@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const HeroSection = () => {
@@ -24,7 +25,7 @@ export const HeroSection = () => {
 	}, []);
 
 	return (
-		<div className="relative overflow-hidden bg-gradient-to-r w-full from-purple-600 via-purple-400 to-purple-600">
+		<div className="relative overflow-hidden bg-gradient-to-r w-full bg-purple-600 from-purple-600 via-purple-400 to-purple-600">
 			{/* Background Pattern */}
 			<div className="xl:max-w-6xl mx-auto px-6 py-12 relative z-10 md:px-4 md:py-8">
 				{/* Header */}
@@ -80,11 +81,11 @@ export const HeroSection = () => {
 									e.currentTarget.style.transform = "scale(1)";
 								}}
 							>
-								<a href="/register">
+								<Link href="/auth/login">
 									<span className="bg-white text-purple-400 px-12 py-3 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl">
 										ทดลองใช้เลย
 									</span>
-								</a>
+								</Link>
 							</button>
 						</div>
 					</div>

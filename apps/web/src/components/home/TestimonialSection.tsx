@@ -8,9 +8,6 @@ export const TestimonialSection = () => {
 		"/cuslogo/ioic_black.png",
 		"/cuslogo/thinc.png",
 		"/cuslogo/esc.png",
-		"/cuslogo/techsauce.png",
-		"/cuslogo/eventpop.png",
-		"/cuslogo/rabbitstart.png",
 	];
 
 	// Duplicate logos for seamless infinite scroll effect
@@ -19,7 +16,7 @@ export const TestimonialSection = () => {
 	return (
 		<section className="w-full py-14 mx-auto mb-8 overflow-hidden">
 			<h2 className="text-4xl font-bold text-gray-900 text-center mb-10 tracking-tight">
-				ลูกค้าของเรา*
+				พันธมิตรของเรา
 			</h2>
 			<div className="w-screen overflow-hidden relative -ml-[50vw] -mr-[50vw] left-1/2 right-1/2">
 				<div className="flex items-center gap-12 animate-scroll will-change-transform">
@@ -40,7 +37,6 @@ export const TestimonialSection = () => {
 					))}
 				</div>
 			</div>
-			<p className="text-center mt-4 text-gray-600">*หมายเหตุ: ลูกค้าในอนาคต (fraud จัด)</p>
 		</section>
 	);
 };

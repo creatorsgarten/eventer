@@ -2,7 +2,7 @@
 
 import {
 	DemoSection,
-	EmailSection,
+	// EmailSection,
 	FeatureSection,
 	FooterSection,
 	HeroSection,
@@ -18,7 +18,7 @@ export default function Home() {
 			<ShowcaseSection />
 			<DemoSection />
 			<TestimonialSection />
-			<EmailSection />
+			{/* <EmailSection /> */}
 			<FooterSection />
 		</div>
 	);
