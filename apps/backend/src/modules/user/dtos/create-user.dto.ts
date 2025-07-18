@@ -1,10 +1,14 @@
-import { z } from "zod";
+import { type Static, Type } from "@sinclair/typebox";
 
-export const createUserDTO = z.object({
-	id: z.string().optional(),
-	name: z.string().min(1, "name is required").max(50, "name cannot exceed 50 characters"),
-	email: z.string().email("Invalid email format"),
-	avatar_url: z.string().url("Invalid URL format").optional(),
+export const createUserDTO = Type.Object({
+	id: Type.Optional(Type.String()),
+	name: Type.String({
+		minLength: 1,
+		maxLength: 50,
+		description: "name is required and cannot exceed 50 characters",
+	}),
+	email: Type.String({ format: "email", description: "Invalid email format" }),
+	avatar_url: Type.Optional(Type.String({ format: "uri", description: "Invalid URL format" })),
 });
 
-export type CreateUserDTO = z.infer<typeof createUserDTO>;
+export type CreateUserDTO = Static<typeof createUserDTO>;
