@@ -9,6 +9,7 @@ export function useSession() {
 		data: user,
 		isLoading,
 		error,
+		refetch,
 	} = useQuery({
 		queryKey: ["session"],
 		queryFn: async () => {
@@ -26,5 +27,5 @@ export function useSession() {
 		},
 	});
 
-	return { user, isLoading, error };
+	return { user, isLoading, error, refetch };
 }
