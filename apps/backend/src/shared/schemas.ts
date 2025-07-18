@@ -7,6 +7,7 @@ export const UserSchema = t.Object({
 	email: t.String({ format: "email" }),
 	createdAt: t.Date(),
 	updatedAt: t.Date(),
+	avatarUrl: t.Optional(t.String({ format: "uri" })),
 });
 
 export const CreateUserSchema = t.Object({
@@ -124,4 +125,8 @@ export const UserWithErrorResponseSchema = {
 
 export const NotFoundResponseSchema = t.Object({
 	error: t.Literal("Not found"),
+});
+
+export const AuthResponseSchema = t.Object({
+	user: t.Union([AuthUserSchema, t.Null()]),
 });
