@@ -5,8 +5,8 @@
 	"type": "module",
 	"exports": {
 		".": "./src/index.ts",
-		"./*": "./src/*.tsx",
-		"./globals.css": "./src/globals.css"
+		"./globals.css": "./src/globals.css",
+		"./button": "./src/components/atoms/button/index.ts"
 	},
 	"scripts": {
 		"dev": "vite",

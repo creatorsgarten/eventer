@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@eventer/ui";
+import { Button } from "@eventer/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -90,7 +90,7 @@ export default function TestPage() {
 						Click the button below to test Google authentication
 					</p>
 				</div>
-				<div>
+				<div className="flex justify-center">
 					<Button type="button" onClick={handleGoogleSignIn}>
 						Sign in with Google
 					</Button>
