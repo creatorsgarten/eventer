@@ -1,9 +1,11 @@
 "use client";
 
+import { Button } from "@eventer/ui";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { env } from "@/env";
+import { authHeaders } from "@/config/header";
+import { client } from "@/lib/client";
 
 export default function AuthCallback() {
 	const router = useRouter();
@@ -12,7 +14,7 @@ export default function AuthCallback() {
 	const [userInfo, setUserInfo] = useState<{
 		id: string;
 		email: string;
-		username: string;
+		name: string;
 		avatar_url?: string;
 	} | null>(null);
 
@@ -40,22 +42,21 @@ export default function AuthCallback() {
 					return;
 				}
 
-				// Send tokens to backend
-				const response = await fetch(`${env.NEXT_PUBLIC_BACKEND_URL}/api/auth/callback`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
+				const response = await client.api.auth.callback.post(
+					{
 						access_token: accessToken,
 						refresh_token: refreshToken,
-					}),
-					credentials: "include", // Important for cookies
-				});
+					},
+					{
+						headers: {
+							...authHeaders,
+						},
+					}
+				);
 
-				const result = await response.json();
+				const result = response.data;
 
-				if (response.ok && result.success) {
+				if (response.status === 200 && result?.user) {
 					setStatus("success");
 					setMessage("Authentication successful!");
 					setUserInfo(result.user);
@@ -68,11 +69,11 @@ export default function AuthCallback() {
 
 					// Redirect to your desired page after a delay
 					setTimeout(() => {
-						router.push("/test");
+						router.push("/events");
 					}, 3000);
 				} else {
 					setStatus("error");
-					setMessage(result.error || "Authentication failed");
+					setMessage(response.error?.value?.summary || "Authentication failed");
 				}
 			} catch (error) {
 				console.error("Auth callback error:", error);
@@ -134,7 +135,7 @@ export default function AuthCallback() {
 												/>
 											)}
 											<div className="text-left">
-												<p className="text-sm font-medium text-gray-900">{userInfo.username}</p>
+												<p className="text-sm font-medium text-gray-900">{userInfo.name}</p>
 												<p className="text-sm text-gray-500">{userInfo.email}</p>
 											</div>
 										</div>
@@ -168,13 +169,9 @@ export default function AuthCallback() {
 							</div>
 							<h2 className="text-xl font-semibold text-red-900">Authentication Failed</h2>
 							<p className="text-red-600 mt-2">{message}</p>
-							<button
-								type="button"
-								onClick={() => router.push("/")}
-								className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-							>
+							<Button type="button" onClick={() => router.push("/")}>
 								Go Home
-							</button>
+							</Button>
 						</>
 					)}
 				</div>

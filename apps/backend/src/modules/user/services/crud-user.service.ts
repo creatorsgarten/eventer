@@ -13,33 +13,20 @@ export async function createUser(
 		throw new Error("User with this email already exists");
 	}
 
-	// Check if user already exists by username
-	const existingUserByUsername = await userRepository.findByUsername(data.username);
-	if (existingUserByUsername) {
-		throw new Error("User with this username already exists");
-	}
-
 	return await userRepository.create({
-		username: data.username,
+		name: data.name,
 		email: data.email,
 	});
 }
 
 export async function listUsers(
 	userRepository: UserRepository,
-	query?: { username?: string; email?: string }
+	query?: { email?: string }
 ): Promise<UserType[]> {
 	const allUsers = await userRepository.list();
 
 	// In-memory filtering for now
 	let filtered = allUsers;
-
-	if (query?.username) {
-		const username = query.username;
-		filtered = filtered.filter((user) =>
-			user.username.toLowerCase().includes(username.toLowerCase())
-		);
-	}
 
 	if (query?.email) {
 		const email = query.email;
@@ -63,13 +50,6 @@ export async function getUserByEmail(
 	return await userRepository.findByEmail(email);
 }
 
-export async function getUserByUsername(
-	userRepository: UserRepository,
-	username: string
-): Promise<UserType | null> {
-	return await userRepository.findByUsername(username);
-}
-
 export async function updateUser(
 	userRepository: UserRepository,
 	id: string,
@@ -86,14 +66,6 @@ export async function updateUser(
 		const existingUserByEmail = await userRepository.findByEmail(data.email);
 		if (existingUserByEmail && existingUserByEmail.id !== id) {
 			throw new Error("Another user with this email already exists");
-		}
-	}
-
-	// Check for username conflicts if username is being updated
-	if (data.username && data.username !== existingUser.username) {
-		const existingUserByUsername = await userRepository.findByUsername(data.username);
-		if (existingUserByUsername && existingUserByUsername.id !== id) {
-			throw new Error("Another user with this username already exists");
 		}
 	}
 
