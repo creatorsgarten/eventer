@@ -1,18 +1,23 @@
 "use client";
 
+import { Button } from "@eventer/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { env } from "@/env";
+import { authHeaders } from "@/config/header";
+import { SIGN_IN_LINK } from "@/config/link";
+import { client } from "@/lib/client";
 
 interface UserInfo {
 	id: string;
 	email: string;
-	username: string;
+	name: string;
 	avatar_url?: string;
 }
 
 export default function TestPage() {
 	const [user, setUser] = useState<UserInfo | null>(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		// Check if user is logged in
@@ -24,17 +29,23 @@ export default function TestPage() {
 
 	const handleGoogleSignIn = () => {
 		// Redirect to your backend's Google auth endpoint
-		window.location.href = `${env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`;
+		router.push(SIGN_IN_LINK);
 	};
 
 	const handleSignOut = () => {
 		localStorage.removeItem("user");
 		setUser(null);
-		// Optionally, also clear the backend session
-		fetch(`${env.NEXT_PUBLIC_BACKEND_URL}api/auth/logout`, {
-			method: "POST",
-			credentials: "include",
-		}).catch(console.error);
+
+		client.api.auth.logout
+			.post(
+				{},
+				{
+					...authHeaders,
+				}
+			)
+			.catch((error) => {
+				console.error("Logout failed:", error);
+			});
 	};
 
 	if (user) {
@@ -55,18 +66,14 @@ export default function TestPage() {
 									/>
 								)}
 								<div className="text-left">
-									<h3 className="text-lg font-medium text-gray-900">{user.username}</h3>
+									<h3 className="text-lg font-medium text-gray-900">{user.name}</h3>
 									<p className="text-sm text-gray-500">{user.email}</p>
 									<p className="text-xs text-gray-400 mt-1">ID: {user.id}</p>
 								</div>
 							</div>
-							<button
-								type="button"
-								onClick={handleSignOut}
-								className="w-full mt-4 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-							>
+							<Button type="button" onClick={handleSignOut} variant="destructive">
 								Sign Out
-							</button>
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -83,14 +90,10 @@ export default function TestPage() {
 						Click the button below to test Google authentication
 					</p>
 				</div>
-				<div>
-					<button
-						type="button"
-						onClick={handleGoogleSignIn}
-						className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-					>
+				<div className="flex justify-center">
+					<Button type="button" onClick={handleGoogleSignIn}>
 						Sign in with Google
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>

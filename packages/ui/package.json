@@ -4,8 +4,9 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./*": "./src/*.tsx",
-		"./globals.css": "./src/globals.css"
+		".": "./src/index.ts",
+		"./globals.css": "./src/globals.css",
+		"./button": "./src/components/atoms/button/index.ts"
 	},
 	"scripts": {
 		"dev": "vite",

@@ -9,18 +9,17 @@ import {
 	deleteUser,
 	getUserByEmail,
 	getUserById,
-	getUserByUsername,
 	listUsers,
 	updateUser,
 } from "./crud-user.service";
 
 const fakeUser1: CreateUserDTO = {
-	username: "testuser1",
+	name: "Test User 1",
 	email: "testuser1@example.com",
 };
 
 const fakeUser2: CreateUserDTO = {
-	username: "testuser2",
+	name: "Test User 2",
 	email: "testuser2@example.com",
 };
 
@@ -45,7 +44,7 @@ describe("User Service", () => {
 		it("should create a new user", async () => {
 			const createdUser = await createUser(userRepository, fakeUser1);
 
-			expect(createdUser.username).toBe(fakeUser1.username);
+			expect(createdUser.name).toBe(fakeUser1.name);
 			expect(createdUser.email).toBe(fakeUser1.email);
 			expect(createdUser.id).toBeDefined();
 			expect(createdUser.createdAt).toBeDefined();
@@ -56,25 +55,12 @@ describe("User Service", () => {
 			await createUser(userRepository, fakeUser1);
 
 			const duplicateEmailUser: CreateUserDTO = {
-				username: "differentuser",
+				name: "Different User",
 				email: fakeUser1.email,
 			};
 
 			await expect(createUser(userRepository, duplicateEmailUser)).rejects.toThrow(
 				"User with this email already exists"
-			);
-		});
-
-		it("should throw error when creating user with existing username", async () => {
-			await createUser(userRepository, fakeUser1);
-
-			const duplicateUsernameUser: CreateUserDTO = {
-				username: fakeUser1.username,
-				email: "different@example.com",
-			};
-
-			await expect(createUser(userRepository, duplicateUsernameUser)).rejects.toThrow(
-				"User with this username already exists"
 			);
 		});
 	});
@@ -86,17 +72,6 @@ describe("User Service", () => {
 
 			const users = await listUsers(userRepository);
 			expect(users.length).toBe(2);
-		});
-
-		it("should filter users by username", async () => {
-			await createUser(userRepository, fakeUser1);
-			await createUser(userRepository, fakeUser2);
-
-			const filteredUsers = await listUsers(userRepository, {
-				username: "testuser1",
-			});
-			expect(filteredUsers.length).toBe(1);
-			expect(filteredUsers[0]?.username).toBe("testuser1");
 		});
 
 		it("should filter users by email", async () => {
@@ -118,7 +93,7 @@ describe("User Service", () => {
 
 			expect(foundUser).toBeDefined();
 			expect(foundUser?.id).toBe(createdUser.id);
-			expect(foundUser?.username).toBe(fakeUser1.username);
+			expect(foundUser?.name).toBe(fakeUser1.name);
 		});
 
 		it("should return null for non-existent user", async () => {
@@ -134,27 +109,11 @@ describe("User Service", () => {
 
 			expect(foundUser).toBeDefined();
 			expect(foundUser?.email).toBe(fakeUser1.email);
-			expect(foundUser?.username).toBe(fakeUser1.username);
+			expect(foundUser?.name).toBe(fakeUser1.name);
 		});
 
 		it("should return null for non-existent email", async () => {
 			const foundUser = await getUserByEmail(userRepository, "nonexistent@example.com");
-			expect(foundUser).toBeNull();
-		});
-	});
-
-	describe("getUserByUsername", () => {
-		it("should get user by username", async () => {
-			await createUser(userRepository, fakeUser1);
-			const foundUser = await getUserByUsername(userRepository, fakeUser1.username);
-
-			expect(foundUser).toBeDefined();
-			expect(foundUser?.username).toBe(fakeUser1.username);
-			expect(foundUser?.email).toBe(fakeUser1.email);
-		});
-
-		it("should return null for non-existent username", async () => {
-			const foundUser = await getUserByUsername(userRepository, "nonexistentuser");
 			expect(foundUser).toBeNull();
 		});
 	});
@@ -164,14 +123,28 @@ describe("User Service", () => {
 			const createdUser = await createUser(userRepository, fakeUser1);
 
 			const updateData: UpdateUserDTO = {
-				username: "updateduser",
+				name: "Updated User",
 				email: "updated@example.com",
 			};
 
 			const updatedUser = await updateUser(userRepository, createdUser.id, updateData);
 
-			expect(updatedUser.username).toBe("updateduser");
+			expect(updatedUser.name).toBe("Updated User");
 			expect(updatedUser.email).toBe("updated@example.com");
+			expect(updatedUser.id).toBe(createdUser.id);
+		});
+
+		it("should update user with partial data", async () => {
+			const createdUser = await createUser(userRepository, fakeUser1);
+
+			const updateData: UpdateUserDTO = {
+				name: "Updated Name Only",
+			};
+
+			const updatedUser = await updateUser(userRepository, createdUser.id, updateData);
+
+			expect(updatedUser.name).toBe("Updated Name Only");
+			expect(updatedUser.email).toBe(fakeUser1.email); // Should remain unchanged
 			expect(updatedUser.id).toBe(createdUser.id);
 		});
 
@@ -188,22 +161,9 @@ describe("User Service", () => {
 			);
 		});
 
-		it("should throw error when updating to existing username", async () => {
-			const user1 = await createUser(userRepository, fakeUser1);
-			await createUser(userRepository, fakeUser2);
-
-			const updateData: UpdateUserDTO = {
-				username: fakeUser2.username,
-			};
-
-			await expect(updateUser(userRepository, user1.id, updateData)).rejects.toThrow(
-				"Another user with this username already exists"
-			);
-		});
-
 		it("should throw error when updating non-existent user", async () => {
 			const updateData: UpdateUserDTO = {
-				username: "newusername",
+				name: "New Name",
 			};
 
 			await expect(updateUser(userRepository, "non-existent-id", updateData)).rejects.toThrow(
