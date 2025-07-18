@@ -2,6 +2,7 @@
 
 // Auth Guard for Dashboard Page
 
+import { Button } from "@eventer/ui";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { client } from "@/lib/client";
@@ -49,13 +50,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 		<div className="min-h-screen flex flex-col">
 			<header className="bg-gray-800 text-white flex justify-between p-4">
 				<h1 className="text-xl">Dashboard</h1>
-				<button
-					type="button"
-					onClick={() => handleLogout()}
-					className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-				>
+				<Button type="button" onClick={() => handleLogout()} variant="destructive">
 					Logout
-				</button>
+				</Button>
 			</header>
 			<main className="flex-1 p-6 bg-gray-100">{children}</main>
 		</div>

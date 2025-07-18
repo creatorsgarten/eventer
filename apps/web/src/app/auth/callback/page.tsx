@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@eventer/ui";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -168,13 +169,9 @@ export default function AuthCallback() {
 							</div>
 							<h2 className="text-xl font-semibold text-red-900">Authentication Failed</h2>
 							<p className="text-red-600 mt-2">{message}</p>
-							<button
-								type="button"
-								onClick={() => router.push("/")}
-								className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-							>
+							<Button type="button" onClick={() => router.push("/")}>
 								Go Home
-							</button>
+							</Button>
 						</>
 					)}
 				</div>
