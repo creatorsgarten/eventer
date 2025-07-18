@@ -4,6 +4,7 @@ import { supabase } from "#backend/infrastructure/db/supabase";
 import { UserRepository } from "#backend/modules/user/user.repository";
 import {
 	AuthCallbackSchema,
+	AuthResponseSchema,
 	AuthSuccessResponseSchema,
 	ErrorResponseSchema,
 	SuccessResponseSchema,
@@ -12,6 +13,39 @@ import {
 const userRepository = new UserRepository(db);
 
 export const authRouter = new Elysia({ prefix: "/auth" })
+	.get(
+		"/session",
+		async ({ cookie: { session } }) => {
+			if (!session) {
+				return { user: null };
+			}
+
+			const { data, error } = await supabase.auth.getUser(session.value);
+			if (error || !data.user) {
+				return { user: null };
+			}
+
+			const user = await userRepository.find(data.user.id);
+			if (!user) {
+				return { user: null };
+			}
+
+			return {
+				user: {
+					id: user.id,
+					email: user.email,
+					name: user.name,
+					avatar_url: user.avatarUrl,
+				},
+			};
+		},
+		{
+			response: {
+				200: AuthResponseSchema,
+				401: ErrorResponseSchema,
+			},
+		}
+	)
 	.post(
 		"/callback",
 		async ({ body, cookie: { session } }) => {
