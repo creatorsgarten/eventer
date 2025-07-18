@@ -68,7 +68,7 @@ export default function AuthCallback() {
 
 					// Redirect to your desired page after a delay
 					setTimeout(() => {
-						router.push("/dashboard");
+						router.push("/events");
 					}, 3000);
 				} else {
 					setStatus("error");
