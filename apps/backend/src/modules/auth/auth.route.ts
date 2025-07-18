@@ -12,31 +12,6 @@ import {
 const userRepository = new UserRepository(db);
 
 export const authRouter = new Elysia({ prefix: "/auth" })
-	.get(
-		"/google",
-		async ({ set }) => {
-			const { data, error } = await supabase.auth.signInWithOAuth({
-				provider: "google",
-				options: {
-					redirectTo: "http://localhost:3000/auth/callback",
-					scopes: "email profile",
-				},
-			});
-
-			if (error) {
-				set.status = 500;
-				return { error: "Failed to sign in with Google" };
-			}
-
-			set.redirect = data.url;
-		},
-		{
-			response: {
-				302: t.Void(),
-				500: ErrorResponseSchema,
-			},
-		}
-	)
 	.post(
 		"/callback",
 		async ({ body, cookie: { session } }) => {
