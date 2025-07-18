@@ -8,7 +8,7 @@ import {
 	HeroSection,
 	ShowcaseSection,
 	TestimonialSection,
-} from "@/components/home";
+} from "@/modules/home";
 
 export default function Home() {
 	return (

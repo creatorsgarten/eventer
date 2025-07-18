@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@eventer/ui";
+import { Button } from "@eventer/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

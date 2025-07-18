@@ -2,7 +2,7 @@
 
 // Auth Guard for Dashboard Page
 
-import { Button } from "@eventer/ui";
+import { Button } from "@eventer/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { client } from "@/lib/client";
