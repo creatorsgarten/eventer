@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { env } from "@/env";
+import { client } from "@/lib/client";
 
 export default function AuthCallback() {
 	const router = useRouter();
@@ -40,22 +40,22 @@ export default function AuthCallback() {
 					return;
 				}
 
-				// Send tokens to backend
-				const response = await fetch(`${env.NEXT_PUBLIC_BACKEND_URL}/api/auth/callback`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
+				const response = await client.api.auth.callback.post(
+					{
 						access_token: accessToken,
 						refresh_token: refreshToken,
-					}),
-					credentials: "include", // Important for cookies
-				});
+					},
+					{
+						headers: {
+							"Content-Type": "application/json",
+							credentials: "include",
+						},
+					}
+				);
 
-				const result = await response.json();
+				const result = response.data;
 
-				if (response.ok && result.success) {
+				if (response.status === 200 && result?.user) {
 					setStatus("success");
 					setMessage("Authentication successful!");
 					setUserInfo(result.user);
@@ -68,11 +68,11 @@ export default function AuthCallback() {
 
 					// Redirect to your desired page after a delay
 					setTimeout(() => {
-						router.push("/test");
+						router.push("/dashboard");
 					}, 3000);
 				} else {
 					setStatus("error");
-					setMessage(result.error || "Authentication failed");
+					setMessage(response.error?.value?.summary || "Authentication failed");
 				}
 			} catch (error) {
 				console.error("Auth callback error:", error);

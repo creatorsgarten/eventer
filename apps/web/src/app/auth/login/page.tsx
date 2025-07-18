@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { SIGN_IN_LINK } from "@/config/link";
 import { env } from "@/env";
+import { client } from "@/lib/client";
 
 interface UserInfo {
 	id: string;
@@ -13,6 +16,7 @@ interface UserInfo {
 
 export default function TestPage() {
 	const [user, setUser] = useState<UserInfo | null>(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		// Check if user is logged in
@@ -24,17 +28,25 @@ export default function TestPage() {
 
 	const handleGoogleSignIn = () => {
 		// Redirect to your backend's Google auth endpoint
-		window.location.href = `${env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google`;
+		router.push(SIGN_IN_LINK);
 	};
 
 	const handleSignOut = () => {
 		localStorage.removeItem("user");
 		setUser(null);
-		// Optionally, also clear the backend session
-		fetch(`${env.NEXT_PUBLIC_BACKEND_URL}api/auth/logout`, {
-			method: "POST",
-			credentials: "include",
-		}).catch(console.error);
+
+		client.api.auth.logout
+			.post(
+				{},
+				{
+					headers: {
+						credentials: "include",
+					},
+				}
+			)
+			.catch((error) => {
+				console.error("Logout failed:", error);
+			});
 	};
 
 	if (user) {
