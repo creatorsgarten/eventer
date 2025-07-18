@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { authHeaders } from "@/config/header";
 import { client } from "@/lib/client";
 
 export default function AuthCallback() {
@@ -12,7 +13,7 @@ export default function AuthCallback() {
 	const [userInfo, setUserInfo] = useState<{
 		id: string;
 		email: string;
-		username: string;
+		name: string;
 		avatar_url?: string;
 	} | null>(null);
 
@@ -47,8 +48,7 @@ export default function AuthCallback() {
 					},
 					{
 						headers: {
-							"Content-Type": "application/json",
-							credentials: "include",
+							...authHeaders,
 						},
 					}
 				);
@@ -134,7 +134,7 @@ export default function AuthCallback() {
 												/>
 											)}
 											<div className="text-left">
-												<p className="text-sm font-medium text-gray-900">{userInfo.username}</p>
+												<p className="text-sm font-medium text-gray-900">{userInfo.name}</p>
 												<p className="text-sm text-gray-500">{userInfo.email}</p>
 											</div>
 										</div>

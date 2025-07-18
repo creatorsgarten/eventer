@@ -3,14 +3,14 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { authHeaders } from "@/config/header";
 import { SIGN_IN_LINK } from "@/config/link";
-import { env } from "@/env";
 import { client } from "@/lib/client";
 
 interface UserInfo {
 	id: string;
 	email: string;
-	username: string;
+	name: string;
 	avatar_url?: string;
 }
 
@@ -39,9 +39,7 @@ export default function TestPage() {
 			.post(
 				{},
 				{
-					headers: {
-						credentials: "include",
-					},
+					...authHeaders,
 				}
 			)
 			.catch((error) => {
@@ -67,7 +65,7 @@ export default function TestPage() {
 									/>
 								)}
 								<div className="text-left">
-									<h3 className="text-lg font-medium text-gray-900">{user.username}</h3>
+									<h3 className="text-lg font-medium text-gray-900">{user.name}</h3>
 									<p className="text-sm text-gray-500">{user.email}</p>
 									<p className="text-xs text-gray-400 mt-1">ID: {user.id}</p>
 								</div>
