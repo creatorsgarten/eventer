@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import { supabase } from "#backend/infrastructure/db/supabase";
 import { UserRepository } from "#backend/modules/user/user.repository";
@@ -35,7 +35,7 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 					id: user.id,
 					email: user.email,
 					name: user.name,
-					avatar_url: user.avatarUrl,
+					...(user.avatarUrl && { avatar_url: user.avatarUrl }),
 				},
 			};
 		},
@@ -88,6 +88,8 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 				path: "/",
 			});
 
+			const avatarUrl = user.user_metadata.avatar_url || user.user_metadata.picture;
+
 			return {
 				success: true,
 				message: "Authentication successful",
@@ -95,7 +97,7 @@ export const authRouter = new Elysia({ prefix: "/auth" })
 					id: user.id,
 					email: user.email,
 					name: user.user_metadata.full_name,
-					avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture,
+					...(avatarUrl && avatarUrl !== "" && { avatar_url: avatarUrl }),
 				},
 			};
 		},
