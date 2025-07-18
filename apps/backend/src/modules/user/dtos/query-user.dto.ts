@@ -10,6 +10,7 @@ export const queryUserDTO = z.object({
 		.default(10),
 	name: z.string().optional(),
 	email: z.string().optional(),
+	avatar_url: z.string().url().optional(),
 	sortBy: z.string().optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional(),
 });

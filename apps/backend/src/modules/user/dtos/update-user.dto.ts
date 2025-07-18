@@ -7,6 +7,7 @@ export const updateUserDTO = z.object({
 		.max(50, "name cannot exceed 50 characters")
 		.optional(),
 	email: z.string().email("Invalid email format").optional(),
+	avatar_url: z.string().url("Invalid URL format").optional(),
 });
 
 export type UpdateUserDTO = z.infer<typeof updateUserDTO>;

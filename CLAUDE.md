@@ -240,7 +240,7 @@ interface TypeSystemConfig {
 ```typescript
 // Workspace package type resolution
 import type { EventData } from "@eventer/backend/types";
-import type { ButtonProps } from "@eventer/ui/button";
+import type { ButtonProps } from "@/components/atoms/button";
 import type { Config } from "@eventer/typescript-config/base";
 
 // Type-safe workspace protocol ensures compile-time validation
