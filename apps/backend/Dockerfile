@@ -1,29 +1,38 @@
 # Backend Dockerfile
 FROM oven/bun:1.2.8-alpine AS base
 
-# Install dependencies only when needed
-FROM base AS deps
+# Prune workspace to only include @eventer/backend and its dependencies
+FROM base AS pruner
 WORKDIR /app
 
-# Copy package.json and bun.lockb
-COPY package.json bun.lockb* ./
-COPY ../../bun.lockb* ./
+# Install turbo
+RUN bun install -g turbo
 
-# Install dependencies including dev dependencies for building
-RUN bun install --frozen-lockfile
-
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy source code
+# Copy the entire monorepo for pruning
 COPY . .
 
-# Build the application
-RUN bun run build
+# Prune the workspace for the backend app
+RUN turbo prune @eventer/backend --docker
+
+# Install dependencies for the pruned workspace
+FROM base AS installer
+WORKDIR /app
+
+# Install turbo for building
+RUN bun install -g turbo
+
+# Copy pruned workspace
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/bun.lock* ./
+
+# Install dependencies including dev dependencies for building
+RUN bun install
+
+# Copy pruned source code
+COPY --from=pruner /app/out/full/ .
+
+# Build the application using turbo
+RUN turbo build --filter=@eventer/backend
 
 # Production image, copy all the files and run the app
 FROM base AS runner
@@ -33,13 +42,16 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 backend
 
-# Copy the built application
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/drizzle ./drizzle
+# Copy the built application from installer stage
+COPY --from=installer /app/apps/backend/dist ./dist
+COPY --from=installer /app/apps/backend/drizzle ./drizzle
+
+# Copy package.json and remove workspace dependencies
+COPY apps/backend/package.json ./package.json
+RUN sed -i '/"@eventer\/typescript-config":/d' package.json
 
 # Install only production dependencies
-RUN bun install --production --frozen-lockfile
+RUN bun install --production
 
 USER backend
 
