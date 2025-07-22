@@ -4,13 +4,13 @@ import type React from "react";
 
 import { useState, useEffect } from "react";
 import { Search, MoreHorizontal, Clock } from "lucide-react";
-import { Button } from "@eventer/ui/button";
-// import { Input } from "@eventer/ui";
+import { Button } from "@/components/atoms/button";
+import { Input } from "@/components/atoms/input";
 import { useParams } from "next/navigation";
 
 // Import all section components
 import OverviewSection from "../../modules/event/OverviewSection";
-// import AgendaSection from "./components/agenda-section";
+import AgendaSection from "../../modules/event/AgendaSection3";
 // import GanttSection from "./components/gantt-section";
 // import TeamsSection from "./components/teams-section";
 // import ExtraSection from "./components/extra-section";
@@ -35,7 +35,7 @@ interface NavigationItem {
   component: React.ComponentType<{ eventData: Event }>;
   badge?: number;
 }
-
+// TODO: Change from static page to supabase
 // Mock event data - ready for Supabase integration
 const getEventData = (eventId: string): Event => {
   const eventMap: Record<string, Event> = {
@@ -95,7 +95,7 @@ export default function EventManagementSPA() {
   // Navigation items - all ready for backend
   const navigationItems: NavigationItem[] = [
     { id: "overview", label: "Overview", component: OverviewSection },
-    // { id: "agenda", label: "Agenda (AP)", component: AgendaSection },
+    { id: "agenda", label: "Agenda (AP)", component: AgendaSection },
     // { id: "gantt", label: "Gantt Chart", component: GanttSection },
     // { id: "teams", label: "Staff & Participant", component: TeamsSection },
     // { id: "extra", label: "Extra", component: ExtraSection },
@@ -146,10 +146,10 @@ export default function EventManagementSPA() {
         <div className="p-4 border-b border-gray-200">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            {/* <Input
+            <Input
               placeholder="ค้นหา"
               className="pl-10 bg-gray-50 border-gray-200"
-            /> */}
+            />
           </div>
         </div>
 
@@ -161,7 +161,7 @@ export default function EventManagementSPA() {
             </div>
             <div className="ml-4 space-y-1">
               {navigationItems.map((item) => (
-                <Button
+                <button
                   key={item.id}
                   onClick={() => handleSectionChange(item.id)}
                   className={`w-full text-left text-sm px-3 py-1 rounded cursor-pointer transition-colors ${
@@ -178,7 +178,7 @@ export default function EventManagementSPA() {
                       </span>
                     )}
                   </div>
-                </Button>
+                </button>
               ))}
             </div>
             <div className="text-sm text-gray-600 px-3 py-2 hover:bg-gray-50 rounded cursor-pointer">
@@ -243,12 +243,12 @@ export default function EventManagementSPA() {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                <Button
+                <button
                   onClick={() => (window.location.href = "/")}
                   className="hover:text-purple-600 transition-colors"
                 >
                   หน้าหลัก
-                </Button>
+                </button>
                 <span>/</span>
                 <span>{currentSection?.label || "Overview"}</span>
               </div>
@@ -263,7 +263,7 @@ export default function EventManagementSPA() {
             <div className="flex items-center gap-3">
               <Button
                 type="button"
-                className="text-gray-700 border-gray-300 bg-transparent"
+                className="text-gray-700 bg-transparent border-gray-100"
               >
                 Save
               </Button>

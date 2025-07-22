@@ -1,538 +1,411 @@
 "use client";
 
-// import { useState, useEffect, useMemo, useCallback } from "react";
-// import { Search, Plus, Calendar, Filter, X, GripVertical } from "lucide-react";
-// import { useCreateAgenda } from "@/hooks/use-create-agenda";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog"
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Search, Plus, Calendar, Filter, X, GripVertical } from "lucide-react";
 
-// import { Search, Plus, Calendar, Filter, X, GripVertical } from "lucide-react";
-// import {
-//   Button,
-//   Input,
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   Label,
-// } from "@/components/atoms";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/atoms/dialog";
+import { Input } from "@/components/atoms/input";
+import { Button } from "@/components/atoms/button";
 
-// //TODO : Import components and connect to hooks
-// //TODO : Refactor variable
+import { useCreateAgenda } from "@/hooks/use-create-agenda";
+import { useGetAgenda } from "@/hooks/use-get-agenda";
 
-// type AgendaSectionProps = {
-//   eventData: {
-//     id: string;
-//     name: string;
-//     startDate: string;
-//     endDate: string;
-//   };
-// };
+type AgendaSectionProps = {
+  eventData: {
+    id: string;
+    name: string;
+    startDate: string;
+    endDate: string;
+  };
+};
 
-// type AgendaSlot = {
-//   id: string;
-//   eventId: string;
-//   slot: number;
-//   order: number;
-//   start: string;
-//   end: string;
-//   title: string;
-//   place: string;
-//   responsiblePeople: string;
-//   day: number;
-//   createdAt: string;
-//   updatedAt: string;
-// };
+type AgendaSlot = {
+  id: string;
+  eventId: string;
+  start: string;
+  end: string;
+  personincharge: string;
+  duration: number;
+  activity: string;
+  remarks?: string;
+};
 
-// export function AgendaSection({ eventData }: AgendaSectionProps) {
-//   const [agendaSlots, setAgendaSlots] = useState<AgendaSlot[]>([]);
-//   const [editingSlot, setEditingSlot] = useState<AgendaSlot | null>(null);
-//   const [isDialogOpen, setIsDialogOpen] = useState(false);
-//   const [currentTime, setCurrentTime] = useState(new Date());
+const agendaHeaders = [
+  "Slot",
+  "Start",
+  "End",
+  "Activity",
+  "Person in Charge",
+  "Remarks",
+];
 
-//   const { createAgenda, isCreating } = useCreateAgenda();
+const editableFields: { key: keyof AgendaSlot; label: string }[] = [
+  { key: "start", label: "Start Time" },
+  { key: "end", label: "End Time" },
+  { key: "activity", label: "Activity" },
+  { key: "personincharge", label: "Person in Charge" },
+  { key: "remarks", label: "Remarks" },
+];
 
-//   useEffect(() => {
-//     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-//     return () => clearInterval(timer);
-//   }, []);
+export default function AgendaSection({ eventData }: AgendaSectionProps) {
+  const [agendaSlots, setAgendaSlots] = useState<AgendaSlot[]>([]);
+  const [editingSlot, setEditingSlot] = useState<AgendaSlot | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentDay, setCurrentDay] = useState(1);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
-//   //   const eventDays = useMemo(() => {
-//   //     const start = new Date(eventData.startDate);
-//   //     const end = new Date(eventData.endDate);
-//   //     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-//   //   }, [eventData.startDate, eventData.endDate]);
+  const { createAgenda, isPending, error } = useCreateAgenda();
+  const [hasMounted, setHasMounted] = useState(false);
+  // Live time ticker
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-//   const handleAddSlot = useCallback(() => {
-//     const now = new Date().toISOString();
-//     const newSlot: AgendaSlot = {
-//       id: crypto.randomUUID(),
-//       eventId: eventData.id,
-//       slot: agendaSlots.length + 1,
-//       order: agendaSlots.length + 1,
-//       start: "",
-//       end: "",
-//       title: "",
-//       place: "",
-//       responsiblePeople: "",
-//       day: 1,
-//       createdAt: now,
-//       updatedAt: now,
-//     };
-//     setEditingSlot(newSlot);
-//     setIsDialogOpen(true);
-//   }, [agendaSlots.length, eventData.id]);
+  // Days from start to end
+  const eventDays = useMemo(() => {
+    const start = new Date(eventData.startDate);
+    const end = new Date(eventData.endDate);
+    return (
+      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+    );
+  }, [eventData]);
 
-//   const handleSaveSlot = useCallback(() => {
-//     if (!editingSlot) return;
+  // Load from backend (stub for now)
+  const { data: fetchedAgenda, isLoading } = useGetAgenda(
+    eventData.id,
+    currentDay
+  );
 
-//     createAgenda(editingSlot, {
-//       onSuccess: () => {
-//         setAgendaSlots((prev) => [...prev, editingSlot]);
-//         setIsDialogOpen(false);
-//         setEditingSlot(null);
-//       },
-//       onError: (err) => {
-//         console.error("Failed to create agenda slot", err);
-//       },
-//     });
-//   }, [createAgenda, editingSlot]);
+  const loadAgendaSlots = useCallback(() => {
+    if (fetchedAgenda) {
+      setAgendaSlots(fetchedAgenda);
+    }
+  }, [fetchedAgenda]);
 
-//   return (
-//     <div className="p-8">
-//       <div className="flex justify-between items-center mb-4">
-//         <div>
-//           <h1 className="text-xl font-bold">{eventData.name}</h1>
-//           <p className="text-sm text-gray-500">
-//             Current Time: {currentTime.toLocaleTimeString()}
-//           </p>
-//         </div>
-//         <button onClick={handleAddSlot}>
-//           <Plus className="mr-2 h-4 w-4" />
-//           Add Slot
-//         </button>
-//       </div>
+  useEffect(() => {
+    if (Array.isArray(fetchedAgenda)) {
+      setAgendaSlots(fetchedAgenda);
+    } else {
+      setAgendaSlots([]); // fallback to empty
+    }
+  }, [fetchedAgenda]);
 
-//       {/* Simple list for MVP */}
-//       <ul className="space-y-2">
-//         {agendaSlots.map((slot) => (
-//           <li key={slot.id} className="p-4 bg-white shadow rounded">
-//             <div className="font-semibold">{slot.title || "Untitled Slot"}</div>
-//             <div className="text-sm text-gray-500">
-//               {slot.start} - {slot.end}
-//             </div>
-//           </li>
-//         ))}
-//       </ul>
+  useEffect(() => {
+    loadAgendaSlots();
+  }, [loadAgendaSlots, eventData.id, currentDay]);
 
-//       {/* Dialog for creating agenda */}
-//       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-//         <DialogContent>
-//           <DialogHeader>
-//             <DialogTitle>Add Agenda Slot</DialogTitle>
-//           </DialogHeader>
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
-//           <div className="space-y-2">
-//             <Label>Title</Label>
-//             <Input
-//               value={editingSlot?.title || ""}
-//               onChange={(e) =>
-//                 setEditingSlot((prev) =>
-//                   prev ? { ...prev, title: e.target.value } : null
-//                 )
-//               }
-//             />
-//             <Label>Start Time</Label>
-//             <Input
-//               value={editingSlot?.start || ""}
-//               onChange={(e) =>
-//                 setEditingSlot((prev) =>
-//                   prev ? { ...prev, start: e.target.value } : null
-//                 )
-//               }
-//             />
-//             <label>End Time</label>
-//             <Input
-//               value={editingSlot?.end || ""}
-//               onChange={(e) =>
-//                 setEditingSlot((prev) =>
-//                   prev ? { ...prev, end: e.target.value } : null
-//                 )
-//               }
-//             />
+  const handleAddSlot = () => {
+    setEditingSlot({
+      id: Date.now().toString(),
+      eventId: eventData.id,
+      start: "",
+      end: "",
+      duration: 0,
+      personincharge: "",
+      activity: "",
+      remarks: "",
+    });
+    setIsDialogOpen(true);
+  };
 
-//             <button
-//               className="w-full bg-purple-600 text-white mt-4"
-//               onClick={handleSaveSlot}
-//               disabled={isCreating}
-//             >
-//               {isCreating ? "Saving..." : "Save"}
-//             </button>
-//           </div>
-//         </DialogContent>
-//       </Dialog>
-//     </div>
-//   );
-// }
+  const handleEditSlot = (slot: AgendaSlot) => {
+    setEditingSlot({ ...slot });
+    setIsDialogOpen(true);
+  };
 
-// TODO : Other section
-// export default function AgendaSection({ eventData }: AgendaSectionProps) {
-//   const [currentTime, setCurrentTime] = useState(() => new Date());
-//   const [agendaSlots, setAgendaSlots] = useState<AgendaSlot[]>([]);
-//   const [editingSlot, setEditingSlot] = useState<AgendaSlot | null>(null);
-//   const [isDialogOpen, setIsDialogOpen] = useState(false);
-//   const [draggedItem, setDraggedItem] = useState<string | null>(null);
-//   const [currentDay, setCurrentDay] = useState(1);
+  const handleSaveSlot = () => {
+    if (!editingSlot) return;
 
-//   // Derived state for days
-//   const eventDays = useMemo(() => {
-//     const start = new Date(eventData.startDate);
-//     const end = new Date(eventData.endDate);
-//     const days =
-//       Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-//     return days;
-//   }, [eventData.startDate, eventData.endDate]);
+    createAgenda(
+      { ...editingSlot, remarks: editingSlot.remarks || "" },
+      {
+        onSuccess: () => {
+          setIsDialogOpen(false);
+          setEditingSlot(null);
+          // loadAgendaSlots();
+        },
+      }
+    );
+  };
 
-//   // Update time
-//   useEffect(() => {
-//     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
-//     return () => clearInterval(interval);
-//   }, []);
+  const handleDeleteSlot = (id: string) => {
+    setAgendaSlots((slots) =>
+      slots
+        .filter((s) => s.id !== id)
+        .map((slot, idx) => ({
+          ...slot,
+          slot: idx + 1,
+          order: idx + 1,
+          updatedAt: new Date().toISOString(),
+        }))
+    );
+  };
 
-//   // Load agenda slots (stub)
-//   const loadAgendaSlots = useCallback(async () => {
-//     setAgendaSlots([]);
-//   }, []);
+  const handleDrag = (e: React.DragEvent, id: string) => {
+    e.dataTransfer.effectAllowed = "move";
+    setDraggedItem(id);
+  };
 
-//   useEffect(() => {
-//     loadAgendaSlots();
-//   }, [loadAgendaSlots, eventData.id, currentDay]);
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggedItem || draggedItem === targetId) return;
 
-//   const handleAddSlot = useCallback(() => {
-//     const now = new Date().toISOString();
-//     const newSlot: AgendaSlot = {
-//       id: Date.now().toString(),
-//       eventId: eventData.id,
-//       slot: agendaSlots.length + 1,
-//       order: agendaSlots.length + 1,
-//       start: "",
-//       end: "",
-//       title: "",
-//       place: "",
-//       responsiblePeople: "",
-//       day: currentDay,
-//       createdAt: now,
-//       updatedAt: now,
-//     };
-//     setEditingSlot(newSlot);
-//     setIsDialogOpen(true);
-//   }, [agendaSlots, eventData.id, currentDay]);
+    const updated = [...agendaSlots];
+    const fromIndex = updated.findIndex((s) => s.id === draggedItem);
+    const toIndex = updated.findIndex((s) => s.id === targetId);
 
-//   const handleEditSlot = useCallback((slot: AgendaSlot) => {
-//     setEditingSlot({ ...slot });
-//     setIsDialogOpen(true);
-//   }, []);
+    const [moved] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, moved);
 
-//   const handleSaveSlot = useCallback(() => {
-//     if (!editingSlot) return;
+    setAgendaSlots(
+      updated.map((slot, idx) => ({
+        ...slot,
+        slot: idx + 1,
+        order: idx + 1,
+        updatedAt: new Date().toISOString(),
+      }))
+    );
+    setDraggedItem(null);
+  };
 
-//     setAgendaSlots((slots) =>
-//       slots.some((s) => s.id === editingSlot.id)
-//         ? slots.map((s) => (s.id === editingSlot.id ? editingSlot : s))
-//         : [...slots, editingSlot]
-//     );
-//     setIsDialogOpen(false);
-//     setEditingSlot(null);
-//   }, [editingSlot]);
+  const sortedSlots = useMemo(() => {
+    if (!Array.isArray(agendaSlots)) return [];
+    return [...agendaSlots].sort(
+      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+    );
+  }, [agendaSlots]);
+  const formatTime = (date: Date) =>
+    date.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
 
-//   const handleDeleteSlot = useCallback((id: string) => {
-//     setAgendaSlots((slots) =>
-//       slots
-//         .filter((s) => s.id !== id)
-//         .map((slot, index) => ({
-//           ...slot,
-//           slot: index + 1,
-//           order: index + 1,
-//           updatedAt: new Date().toISOString(),
-//         }))
-//     );
-//   }, []);
+  if (isCreating) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-purple-500">
+        <Calendar className="w-8 h-8 animate-spin" />
+        <span className="ml-2 font-medium">Creating agenda...</span>
+      </div>
+    );
+  }
 
-//   const handleDrag = useCallback((e: React.DragEvent, id: string) => {
-//     e.dataTransfer.effectAllowed = "move";
-//     setDraggedItem(id);
-//   }, []);
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-500 font-medium">
+        Error creating agenda. Please try again later.
+      </div>
+    );
+  }
 
-//   const handleDrop = useCallback(
-//     (e: React.DragEvent, targetId: string) => {
-//       e.preventDefault();
-//       if (!draggedItem || draggedItem === targetId) return;
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Header */}
+      <div className="px-8 py-6 bg-gradient-to-r from-purple-600 to-purple-400 text-white">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold">{eventData.name}</h1>
+            <p className="text-purple-200">Agenda Management</p>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="mt-4 bg-white text-purple-600"
+              onClick={() => window.location.assign(`/timer`)}
+            >
+              View Timer
+            </Button>
+          </div>
+          <div className="bg-white text-gray-900 rounded-2xl p-6 shadow min-w-80">
+            <div className="text-center mb-4">
+              <p className="text-4xl font-bold">
+                {hasMounted ? formatTime(currentTime) : "--:--:--"}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-sm text-center">
+              <div>
+                <p className="text-gray-500">กิจกรรมปัจจุบัน</p>
+                <p>No Slot</p>
+              </div>
+              <div>
+                <p className="text-gray-500">กิจกรรมต่อไป</p>
+                <p>No Slot</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-//       const updated = [...agendaSlots];
-//       const draggedIndex = updated.findIndex((s) => s.id === draggedItem);
-//       const targetIndex = updated.findIndex((s) => s.id === targetId);
+      {/* Toolbar */}
+      <div className="px-8 py-4 bg-white border-b flex justify-between items-center">
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input placeholder="Search Task" className="pl-10 bg-gray-50" />
+        </div>
+        <div className="flex gap-2 ml-4">
+          <Button variant="outline" size="sm">
+            <Calendar className="w-4 h-4 mr-2" />
+            {new Date(eventData.startDate).toLocaleDateString()}
+          </Button>
+          <Button variant="outline" size="sm">
+            <Filter className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
 
-//       const [moved] = updated.splice(draggedIndex, 1);
-//       updated.splice(targetIndex, 0, moved);
+      {/* Agenda Table */}
+      <div className="px-8 py-8">
+        <div className="bg-white shadow rounded-lg">
+          {/* Day Selector */}
+          <div className="px-6 py-4 border-b flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <h2 className="text-xl font-bold">Day {currentDay}</h2>
+              {eventDays > 1 && (
+                <div className="flex gap-2">
+                  {Array.from({ length: eventDays }, (_, i) => (
+                    <Button
+                      key={i}
+                      variant={currentDay === i + 1 ? "default" : "outline"}
+                      size="sm"
+                      className={
+                        currentDay === i + 1 ? "bg-purple-600 text-white" : ""
+                      }
+                      onClick={() => setCurrentDay(i + 1)}
+                    >
+                      Day {i + 1}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Button
+              onClick={handleAddSlot}
+              className="bg-purple-600 text-white"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Task
+            </Button>
+          </div>
 
-//       setAgendaSlots(
-//         updated.map((slot, idx) => ({
-//           ...slot,
-//           slot: idx + 1,
-//           order: idx + 1,
-//           updatedAt: new Date().toISOString(),
-//         }))
-//       );
-//       setDraggedItem(null);
-//     },
-//     [agendaSlots, draggedItem]
-//   );
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  {agendaHeaders.map((header) => (
+                    <th
+                      key={header}
+                      className="px-6 py-3 text-left text-gray-600 font-semibold"
+                    >
+                      {header}
+                    </th>
+                  ))}
+                  <th className="px-6 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedSlots.length > 0 ? (
+                  sortedSlots.map((slot) => (
+                    <tr
+                      key={slot.id}
+                      draggable
+                      onDragStart={(e) => handleDrag(e, slot.id)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => handleDrop(e, slot.id)}
+                      className="border-t hover:bg-gray-50 cursor-move"
+                    >
+                      <td className="px-6 py-4 flex items-center gap-2">
+                        <GripVertical className="w-4 h-4 text-gray-400" />
+                        {slot.id}
+                      </td>
+                      <td className="px-6 py-4">{slot.start}</td>
+                      <td className="px-6 py-4">{slot.end}</td>
+                      <td className="px-6 py-4">{slot.activity}</td>
+                      <td className="px-6 py-4">{slot.personincharge}</td>
+                      <td className="px-6 py-4">{slot.remarks}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            className="bg-purple-600 text-white"
+                            onClick={() => handleEditSlot(slot)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteSlot(slot.id)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={agendaHeaders.length + 1}
+                      className="text-center text-gray-500 py-10"
+                    >
+                      No agenda slots yet. Click “Add Task” to get started.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-//   const formatTime = useCallback(
-//     (date: Date) =>
-//       date.toLocaleTimeString("th-TH", {
-//         hour: "2-digit",
-//         minute: "2-digit",
-//         second: "2-digit",
-//       }),
-//     []
-//   );
-
-//   const sortedSlots = useMemo(
-//     () => [...agendaSlots].sort((a, b) => a.order - b.order),
-//     [agendaSlots]
-//   );
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       {/* Header */}
-//       <div className="w-full px-8 py-6 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-400">
-//         <div className="flex justify-between items-start">
-//           <div className="text-white">
-//             <h1 className="text-2xl font-bold">{eventData.name}</h1>
-//             <p className="text-purple-200">Agenda Management</p>
-//             <Button
-//               variant="secondary"
-//               size="sm"
-//               className="mt-4 bg-white text-purple-600 hover:bg-gray-100"
-//               onClick={() => window.location.assign(`/${eventData.id}/timer`)}
-//             >
-//               View Timer
-//             </Button>
-//           </div>
-//           <div className="bg-white text-gray-900 rounded-2xl p-6 min-w-80 shadow">
-//             <div className="text-center mb-4">
-//               <div className="text-sm text-gray-500 mb-2">เวลาปัจจุบัน</div>
-//               <div className="text-4xl font-bold">
-//                 {formatTime(currentTime)}
-//               </div>
-//             </div>
-//             <div className="grid grid-cols-2 gap-4 text-sm">
-//               <div className="text-center">
-//                 <div className="text-gray-500">กิจกรรมปัจจุบัน</div>
-//                 <div>No Slot</div>
-//               </div>
-//               <div className="text-center">
-//                 <div className="text-gray-500">กิจกรรมต่อไป</div>
-//                 <div>No Slot</div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Toolbar */}
-//       <div className="px-8 py-6 bg-white border-b">
-//         <div className="flex justify-between items-center">
-//           <div className="relative w-full max-w-md">
-//             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-//             <Input
-//               placeholder="Search Event"
-//               className="pl-10 bg-gray-50 border-gray-200"
-//             />
-//           </div>
-//           <div className="flex gap-2 ml-4">
-//             <Button variant="outline" size="sm">
-//               <Calendar className="w-4 h-4 mr-2" />
-//               {new Date(eventData.startDate).toLocaleDateString()}
-//             </Button>
-//             <Button variant="outline" size="sm">
-//               <Filter className="w-4 h-4" />
-//             </Button>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Agenda Table */}
-//       <div className="px-8 py-8">
-//         <div className="bg-white shadow rounded-lg">
-//           {/* Day selector */}
-//           <div className="flex justify-between items-center px-6 py-4 border-b">
-//             <div className="flex items-center gap-3">
-//               <h2 className="text-xl font-bold">Day {currentDay}</h2>
-//               {eventDays > 1 && (
-//                 <div className="flex gap-2">
-//                   {Array.from({ length: eventDays }, (_, i) => i + 1).map(
-//                     (day) => (
-//                       <Button
-//                         key={day}
-//                         variant={day === currentDay ? "default" : "outline"}
-//                         size="sm"
-//                         onClick={() => setCurrentDay(day)}
-//                         className={
-//                           day === currentDay ? "bg-purple-600 text-white" : ""
-//                         }
-//                       >
-//                         Day {day}
-//                       </Button>
-//                     )
-//                   )}
-//                 </div>
-//               )}
-//             </div>
-//             <Button
-//               onClick={handleAddSlot}
-//               className="bg-purple-600 text-white"
-//             >
-//               <Plus className="w-4 h-4 mr-2" />
-//               Add Task
-//             </Button>
-//           </div>
-
-//           {/* Table */}
-//           <div className="overflow-x-auto">
-//             <table className="w-full text-sm">
-//               <thead className="bg-gray-50">
-//                 <tr>
-//                   {[
-//                     "Slot",
-//                     "Start",
-//                     "End",
-//                     "Title",
-//                     "Place",
-//                     "Responsible People",
-//                     "Actions",
-//                   ].map((header) => (
-//                     <th
-//                       key={header}
-//                       className="px-6 py-3 text-left font-semibold text-gray-600"
-//                     >
-//                       {header}
-//                     </th>
-//                   ))}
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {sortedSlots.length > 0 ? (
-//                   sortedSlots.map((slot) => (
-//                     <tr
-//                       key={slot.id}
-//                       draggable
-//                       onDragStart={(e) => handleDrag(e, slot.id)}
-//                       onDragOver={(e) => e.preventDefault()}
-//                       onDrop={(e) => handleDrop(e, slot.id)}
-//                       className="hover:bg-gray-50 border-t cursor-move"
-//                     >
-//                       <td className="px-6 py-4">
-//                         <div className="flex items-center gap-2">
-//                           <GripVertical className="w-4 h-4 text-gray-400" />
-//                           {slot.slot}
-//                         </div>
-//                       </td>
-//                       <td className="px-6 py-4">{slot.start}</td>
-//                       <td className="px-6 py-4">{slot.end}</td>
-//                       <td className="px-6 py-4">{slot.title}</td>
-//                       <td className="px-6 py-4">{slot.place}</td>
-//                       <td className="px-6 py-4">{slot.responsiblePeople}</td>
-//                       <td className="px-6 py-4">
-//                         <div className="flex gap-2">
-//                           <Button
-//                             size="sm"
-//                             onClick={() => handleEditSlot(slot)}
-//                             className="bg-purple-600 text-white"
-//                           >
-//                             Edit
-//                           </Button>
-//                           <Button
-//                             size="sm"
-//                             variant="destructive"
-//                             onClick={() => handleDeleteSlot(slot.id)}
-//                           >
-//                             Delete
-//                           </Button>
-//                         </div>
-//                       </td>
-//                     </tr>
-//                   ))
-//                 ) : (
-//                   <tr>
-//                     <td colSpan={7} className="text-center py-10 text-gray-500">
-//                       No agenda slots yet. Click “Add Task” to get started.
-//                     </td>
-//                   </tr>
-//                 )}
-//               </tbody>
-//             </table>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Dialog */}
-//       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-//         <DialogContent className="max-w-md">
-//           <DialogHeader className="flex justify-between items-center">
-//             <DialogTitle>
-//               {editingSlot?.id ? "Edit" : "Add"} Task Schedule
-//             </DialogTitle>
-//             <Button
-//               variant="ghost"
-//               size="sm"
-//               onClick={() => setIsDialogOpen(false)}
-//               className="h-6 w-6 p-0"
-//             >
-//               <X className="h-4 w-4" />
-//             </Button>
-//           </DialogHeader>
-
-//           {editingSlot && (
-//             <div className="space-y-4">
-//               {["start", "end", "title", "place", "responsiblePeople"].map(
-//                 (field) => (
-//                   <div key={field}>
-//                     <Label htmlFor={field} className="text-sm capitalize">
-//                       {field}
-//                     </Label>
-//                     <Input
-//                       id={field}
-//                       placeholder={field}
-//                       value={editingSlot[field as keyof AgendaSlot] as string}
-//                       onChange={(e) =>
-//                         setEditingSlot({
-//                           ...editingSlot,
-//                           [field]: e.target.value,
-//                         })
-//                       }
-//                     />
-//                   </div>
-//                 )
-//               )}
-
-//               <Button
-//                 className="w-full bg-purple-600 text-white mt-2"
-//                 onClick={handleSaveSlot}
-//               >
-//                 Save Changes
-//               </Button>
-//             </div>
-//           )}
-//         </DialogContent>
-//       </Dialog>
-//     </div>
-//   );
-// }
+      {/* Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingSlot?.id ? "Edit" : "Add"} Task Schedule
+            </DialogTitle>
+          </DialogHeader>
+          {editingSlot && (
+            <div className="space-y-4 mt-4">
+              {editableFields.map(({ key, label }) => (
+                <div key={key}>
+                  <label htmlFor={key} className="text-sm block mb-1">
+                    {label}
+                  </label>
+                  <Input
+                    id={key}
+                    value={editingSlot[key] as string}
+                    onChange={(e) =>
+                      setEditingSlot(
+                        (prev) => prev && { ...prev, [key]: e.target.value }
+                      )
+                    }
+                    placeholder={label}
+                  />
+                </div>
+              ))}
+              <Button
+                className="w-full bg-purple-600 text-white mt-4"
+                onClick={handleSaveSlot}
+              >
+                Save Changes
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
