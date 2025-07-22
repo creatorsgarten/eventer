@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { GripVertical } from "lucide-react";
 import { useGetAgenda } from "@/hooks/use-get-agenda";
 import { useCreateAgenda } from "@/hooks/use-create-agenda";
@@ -26,20 +26,31 @@ const agendaHeaders = [
   "Remarks",
 ];
 
-type AgendaSlot = {
-  id: string;
-  eventId: string;
-  start: string;
-  end: string;
-  personincharge: string;
-  duration: number;
-  activity: string;
-  remarks?: string;
-};
-
 export default function AgendaSection() {
-  const eventId = "static-event-1"; // your static eventId for now
+  const eventId = "static-event-1";
   const [currentDay, setCurrentDay] = useState(1);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  // Calculate event dates based on a static event (you can modify this to use props)
+  const eventStartDate = "2025-07-26"; // Day 1
+  const eventDays = useMemo(() => {
+    const startDate = new Date(eventStartDate);
+    // Assuming 3 days event, you can modify this logic
+    return Array.from({ length: 3 }, (_, i) => {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      return {
+        day: i + 1,
+        date: date.toISOString().split("T")[0], // YYYY-MM-DD format
+        displayDate: date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+      };
+    });
+  }, []);
+
+  const currentDayData = eventDays[currentDay - 1];
 
   const {
     data: agendaSlots,
@@ -109,11 +120,23 @@ export default function AgendaSection() {
   };
 
   const sortedSlots = useMemo(() => {
-    if (!agendaSlots) return [];
-    return [...agendaSlots].sort(
+    if (!agendaSlots || !Array.isArray(agendaSlots)) return [];
+
+    // Filter slots by the current day's date
+    const filteredSlots = agendaSlots.filter((slot) => {
+      // Extract date from slot.start (assuming it's in ISO format or date string)
+      const slotDate = new Date(slot.start).toISOString().split("T")[0];
+      return slotDate === currentDayData?.date;
+    });
+
+    return [...filteredSlots].sort(
       (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
     );
-  }, [agendaSlots]);
+  }, [agendaSlots, currentDayData]);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   if (isLoading) {
     return (
@@ -126,7 +149,8 @@ export default function AgendaSection() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500 font-medium">
-        Error loading agenda: {(error as any).message || "Unknown error"}
+        Error loading agenda:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
       </div>
     );
   }
@@ -134,90 +158,112 @@ export default function AgendaSection() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">
-          Static Event Agenda (Day {currentDay})
-        </h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant="default">Create Agenda</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create Agenda Slot</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {submitError && (
-                <div className="text-red-500 text-sm bg-red-50 p-2 rounded">
-                  {submitError}
-                </div>
-              )}
-              <div>
-                <label htmlFor="start">Start</label>
-                <Input
-                  id="start"
-                  name="start"
-                  type="datetime-local"
-                  value={form.start}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="end">End</label>
-                <Input
-                  id="end"
-                  name="end"
-                  type="datetime-local"
-                  value={form.end}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="activity">Activity</label>
-                <Input
-                  id="activity"
-                  name="activity"
-                  value={form.activity}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="personincharge">Person in Charge</label>
-                <Input
-                  id="personincharge"
-                  name="personincharge"
-                  value={form.personincharge}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="remarks">Remarks</label>
-                <Input
-                  id="remarks"
-                  name="remarks"
-                  value={form.remarks}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <DialogFooter>
-                <Button type="submit" disabled={isCreating}>
-                  {isCreating ? "Creating..." : "Create"}
-                </Button>
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+        <div>
+          <h1 className="text-3xl font-bold">Static Event Agenda</h1>
+          <p className="text-gray-600 mt-1">
+            Day {currentDay} - {currentDayData?.displayDate} (
+            {currentDayData?.date})
+          </p>
+        </div>
 
-      {/* TODO: Add Day Buttons if multiple days */}
+        {/* Day selector */}
+        <div className="flex items-center gap-4">
+          <div className="flex gap-2">
+            {eventDays.map((dayInfo) => (
+              <Button
+                key={dayInfo.day}
+                variant={currentDay === dayInfo.day ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentDay(dayInfo.day)}
+                className={currentDay === dayInfo.day ? "bg-purple-600" : ""}
+              >
+                Day {dayInfo.day}
+                <br />
+                <span className="text-xs">{dayInfo.displayDate}</span>
+              </Button>
+            ))}
+          </div>
+
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">Create Agenda</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create Agenda Slot</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {submitError && (
+                  <div className="text-red-500 text-sm bg-red-50 p-2 rounded">
+                    {submitError}
+                  </div>
+                )}
+                <div>
+                  <label htmlFor="start">Start</label>
+                  <Input
+                    id="start"
+                    name="start"
+                    type="datetime-local"
+                    value={form.start}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="end">End</label>
+                  <Input
+                    id="end"
+                    name="end"
+                    type="datetime-local"
+                    value={form.end}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="activity">Activity</label>
+                  <Input
+                    id="activity"
+                    name="activity"
+                    value={form.activity}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="personincharge">Person in Charge</label>
+                  <Input
+                    id="personincharge"
+                    name="personincharge"
+                    value={form.personincharge}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="remarks">Remarks</label>
+                  <Input
+                    id="remarks"
+                    name="remarks"
+                    value={form.remarks}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button type="submit" disabled={isCreating}>
+                    {isCreating ? "Creating..." : "Create"}
+                  </Button>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
 
       <div className="overflow-x-auto bg-white shadow rounded-lg">
         <table className="w-full text-sm">
@@ -244,8 +290,24 @@ export default function AgendaSection() {
                     <GripVertical className="w-4 h-4 text-gray-400" />
                     {idx + 1}
                   </td>
-                  <td className="px-6 py-4">{slot.start}</td>
-                  <td className="px-6 py-4">{slot.end}</td>
+                  <td className="px-6 py-4">
+                    {hasMounted
+                      ? new Date(slot.start).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })
+                      : "--:--"}
+                  </td>
+                  <td className="px-6 py-4">
+                    {hasMounted
+                      ? new Date(slot.end).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })
+                      : "--:--"}
+                  </td>
                   <td className="px-6 py-4">{slot.activity}</td>
                   <td className="px-6 py-4">{slot.personincharge}</td>
                   <td className="px-6 py-4">{slot.remarks || "-"}</td>
@@ -257,7 +319,8 @@ export default function AgendaSection() {
                   colSpan={agendaHeaders.length}
                   className="text-center text-gray-500 py-10"
                 >
-                  No agenda slots found for this event and day.
+                  No agenda slots found for {currentDayData?.displayDate} (
+                  {currentDayData?.date}).
                 </td>
               </tr>
             )}

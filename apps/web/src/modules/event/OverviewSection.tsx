@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type EventData = {
   id: string;
@@ -36,8 +36,10 @@ function formatTime(date: Date) {
 
 function OverviewSection() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    setHasMounted(true);
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
@@ -83,7 +85,9 @@ function OverviewSection() {
             <button
               type="button"
               className="hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm bg-orange-500 rounded-2xl px-4 py-2 text-sm font-medium transition-colors duration-200"
-              onClick={() => (window.location.href = `/timer`)}
+              onClick={() => {
+                window.location.href = "/timer";
+              }}
             >
               🕓 AP Timer
             </button>
@@ -94,7 +98,7 @@ function OverviewSection() {
             <div className="text-center mb-4">
               <div className="text-xs text-gray-500 mb-2">เวลาปัจจุบัน</div>
               <div className="text-3xl md:text-4xl font-bold">
-                {formatTime(currentTime)}
+                {hasMounted ? formatTime(currentTime) : "--:--:--"}
               </div>
             </div>
 

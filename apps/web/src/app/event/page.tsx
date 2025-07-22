@@ -86,6 +86,7 @@ export default function EventManagementSPA() {
   const params = useParams();
   const eventId = params.eventId as string;
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [hasMounted, setHasMounted] = useState(false);
   const [activeSection, setActiveSection] = useState("overview");
   const [eventData] = useState<Event>(() =>
     //setEventData
@@ -102,6 +103,7 @@ export default function EventManagementSPA() {
   ];
 
   useEffect(() => {
+    setHasMounted(true);
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -163,6 +165,7 @@ export default function EventManagementSPA() {
               {navigationItems.map((item) => (
                 <button
                   key={item.id}
+                  type="button"
                   onClick={() => handleSectionChange(item.id)}
                   className={`w-full text-left text-sm px-3 py-1 rounded cursor-pointer transition-colors ${
                     activeSection === item.id
@@ -244,7 +247,10 @@ export default function EventManagementSPA() {
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
                 <button
-                  onClick={() => (window.location.href = "/")}
+                  type="button"
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
                   className="hover:text-purple-600 transition-colors"
                 >
                   หน้าหลัก
@@ -257,7 +263,7 @@ export default function EventManagementSPA() {
               </h1>
               <div className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                 <Clock className="w-3 h-3" />
-                {formatTime(currentTime)}
+                {hasMounted ? formatTime(currentTime) : "--:--:--"}
               </div>
             </div>
             <div className="flex items-center gap-3">
