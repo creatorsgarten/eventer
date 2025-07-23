@@ -18,6 +18,7 @@
 		"husky": "^9.1.7",
 		"lint-staged": "^16.1.2",
 		"prettier": "^3.5.3",
+		"supabase": "^2.31.8",
 		"turbo": "^2.5.4",
 		"typescript": "5.8.2",
 		"vitest": "^1.5.0"
