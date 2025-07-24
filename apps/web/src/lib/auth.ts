@@ -1,8 +1,15 @@
 "use server";
 import { authHeaders } from "@/config/header";
+import { env } from "@/env";
 import { client } from "./client";
 
 export async function getSession() {
+	// During build time, if no backend URL is configured, return null immediately
+	if (!env.NEXT_PUBLIC_BACKEND_URL && typeof window === "undefined") {
+		// Silent return during build - no logging to avoid Vercel build issues
+		return null;
+	}
+
 	try {
 		const res = await client.api.auth.session.get({
 			headers: {
@@ -15,9 +22,8 @@ export async function getSession() {
 		}
 
 		return res?.data?.user;
-	} catch (error) {
-		// Handle build-time errors gracefully
-		console.warn("Session fetch failed (likely during build):", error);
+	} catch {
+		// Silent error handling during build to prevent Vercel build failures
 		return null;
 	}
 }
