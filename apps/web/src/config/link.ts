@@ -15,6 +15,12 @@ const getAppUrl = () => {
 	return "http://localhost:3000";
 };
 
-const REDIRDCT_URI = encodeURIComponent(`${getAppUrl()}/auth/callback`);
+// Generate the sign-in link dynamically at runtime
+export const getSignInLink = () => {
+	const redirectUri = encodeURIComponent(`${getAppUrl()}/auth/callback`);
+	return `https://qtrkroiyvtnwdpjscyvp.supabase.co/auth/v1/authorize?provider=google&redirect_to=${redirectUri}&scopes=email%20profile`;
+};
 
+// For backward compatibility, but this will use build-time URL
+const REDIRDCT_URI = encodeURIComponent(`${getAppUrl()}/auth/callback`);
 export const SIGN_IN_LINK = `https://qtrkroiyvtnwdpjscyvp.supabase.co/auth/v1/authorize?provider=google&redirect_to=${REDIRDCT_URI}&scopes=email%20profile`;
