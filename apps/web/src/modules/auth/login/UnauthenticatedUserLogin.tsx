@@ -44,11 +44,9 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 
 	return (
 		<div className="relative overflow-hidden bg-gradient-to-r w-full bg-purple-600 from-purple-600 via-purple-400 to-purple-600 min-h-screen">
-			{/* Background Pattern */}
-			<div className="xl:max-w-6xl mx-auto px-6 py-12 relative z-10 md:px-4 md:py-8">
-				{/* Header */}
+			<div className="xl:max-w-6xl mx-auto px-4 py-8 relative z-10 md:px-2 md:py-4 sm:px-2 sm:py-2">
 				<header
-					className={`flex justify-between items-center mb-16 transition-all duration-700 md:flex-col md:gap-4 md:mb-8 ${
+					className={`flex justify-between items-center mb-10 transition-all duration-700 md:flex-col md:gap-4 md:mb-6 sm:mb-4 ${
 						headerVisible
 							? "opacity-100 transform translate-y-0"
 							: "opacity-0 transform -translate-y-4"
@@ -56,31 +54,30 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 				>
 					<Link
 						href="/"
-						className={`text-white text-3xl font-bold ml-4 flex-1 md:ml-0 hover:text-purple-100 transition-colors duration-300 ${ibmPlexSansThai.className}`}
+						className={`text-white text-2xl font-bold ml-2 flex-1 md:ml-0 hover:text-purple-100 transition-colors duration-300 ${ibmPlexSansThai.className}`}
 					>
 						Eventer
 					</Link>
 				</header>
 
-				<div className="grid grid-cols-1 lg:grid-cols-2 items-center mx-8 pt-8 gap-12 md:pt-4 min-h-[calc(100vh-200px)]">
-					{/* Left Content */}
+				<div className="grid grid-cols-1 lg:grid-cols-2 items-center mx-2 pt-4 gap-6 md:pt-2 min-h-[calc(100vh-120px)] sm:pt-2 sm:gap-4">
 					<div
-						className={`flex flex-col gap-8 transition-all duration-700 ${
+						className={`flex flex-col gap-4 transition-all duration-700 ${
 							leftVisible
 								? "opacity-100 transform translate-x-0"
-								: "opacity-0 transform -translate-x-5"
+								: "opacity-0 transform -translate-x-3"
 						}`}
 					>
-						<div className="flex flex-col items-start gap-6">
+						<div className="flex flex-col items-start gap-4">
 							<h2
-								className={`text-white text-5xl font-bold leading-tight md:text-4xl ${ibmPlexSansThai.className}`}
+								className={`text-white text-3xl font-bold leading-tight md:text-2xl sm:text-xl ${ibmPlexSansThai.className}`}
 							>
 								รับจบทุกงานใน
 								<br />
 								แพลตฟอร์มเดียว
 							</h2>
 							<p
-								className={`text-purple-100 text-xl leading-relaxed md:text-lg max-w-lg ${ibmPlexSansThai.className}`}
+								className={`text-purple-100 text-base leading-relaxed md:text-sm max-w-xs sm:text-xs ${ibmPlexSansThai.className}`}
 							>
 								จัดการทุกอีเวนต์ได้ครบ จบในที่เดียว
 								<br />
@@ -89,31 +86,27 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 						</div>
 					</div>
 
-					{/* Right Content - Login Form */}
 					<div
 						className={`relative transition-all duration-800 ${
 							rightVisible
 								? "opacity-100 transform translate-y-0"
-								: "opacity-0 transform translate-y-24"
+								: "opacity-0 transform translate-y-16"
 						}`}
 					>
-						<div className="bg-white/95 backdrop-blur-sm border border-white/20 rounded-3xl shadow-2xl p-12 max-w-md mx-auto w-full">
-							<div className="text-center mb-12">
-								<h3
-									className={`text-3xl font-bold text-gray-900 mb-4 ${ibmPlexSansThai.className}`}
-								>
+						<div className="bg-white/95 backdrop-blur-sm border border-white/20 rounded-2xl shadow-xl p-6 max-w-xs mx-auto w-full sm:p-4">
+							<div className="text-center mb-6">
+								<h3 className={`text-xl font-bold text-gray-900 mb-2 ${ibmPlexSansThai.className}`}>
 									เข้าสู่ระบบ
 								</h3>
-								<p className={`text-gray-600 text-lg ${ibmPlexSansThai.className}`}>
+								<p className={`text-gray-600 text-base ${ibmPlexSansThai.className}`}>
 									เริ่มต้นจัดการอีเวนต์ของคุณ
 								</p>
 							</div>
 
-							{/* Google Sign In Button */}
 							<button
 								type="button"
 								onClick={handleGoogleSignIn}
-								className="w-full transition-all duration-200 outline-none focus:ring-4 focus:ring-purple-100 rounded-xl"
+								className="w-full transition-all duration-200 outline-none focus:ring-4 focus:ring-purple-100 rounded-lg"
 								style={{ transition: "transform 0.1s" }}
 								onMouseDown={(e) => {
 									e.currentTarget.style.transform = "scale(0.98)";
@@ -125,8 +118,8 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 									e.currentTarget.style.transform = "scale(1)";
 								}}
 							>
-								<div className="flex items-center justify-center gap-4 w-full py-4 px-6 bg-white border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 hover:border-purple-300 hover:shadow-lg transition-all duration-300 shadow-md">
-									<svg className="w-6 h-6" viewBox="0 0 24 24" role="img" aria-label="Google logo">
+								<div className="flex items-center justify-center gap-2 w-full py-3 px-2 bg-white border-2 border-gray-200 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 hover:border-purple-300 hover:shadow-lg transition-all duration-300 shadow-md">
+									<svg className="w-5 h-5" viewBox="0 0 24 24" role="img" aria-label="Google logo">
 										<title>Google</title>
 										<path
 											fill="#4285F4"
@@ -145,13 +138,12 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 											d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
 										/>
 									</svg>
-									<span className={`text-lg ${inter.className}`}>Continue with Google</span>
+									<span className={`text-base ${inter.className}`}>Continue with Google</span>
 								</div>
 							</button>
 
-							{/* Terms */}
-							<div className="text-center mt-8">
-								<p className={`text-gray-500 text-sm leading-relaxed ${inter.className}`}>
+							<div className="text-center mt-4">
+								<p className={`text-gray-500 text-xs leading-relaxed ${inter.className}`}>
 									By continuing, you agree to our{" "}
 									<Link
 										href="#"
@@ -172,15 +164,6 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 					</div>
 				</div>
 			</div>
-
-			{/* <Image
-        src="/Union.png"
-        alt="Background decoration"
-        width={1920}
-        height={1080}
-        className="absolute bottom-0 left-0 w-full h-48 xl:h-32 z-10 pointer-events-none object-cover"
-        priority
-      /> */}
 		</div>
 	);
 }
