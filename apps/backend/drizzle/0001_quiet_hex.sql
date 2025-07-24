@@ -1,0 +1,1 @@
+ALTER TABLE "agenda" ALTER COLUMN "actual_end_time" SET DATA TYPE text;

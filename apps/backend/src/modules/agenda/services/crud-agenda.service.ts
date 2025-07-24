@@ -1,7 +1,7 @@
 import type { AgendaType } from "../agenda.model";
 import type { AgendaRepository } from "../agenda.repository";
 import type { CreateAgendaDTO } from "../dtos/create-agenda.dto";
-import type { UpdateAgendaDTO } from "../dtos/update-agenda.dto";
+import type { EndSessionDTO, UpdateAgendaDTO } from "../dtos/update-agenda.dto";
 
 export async function createAgenda(
 	agendaRepository: AgendaRepository,
@@ -65,4 +65,14 @@ export async function updateAgenda(
 
 export async function deleteAgenda(agendaRepository: AgendaRepository, id: string): Promise<void> {
 	return await agendaRepository.delete(id);
+}
+
+export async function endSession(
+	agendaRepository: AgendaRepository,
+	data: EndSessionDTO
+): Promise<AgendaType> {
+	return await agendaRepository.update(data.id, {
+		id: data.id,
+		actualEndTime: data.actualEndTime,
+	});
 }

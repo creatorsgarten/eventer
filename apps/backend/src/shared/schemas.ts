@@ -50,6 +50,7 @@ export const AgendaSchema = t.Object({
 	duration: t.Number(),
 	activity: t.String(),
 	remarks: t.Nullable(t.String()),
+	actualEndTime: t.Optional(t.Nullable(t.String())),
 });
 
 export const CreateAgendaSchema = t.Object({
@@ -60,6 +61,22 @@ export const CreateAgendaSchema = t.Object({
 	duration: t.Number(),
 	activity: t.String(),
 	remarks: t.Optional(t.Nullable(t.String())),
+});
+
+export const UpdateAgendaSchema = t.Object({
+	id: t.String(),
+	eventId: t.Optional(t.String()),
+	startTime: t.Optional(t.String()),
+	endTime: t.Optional(t.String()),
+	activity: t.Optional(t.String()),
+	remark: t.Optional(t.Nullable(t.String())),
+	picUserId: t.Optional(t.String()),
+	location: t.Optional(t.String()),
+	actualEndTime: t.Optional(t.Nullable(t.String())),
+});
+
+export const DeleteAgendaSchema = t.Object({
+	id: t.String(),
 });
 
 // Auth schemas

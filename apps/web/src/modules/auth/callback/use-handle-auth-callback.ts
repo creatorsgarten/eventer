@@ -52,7 +52,7 @@ export function useAuthCallback() {
 					setMessage("Authentication successful! Redirecting...");
 
 					setTimeout(() => {
-						router.push("/events");
+						router.push("/event");
 					}, 500);
 				},
 				onError: (error) => {

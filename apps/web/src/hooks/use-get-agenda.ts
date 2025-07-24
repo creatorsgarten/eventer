@@ -1,8 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/client";
 
-export function useGetAgenda(eventId: string, day: number) {
-	const { data: agenda, isLoading } = useQuery({
+export function useGetAgenda() {
+	const {
+		data: agenda,
+		isLoading,
+		error,
+		refetch,
+	} = useQuery({
 		queryKey: ["index"],
 		queryFn: () =>
 			client.api.agenda.timer.get({
@@ -13,6 +18,7 @@ export function useGetAgenda(eventId: string, day: number) {
 	return {
 		isLoading,
 		data: agenda?.data?.data,
-		error: agenda?.error,
+		error,
+		refetch,
 	};
 }

@@ -1,15 +1,19 @@
-import { z } from "zod";
+import { type Static, Type } from "@sinclair/typebox";
 
-export const queryEventDTO = z.object({
-	page: z.number().int().min(1, "Page number must be a positive integer").default(1),
-	limit: z
-		.number()
-		.int()
-		.min(1, "Limit must be a positive integer")
-		.max(100, "Limit cannot exceed 100")
-		.default(10),
-	sortBy: z.string().optional(),
-	sortOrder: z.enum(["asc", "desc"]).optional(),
+export const queryEventDTO = Type.Object({
+	page: Type.Integer({
+		minimum: 1,
+		description: "Page number must be a positive integer",
+		default: 1,
+	}),
+	limit: Type.Integer({
+		minimum: 1,
+		maximum: 100,
+		description: "Limit must be a positive integer and cannot exceed 100",
+		default: 10,
+	}),
+	sortBy: Type.Optional(Type.String()),
+	sortOrder: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])),
 });
 
-export type QueryEventDTO = z.infer<typeof queryEventDTO>;
+export type QueryEventDTO = Static<typeof queryEventDTO>;
