@@ -4,12 +4,12 @@ import { env } from "@/env";
 
 // Create a safe backend URL that gracefully handles missing environment variables
 const getBackendUrl = () => {
-	// If we have the environment variable, use it
-	if (env.NEXT_PUBLIC_BACKEND_URL) {
+	// If we have the environment variable and it's not localhost, use it
+	if (env.NEXT_PUBLIC_BACKEND_URL && !env.NEXT_PUBLIC_BACKEND_URL.includes("localhost")) {
 		return env.NEXT_PUBLIC_BACKEND_URL;
 	}
 
-	// During build time or when env var is missing, use a placeholder
+	// During build time or when env var is missing/localhost, use a placeholder
 	// This prevents build failures but API calls will fail gracefully
 	if (typeof window === "undefined") {
 		// Server-side (build time) - use a placeholder that won't cause connection errors

@@ -4,9 +4,8 @@ import { env } from "@/env";
 import { client } from "./client";
 
 export async function getSession() {
-	// During build time, if no backend URL is configured, return null immediately
-	if (!env.NEXT_PUBLIC_BACKEND_URL && typeof window === "undefined") {
-		// Silent return during build - no logging to avoid Vercel build issues
+	// If backend URL points to localhost, return null (not available in production)
+	if (!env.NEXT_PUBLIC_BACKEND_URL || env.NEXT_PUBLIC_BACKEND_URL.includes("localhost")) {
 		return null;
 	}
 
