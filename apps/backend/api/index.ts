@@ -63,7 +63,7 @@ export default async function handler(req: any, res: any) {
 		const host = req.headers.host;
 		const url = new URL(req.url, `${protocol}://${host}`);
 
-		const request = new Request(url, {
+		const request = new Request(url.href, {
 			method: req.method,
 			headers: req.headers,
 			body: req.method !== "GET" && req.method !== "HEAD" ? JSON.stringify(req.body) : undefined,
