@@ -1,12 +1,12 @@
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import { env } from "./env";
-import { agendaRouter } from "./modules/agenda";
-import { authRouter } from "./modules/auth";
-import { eventRouter } from "./modules/event";
-import { homeRouter } from "./modules/home";
-import { userRouter } from "./modules/user";
+import { env } from "../src/env";
+import { agendaRouter } from "../src/modules/agenda";
+import { authRouter } from "../src/modules/auth";
+import { eventRouter } from "../src/modules/event";
+import { homeRouter } from "../src/modules/home";
+import { userRouter } from "../src/modules/user";
 
 const app = new Elysia()
 	.use(cors({ origin: env.CORS_ORIGIN, credentials: true }))
@@ -15,9 +15,7 @@ const app = new Elysia()
 		app.use(homeRouter).use(eventRouter).use(userRouter).use(agendaRouter).use(authRouter)
 	);
 
-// For Vercel serverless deployment
-export default app.fetch;
-
-// Keep the original app export for type checking
-export { app };
-export type AppType = typeof app;
+// Export for Vercel serverless functions
+export default async function handler(req: Request) {
+	return app.fetch(req);
+}
