@@ -35,10 +35,10 @@ export async function listEvents(
 		);
 	}
 	if (query?.startDate) {
-		filtered = filtered.filter((event) => new Date(event.startDate) >= new Date(query.startDate));
+		filtered = filtered.filter((event) => event.startDate >= new Date(query.startDate!));
 	}
 	if (query?.endDate) {
-		filtered = filtered.filter((event) => new Date(event.endDate) <= new Date(query.endDate));
+		filtered = filtered.filter((event) => event.endDate <= new Date(query.endDate!));
 	}
 	if (query?.location) {
 		filtered = filtered.filter((event) =>

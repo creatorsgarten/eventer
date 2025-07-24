@@ -11,13 +11,15 @@ class AgendaRepository {
 
 	async create(agendaData: CreateAgendaDTO): Promise<AgendaType> {
 		try {
-			const newAgenda: AgendaType = {
+			const id = uuidv4();
+			const newAgendaData = {
 				...agendaData,
-				id: uuidv4(),
-				actualEndTime: null, // Initialize as null since it's optional
+				id,
+				actualEndTime: null as string | null, // Initialize as null since it's optional
 			};
-			await this.db.insert(agenda).values(newAgenda);
-			return newAgenda;
+
+			await this.db.insert(agenda).values(newAgendaData);
+			return newAgendaData;
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error("Error creating agenda:", error.message);
