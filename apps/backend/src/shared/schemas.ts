@@ -100,6 +100,17 @@ export const PaginationQuerySchema = t.Object({
 	sortOrder: t.Optional(t.Enum({ asc: "asc", desc: "desc" })),
 });
 
+export const EventQuerySchema = t.Object({
+	page: t.Optional(t.String()),
+	limit: t.Optional(t.String()),
+	sortBy: t.Optional(t.String()),
+	sortOrder: t.Optional(t.Enum({ asc: "asc", desc: "desc" })),
+	name: t.Optional(t.String()),
+	startDate: t.Optional(t.String({ format: "date-time" })),
+	endDate: t.Optional(t.String({ format: "date-time" })),
+	location: t.Optional(t.String()),
+});
+
 // Response schemas
 export const PaginationMetaSchema = t.Object({
 	page: t.Number(),

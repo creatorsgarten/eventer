@@ -4,9 +4,9 @@ import { authMiddleware, optionalAuthMiddleware } from "#backend/shared/middlewa
 import {
 	CreateEventSchema,
 	EventListResponseSchema,
+	EventQuerySchema,
 	EventSchema,
-	PaginationQuerySchema,
-} from "../../shared/schemas";
+} from "#backend/shared/schemas";
 import { EventRepository } from "./event.repository";
 import { createEvent, listEvents } from "./services/crud-event.service";
 
@@ -17,7 +17,12 @@ export const eventRouter = new Elysia({ prefix: "/event" })
 	.get(
 		"/",
 		async ({ query }) => {
-			const events = await listEvents(eventRepository);
+			const events = await listEvents(eventRepository, {
+				name: query.name,
+				startDate: query.startDate,
+				endDate: query.endDate,
+				location: query.location,
+			});
 			return {
 				data: events,
 				pagination: {
@@ -28,7 +33,7 @@ export const eventRouter = new Elysia({ prefix: "/event" })
 			};
 		},
 		{
-			query: PaginationQuerySchema,
+			query: EventQuerySchema,
 			response: EventListResponseSchema,
 		}
 	)
@@ -38,8 +43,8 @@ export const eventRouter = new Elysia({ prefix: "/event" })
 		async ({ body }) => {
 			const transformedData = {
 				...body,
-				startDate: new Date(body.startDate),
-				endDate: new Date(body.endDate),
+				startDate: body.startDate, // Keep as string for database storage
+				endDate: body.endDate, // Keep as string for database storage
 				description: body.description ?? null,
 				createdBy: "user_placeholder", // TODO: Fix auth context injection
 			};
