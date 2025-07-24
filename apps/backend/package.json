@@ -20,12 +20,6 @@
 	"exports": {
 		".": {
 			"import": "./src/index.ts"
-		},
-		"./app": {
-			"import": "./src/app.ts"
-		},
-		"./domains/*": {
-			"import": "./src/domains/*.ts"
 		}
 	},
 	"dependencies": {
@@ -41,7 +35,6 @@
 		"zod": "^3.25.56"
 	},
 	"devDependencies": {
-		"@eventer/typescript-config": "workspace:^",
 		"@types/minimatch": "^6.0.0",
 		"bun-types": "latest",
 		"dotenv": "^16.5.0",
