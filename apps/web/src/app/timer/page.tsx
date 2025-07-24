@@ -6,12 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/atoms/button";
 import { useSessionManager } from "@/hooks/use-session-manager";
 import { useTimer } from "@/hooks/use-timer";
-import {
-	calculateProgress,
-	formatTime,
-	parseTime,
-	toDisplayTime,
-} from "../../../../backend/src/shared/utils/time";
+import { calculateProgress, formatTime, parseTime, toDisplayTime } from "@/lib/time";
 
 export default function TimerPage() {
 	const { data, isLoading, error } = useTimer();

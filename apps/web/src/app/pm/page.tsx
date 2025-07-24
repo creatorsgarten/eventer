@@ -16,8 +16,7 @@ import {
 import { Button } from "@/components/atoms/button";
 import { type AgendaSlot, useSessionManager } from "@/hooks/use-session-manager";
 import { useTimer } from "@/hooks/use-timer";
-import { formatTime, parseTime, toDisplayTime } from "../../../../backend/src/shared/utils/time";
-
+import { formatTime, parseTime, toDisplayTime } from "@/lib/time";
 interface SessionEnd {
 	slotId: string;
 	actualEndTime: Date;

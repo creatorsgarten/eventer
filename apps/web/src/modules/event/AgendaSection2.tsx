@@ -7,11 +7,9 @@ import { useGetAgenda } from "@/hooks/use-get-agenda";
 const agendaHeaders = ["Slot", "Start", "End", "Activity", "Person in Charge", "Remarks"];
 
 export default function AgendaSection() {
-	const _eventId = "static-event-1"; // your static eventId for now
 	const [currentDay] = useState(1);
 
 	const { data: agendaSlots, isLoading, error } = useGetAgenda();
-
 	const sortedSlots = useMemo(() => {
 		if (!agendaSlots) return [];
 		return [...agendaSlots].sort(
