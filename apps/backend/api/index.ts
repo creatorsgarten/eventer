@@ -6,7 +6,7 @@ import { Elysia } from "elysia";
 const app = new Elysia()
 	.use(
 		cors({
-			origin: process.env.CORS_ORIGIN || "*",
+			origin: process.env.CORS_ORIGIN || "https://eventer-web-red.vercel.app",
 			credentials: true,
 		})
 	)
@@ -32,14 +32,14 @@ export default async function handler(req: any, res: any) {
 			path: req.url?.split("?")[0],
 		});
 
-		// Set CORS headers
-		res.setHeader("Access-Control-Allow-Origin", "*");
-		res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-		res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-		// Handle preflight requests
+		// Let Elysia handle CORS and preflight entirely
 		if (req.method === "OPTIONS") {
-			res.status(200).end();
+			const response = await app.handle(new Request("https://dummy", { method: "OPTIONS" }));
+			res.status(response.status);
+			for (const [key, value] of response.headers.entries()) {
+				res.setHeader(key, value);
+			}
+			res.end();
 			return;
 		}
 

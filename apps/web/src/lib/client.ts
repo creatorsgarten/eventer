@@ -20,4 +20,10 @@ const getBackendUrl = () => {
 	return `${window.location.protocol}//${window.location.hostname}:4000`;
 };
 
-export const client = treaty<AppType>(getBackendUrl());
+export const client = treaty<AppType>(getBackendUrl(), {
+	fetch: (input, init) =>
+		fetch(input, {
+			...init,
+			credentials: "include", // ✅ Send cookies
+		}),
+});
