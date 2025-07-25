@@ -14,11 +14,15 @@ class EventRepository {
 			await this.db.insert(events).values({
 				...event,
 				id,
+				startDate: new Date(event.startDate),
+				endDate: new Date(event.endDate),
 			});
 
 			return {
 				...event,
 				id,
+				startDate: new Date(event.startDate),
+				endDate: new Date(event.endDate),
 			};
 		} catch (error) {
 			if (error instanceof Error) {
@@ -47,7 +51,18 @@ class EventRepository {
 
 	async update(id: string, event: UpdateEventDTO): Promise<EventType> {
 		try {
-			const updated = await this.db.update(events).set(event).where(eq(events.id, id)).returning();
+			const updateData: any = { ...event };
+			if (event.startDate) {
+				updateData.startDate = new Date(event.startDate);
+			}
+			if (event.endDate) {
+				updateData.endDate = new Date(event.endDate);
+			}
+			const updated = await this.db
+				.update(events)
+				.set(updateData)
+				.where(eq(events.id, id))
+				.returning();
 
 			if (updated.length === 0 || !updated[0]) {
 				throw new Error("Event not found");

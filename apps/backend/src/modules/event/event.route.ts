@@ -36,10 +36,26 @@ export const eventRouter = new Elysia({ prefix: "/event" })
 	.post(
 		"/",
 		async ({ body }) => {
+			// Handle date conversion explicitly
+			let startDate: string;
+			let endDate: string;
+
+			if (typeof body.startDate === "string") {
+				startDate = body.startDate;
+			} else {
+				startDate = (body.startDate as any).toISOString();
+			}
+
+			if (typeof body.endDate === "string") {
+				endDate = body.endDate;
+			} else {
+				endDate = (body.endDate as any).toISOString();
+			}
+
 			const transformedData = {
 				...body,
-				startDate: new Date(body.startDate),
-				endDate: new Date(body.endDate),
+				startDate,
+				endDate,
 				description: body.description ?? null,
 				createdBy: "user_placeholder", // TODO: Fix auth context injection
 			};

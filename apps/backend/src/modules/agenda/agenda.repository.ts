@@ -14,6 +14,7 @@ class AgendaRepository {
 			const newAgenda: AgendaType = {
 				...agendaData,
 				id: uuidv4(),
+				actualEndTime: null,
 			};
 			await this.db.insert(agenda).values(newAgenda);
 			return newAgenda;
