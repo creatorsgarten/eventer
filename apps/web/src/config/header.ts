@@ -1,3 +1,1 @@
-export const authHeaders: Record<string, string> = {
-	credentials: "include",
-};
+export const authHeaders: Record<string, string> = {};

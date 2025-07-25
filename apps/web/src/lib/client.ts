@@ -21,9 +21,15 @@ const getBackendUrl = () => {
 };
 
 export const client = treaty<AppType>(getBackendUrl(), {
-	fetch: (input, init) =>
+	fetcher: (input, init) =>
 		fetch(input, {
 			...init,
 			credentials: "include", // ✅ Send cookies
+			headers: {
+				...init?.headers,
+				"Content-Type": "application/json", // Ensure JSON content type
+				"X-Custom-Header": "betich", // Example of adding a custom header
+				"Referrer-Policy": "origin-when-cross-origin", // Set referrer policy
+			},
 		}),
 });
