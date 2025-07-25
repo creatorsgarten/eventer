@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      # set database url to the postgres service that's running in the db container
+      - DATABASE_URL=postgresql://eventer:eventer@db:5432/eventer
+    env_file:
+      - .env.docker.backend
+    depends_on:
+      - db
+    networks:
+      - eventer-network
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env.docker.frontend
+    depends_on:
+      - backend
+    networks:
+      - eventer-network
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=eventer
+      - POSTGRES_USER=eventer
+      - POSTGRES_PASSWORD=eventer
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - eventer-network
+
+volumes:
+  postgres_data:
+
+networks:
+  eventer-network:
+    driver: bridge
