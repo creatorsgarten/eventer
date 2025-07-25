@@ -31,3 +31,6 @@ lerna-debug.log*
 
 sqlite.db
 .vercel
+
+.wrangler
+.dev.vars

@@ -12,7 +12,7 @@ import { createEvent, listEvents } from "./services/crud-event.service";
 
 const eventRepository = new EventRepository(db);
 
-export const eventRouter = new Elysia({ prefix: "/event" })
+export const eventRouter = new Elysia({ prefix: "/api/event" })
 	.use(optionalAuthMiddleware)
 	.get(
 		"/",

@@ -23,7 +23,7 @@ const agendaRepository = new AgendaRepository(db);
 
 //TODO : Implement useGetAgenda(eventId, currentDay)
 
-export const agendaRouter = new Elysia({ prefix: "/agenda" })
+export const agendaRouter = new Elysia({ prefix: "/api/agenda" })
 
 	.get(
 		"/timer",

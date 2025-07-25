@@ -1,19 +1,9 @@
 {
+	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"version": 2,
-	"builds": [
-		{
-			"src": "api/index.ts",
-			"use": "@vercel/node"
+	"functions": {
+		"api/index.ts": {
+			"memory": 512
 		}
-	],
-	"headers": [
-		{
-			"source": "/api/(.*)",
-			"headers": [
-				{ "key": "Access-Control-Allow-Origin", "value": "*" },
-				{ "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
-				{ "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
-			]
-		}
-	]
+	}
 }
