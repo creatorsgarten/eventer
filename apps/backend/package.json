@@ -4,6 +4,7 @@
 	"scripts": {
 		"dev": "bun --watch src/index.ts",
 		"build": "bun build src/index.ts --outdir ./dist --target=node",
+		"vercel-build": "echo 'No build step needed for serverless'",
 		"start": "bun run dist/index.js",
 		"typecheck": "bun tsc --noEmit",
 		"db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
@@ -19,12 +20,6 @@
 	"exports": {
 		".": {
 			"import": "./src/index.ts"
-		},
-		"./app": {
-			"import": "./src/app.ts"
-		},
-		"./domains/*": {
-			"import": "./src/domains/*.ts"
 		}
 	},
 	"dependencies": {
@@ -40,7 +35,6 @@
 		"zod": "^3.25.56"
 	},
 	"devDependencies": {
-		"@eventer/typescript-config": "workspace:^",
 		"@types/minimatch": "^6.0.0",
 		"bun-types": "latest",
 		"dotenv": "^16.5.0",

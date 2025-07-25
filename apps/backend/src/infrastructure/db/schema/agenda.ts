@@ -9,4 +9,5 @@ export const agenda = table("agenda", {
 	duration: integer("duration").notNull(), // in minutes
 	activity: text("activity").notNull(), // e.g., "Keynote"
 	remarks: text("remarks").default(""),
+	actualEndTime: text("actual_end_time"), // Actual end time as ISO string when session is ended
 });

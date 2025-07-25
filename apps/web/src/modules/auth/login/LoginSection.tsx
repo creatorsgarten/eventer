@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Loading } from "@/components/organisms/loading/Loading";
 import { authHeaders } from "@/config/header";
-import { SIGN_IN_LINK } from "@/config/link";
+import { getSignInLink } from "@/config/link";
 import { useSession } from "@/hooks/use-session";
 import { client } from "@/lib/client";
 import { AuthenticatedUserLogin } from "./AuthenticatedUserLogin";
@@ -16,7 +16,7 @@ export function LoginSection() {
 
 	const handleGoogleSignIn = useCallback(() => {
 		// Redirect to your backend's Google auth endpoint
-		router.push(SIGN_IN_LINK);
+		router.push(getSignInLink());
 	}, [router]);
 
 	const handleSignOut = useCallback(() => {

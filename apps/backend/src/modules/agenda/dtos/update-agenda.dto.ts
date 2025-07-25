@@ -10,6 +10,17 @@ export const updateAgendaDTO = Type.Object({
 	),
 	picUserId: Type.Optional(Type.String({ format: "uuid", description: "Invalid user ID" })),
 	location: Type.Optional(Type.String()),
+	actualEndTime: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])),
 });
 
 export type UpdateAgendaDTO = Static<typeof updateAgendaDTO>;
+
+export const endSessionDTO = Type.Object({
+	id: Type.String({ format: "uuid", description: "Invalid agenda ID" }),
+	actualEndTime: Type.String({
+		format: "date-time",
+		description: "Invalid end time format",
+	}),
+});
+
+export type EndSessionDTO = Static<typeof endSessionDTO>;

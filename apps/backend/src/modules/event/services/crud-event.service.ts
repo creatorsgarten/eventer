@@ -16,7 +16,12 @@ export async function createEvent(eventRepository: EventRepository, data: Create
 
 export async function listEvents(
 	eventRepository: EventRepository,
-	query?: CreateEventDTO
+	query?: {
+		name?: string;
+		startDate?: string;
+		endDate?: string;
+		location?: string;
+	}
 ): Promise<EventType[]> {
 	// TODO implement query CRUD
 	// TODO Refactor pls
@@ -30,10 +35,10 @@ export async function listEvents(
 		);
 	}
 	if (query?.startDate) {
-		filtered = filtered.filter((event) => new Date(event.startDate) >= query.startDate);
+		filtered = filtered.filter((event) => event.startDate >= new Date(query.startDate!));
 	}
 	if (query?.endDate) {
-		filtered = filtered.filter((event) => new Date(event.endDate) <= query.endDate);
+		filtered = filtered.filter((event) => event.endDate <= new Date(query.endDate!));
 	}
 	if (query?.location) {
 		filtered = filtered.filter((event) =>
