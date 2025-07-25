@@ -12,7 +12,7 @@ import {
 
 const userRepository = new UserRepository(db);
 
-export const authRouter = new Elysia({ prefix: "/auth" })
+export const authRouter = new Elysia({ prefix: "/api/auth" })
 	.get(
 		"/session",
 		async ({ cookie: { session } }) => {

@@ -20,6 +20,6 @@
 		},
 		"types": ["bun-types"]
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "api/edge.ts"],
 	"exclude": ["node_modules", "dist"]
 }

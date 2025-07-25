@@ -18,7 +18,7 @@ import { UserRepository } from "./user.repository";
 
 const userRepository = new UserRepository(db);
 
-export const userRouter = new Elysia({ prefix: "/user" })
+export const userRouter = new Elysia({ prefix: "/api/user" })
 	.post(
 		"/",
 		async ({ body }) => {
