@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import { supabase } from "#backend/infrastructure/db/supabase";
 import { UserRepository } from "#backend/modules/user/user.repository";
@@ -102,7 +102,10 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
 			};
 		},
 		{
-			body: AuthCallbackSchema,
+			body: t.Object({
+				access_token: t.String(),
+				refresh_token: t.String(),
+			}),
 			response: AuthSuccessResponseSchema,
 		}
 	)
