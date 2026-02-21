@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import { authMiddleware, optionalAuthMiddleware } from "#backend/shared/middleware/auth.middleware";
+import { rateLimit, rateLimitPresets } from "#backend/shared/middleware/rate-limit.middleware";
 import {
 	CreateEventSchema,
 	EventListResponseSchema,
@@ -13,6 +14,13 @@ import { createEvent, listEvents } from "./services/crud-event.service";
 const eventRepository = new EventRepository(db);
 
 export const eventRouter = new Elysia({ prefix: "/api/event" })
+	// Apply moderate rate limiting to event endpoints (30 requests per minute)
+	.use(
+		rateLimit({
+			...rateLimitPresets.moderate,
+			message: "Too many requests to event API. Please slow down.",
+		})
+	)
 	.use(optionalAuthMiddleware)
 	.get(
 		"/",

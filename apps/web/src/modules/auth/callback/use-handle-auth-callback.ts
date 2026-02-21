@@ -51,9 +51,8 @@ export function useAuthCallback() {
 					setUserInfo(res?.user ?? null);
 					setMessage("Authentication successful! Redirecting...");
 
-					setTimeout(() => {
-						router.push("/event");
-					}, 500);
+					// Immediate redirect
+					router.push("/event");
 				},
 				onError: (error) => {
 					setStatus("error");

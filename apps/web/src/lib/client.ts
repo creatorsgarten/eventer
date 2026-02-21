@@ -21,15 +21,16 @@ const getBackendUrl = () => {
 };
 
 export const client = treaty<AppType>(getBackendUrl(), {
-	fetcher: (input, init) =>
-		fetch(input, {
+	fetcher: (input, init) => {
+		// Let Eden Treaty handle Content-Type automatically
+		const headers = new Headers(init?.headers);
+		headers.set("X-Custom-Header", "betich");
+		headers.set("Referrer-Policy", "origin-when-cross-origin");
+
+		return fetch(input, {
 			...init,
 			credentials: "include", // ✅ Send cookies
-			headers: {
-				...init?.headers,
-				"Content-Type": "application/json", // Ensure JSON content type
-				"X-Custom-Header": "betich", // Example of adding a custom header
-				"Referrer-Policy": "origin-when-cross-origin", // Set referrer policy
-			},
-		}),
+			headers,
+		});
+	},
 });

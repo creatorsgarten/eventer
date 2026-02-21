@@ -25,13 +25,10 @@ const conditionalSwagger = () => {
 const app = new Elysia({ aot: false })
 	.use(
 		cors({
-			// origin: "https://eventer.betich.me",
-			origin: /.*\.betich\.me$/,
-			// [
-			//   /.*\.betich\.me$/,
-			//   process.env.NODE_ENV === "development" ? /localhost:\d+/ : "",
-			//   env.CORS_ORIGIN || "",
-			// ],
+			origin:
+				process.env.NODE_ENV === "production"
+					? [/^https:\/\/.*\.betich\.me$/] // Only your domain in production
+					: [env.CORS_ORIGIN, /localhost:\d+/], // Allow localhost in dev
 			credentials: true,
 			preflight: true,
 			methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -43,9 +40,20 @@ const app = new Elysia({ aot: false })
 	.use(userRouter)
 	.use(agendaRouter)
 	.use(authRouter)
-	.onRequest(({ set }) => {
+	.onRequest(({ request, set }) => {
 		set.headers["access-control-allow-credentials"] = "true";
-		// set.headers["access-control-allow-origin"] = "https://eventer.betich.me";
+
+		// Force HTTPS in production
+		if (process.env.NODE_ENV === "production") {
+			const proto = request.headers.get("x-forwarded-proto");
+			if (proto && proto !== "https") {
+				const url = new URL(request.url);
+				url.protocol = "https:";
+				set.status = 301;
+				set.headers.location = url.toString();
+				return;
+			}
+		}
 	});
 // .group("/api", (app) =>
 //   app

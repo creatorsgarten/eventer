@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/button";
 
 interface AuthenticatedUserLoginProps {
@@ -7,6 +10,7 @@ interface AuthenticatedUserLoginProps {
 	email: string;
 	id: string;
 	handleSignOut: () => void;
+	rateLimitMessage?: string;
 }
 
 export function AuthenticatedUserLogin({
@@ -15,7 +19,10 @@ export function AuthenticatedUserLogin({
 	email,
 	id,
 	handleSignOut,
+	rateLimitMessage,
 }: AuthenticatedUserLoginProps) {
+	const router = useRouter();
+
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-50">
 			<div className="max-w-md w-full space-y-8">
@@ -38,9 +45,19 @@ export function AuthenticatedUserLogin({
 								<p className="text-xs text-gray-400 mt-1">ID: {id}</p>
 							</div>
 						</div>
-						<Button type="button" onClick={handleSignOut} variant="destructive">
-							Sign Out
-						</Button>
+						{rateLimitMessage && (
+							<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+								<p className="text-red-600 text-sm">⚠️ {rateLimitMessage}</p>
+							</div>
+						)}
+						<div className="flex flex-col gap-2">
+							<Button type="button" onClick={() => router.push("/event")}>
+								Go to Events
+							</Button>
+							<Button type="button" onClick={handleSignOut} variant="destructive">
+								Sign Out
+							</Button>
+						</div>
 					</div>
 				</div>
 			</div>

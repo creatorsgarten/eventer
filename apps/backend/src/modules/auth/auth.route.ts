@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import { supabase } from "#backend/infrastructure/db/supabase";
 import { UserRepository } from "#backend/modules/user/user.repository";
+import { rateLimit, rateLimitPresets } from "../../shared/middleware/rate-limit.middleware";
 import {
 	AuthCallbackSchema,
 	AuthResponseSchema,
@@ -13,6 +14,13 @@ import {
 const userRepository = new UserRepository(db);
 
 export const authRouter = new Elysia({ prefix: "/api/auth" })
+	// Apply strict rate limiting to all auth endpoints (5 requests per minute)
+	.use(
+		rateLimit({
+			...rateLimitPresets.strict,
+			message: "Too many authentication attempts. Please try again later.",
+		})
+	)
 	.get(
 		"/session",
 		async ({ cookie: { session } }) => {

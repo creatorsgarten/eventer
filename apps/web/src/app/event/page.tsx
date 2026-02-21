@@ -7,7 +7,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/atoms/button";
 import { Input } from "@/components/atoms/input";
-import { getSession } from "@/lib/auth";
+import { useSession } from "@/hooks/use-session";
 import AgendaSection from "../../modules/event/AgendaSection";
 // Import all section components
 import OverviewSection from "../../modules/event/OverviewSection";
@@ -100,7 +100,9 @@ export default function EventManagementSPA() {
 		getEventData(eventId)
 	);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [user, setUser] = useState<User | null>(null);
+
+	// Use the client-side session hook instead of server action
+	const { user } = useSession();
 
 	// Navigation items - all ready for backend
 	const navigationItems: NavigationItem[] = [
@@ -116,18 +118,6 @@ export default function EventManagementSPA() {
 		const timer = setInterval(() => {
 			setCurrentTime(new Date());
 		}, 1000);
-
-		// Fetch user session
-		const fetchUser = async () => {
-			try {
-				const sessionUser = await getSession();
-				setUser(sessionUser);
-			} catch (error) {
-				console.error("Failed to fetch user session:", error);
-			}
-		};
-
-		fetchUser();
 
 		return () => clearInterval(timer);
 	}, []);
