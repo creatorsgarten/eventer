@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import { authMiddleware, optionalAuthMiddleware } from "#backend/shared/middleware/auth.middleware";
 import { rateLimit, rateLimitPresets } from "#backend/shared/middleware/rate-limit.middleware";
@@ -9,7 +9,7 @@ import {
 	EventSchema,
 } from "#backend/shared/schemas";
 import { EventRepository } from "./event.repository";
-import { createEvent, listEvents } from "./services/crud-event.service";
+import { createEvent, getEventById, listEvents } from "./services/crud-event.service";
 
 const eventRepository = new EventRepository(db);
 
@@ -22,6 +22,23 @@ export const eventRouter = new Elysia({ prefix: "/api/event" })
 		})
 	)
 	.use(optionalAuthMiddleware)
+	.get(
+		"/:id",
+		async ({ params, error }) => {
+			const event = await getEventById(eventRepository, params.id);
+			if (!event) {
+				return error(404, { error: "Event not found" });
+			}
+			return event;
+		},
+		{
+			params: t.Object({ id: t.String() }),
+			response: {
+				200: EventSchema,
+				404: t.Object({ error: t.String() }),
+			},
+		}
+	)
 	.get(
 		"/",
 		async ({ query }) => {

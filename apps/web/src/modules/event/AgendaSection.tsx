@@ -1,9 +1,9 @@
 "use client";
 
-import { Edit, GripVertical, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Download, Edit, GripVertical, Printer, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { EventData } from "@/app/event/page";
 import { Button } from "@/components/atoms/button";
-// shadcn dialog imports
 import {
 	Dialog,
 	DialogClose,
@@ -17,6 +17,7 @@ import { Input } from "@/components/atoms/input";
 import { useCreateAgenda } from "@/hooks/use-create-agenda";
 import { useDeleteAgenda } from "@/hooks/use-delete-agenda";
 import { useGetAgenda } from "@/hooks/use-get-agenda";
+import { useSessionManager } from "@/hooks/use-session-manager";
 import { useUpdateAgenda } from "@/hooks/use-update-agenda";
 
 type AgendaSlot = {
@@ -53,36 +54,41 @@ const agendaHeaders = [
 	"Activity",
 	"Person in Charge",
 	"Remarks",
+	"Status",
 	"Actions",
 ];
 
-export default function AgendaSection() {
-	const eventId = "static-event-1";
+export default function AgendaSection({ eventData }: { eventData: EventData }) {
+	const eventId = eventData.id;
 	const [currentDay, setCurrentDay] = useState(1);
 	const [hasMounted, setHasMounted] = useState(false);
+	const [sessionErrors, setSessionErrors] = useState<Record<string, string>>({});
+	const [endingSlots, setEndingSlots] = useState<Record<string, boolean>>({});
 
-	// Calculate event dates based on a static event (you can modify this to use props)
-	const eventStartDate = "2025-07-26"; // Day 1
 	const eventDays = useMemo(() => {
-		const startDate = new Date(eventStartDate);
-		// Assuming 3 days event, you can modify this logic
-		return Array.from({ length: 3 }, (_, i) => {
-			const date = new Date(startDate);
-			date.setDate(startDate.getDate() + i);
+		const start = new Date(eventData.startDate);
+		const end = new Date(eventData.endDate);
+		const dayCount = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1);
+		return Array.from({ length: dayCount }, (_, i) => {
+			const date = new Date(start);
+			date.setDate(start.getDate() + i);
 			return {
 				day: i + 1,
-				date: date.toISOString().split("T")[0], // YYYY-MM-DD format
+				date: date.toISOString().split("T")[0] ?? "",
 				displayDate: date.toLocaleDateString("en-US", {
 					month: "short",
 					day: "numeric",
 				}),
 			};
 		});
-	}, []);
+	}, [eventData.startDate, eventData.endDate]);
 
 	const currentDayData = eventDays[currentDay - 1];
 
-	const { data: agendaSlots, isLoading, error, refetch } = useGetAgenda(); //eventId, currentDay - previous input
+	const { data: agendaSlots, isLoading, error, refetch } = useGetAgenda();
+
+	const { handleEndSession, handleUndoSession, getSessionEndInfo, formatAPNotation } =
+		useSessionManager();
 
 	// Dialog state
 	const [open, setOpen] = useState(false);
@@ -328,6 +334,45 @@ export default function AgendaSection() {
 		}
 	};
 
+	// AP notation helper — checks local session state first, then backend actualEndTime
+	const getAPForSlot = (slot: AgendaSlot): { notation: string; isLate: boolean } | null => {
+		const localInfo = getSessionEndInfo(slot.id);
+		if (localInfo) {
+			return {
+				notation: formatAPNotation(localInfo.difference),
+				isLate: localInfo.difference > 0,
+			};
+		}
+		if (slot.actualEndTime) {
+			const diff = Math.round(
+				(new Date(slot.actualEndTime).getTime() - new Date(slot.end).getTime()) / 60000
+			);
+			return { notation: formatAPNotation(diff), isLate: diff > 0 };
+		}
+		return null;
+	};
+
+	const handleEndSessionClick = async (slot: AgendaSlot) => {
+		setSessionErrors((prev) => ({ ...prev, [slot.id]: "" }));
+		setEndingSlots((prev) => ({ ...prev, [slot.id]: true }));
+		try {
+			await handleEndSession(slot);
+			refetch();
+		} catch (err) {
+			setSessionErrors((prev) => ({
+				...prev,
+				[slot.id]: err instanceof Error ? err.message : "Failed to end session",
+			}));
+		} finally {
+			setEndingSlots((prev) => ({ ...prev, [slot.id]: false }));
+		}
+	};
+
+	const handleUndoSessionClick = (slot: AgendaSlot) => {
+		handleUndoSession(slot);
+		refetch();
+	};
+
 	const sortedSlots = useMemo(() => {
 		if (!agendaSlots || !Array.isArray(agendaSlots)) return [];
 
@@ -411,6 +456,40 @@ export default function AgendaSection() {
 		});
 	}, [agendaSlots, currentDayData]);
 
+	const handleDownloadCSV = useCallback(() => {
+		const headers = ["Slot", "Start", "End", "Activity", "Person in Charge", "Remarks", "Status"];
+		const rows = sortedSlots.map((slot, idx) => {
+			const ap = getAPForSlot(slot);
+			const fmt = (d: string) =>
+				new Date(d).toLocaleTimeString("en-US", {
+					hour: "2-digit",
+					minute: "2-digit",
+					hour12: false,
+					timeZone: "Asia/Bangkok",
+				});
+			const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
+			return [
+				idx + 1,
+				fmt(slot.start),
+				fmt(slot.end),
+				esc(slot.activity),
+				esc(slot.personincharge),
+				esc(slot.remarks ?? ""),
+				ap ? ap.notation : "–",
+			].join(",");
+		});
+		const csv = [headers.join(","), ...rows].join("\n");
+		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `agenda-day${currentDay}-${currentDayData?.date ?? ""}.csv`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}, [sortedSlots, currentDay, currentDayData]);
+
 	useEffect(() => {
 		setHasMounted(true);
 	}, []);
@@ -460,6 +539,29 @@ export default function AgendaSection() {
 									</div>
 								</Button>
 							))}
+						</div>
+
+						<div className="flex gap-2">
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={handleDownloadCSV}
+								className="flex items-center gap-1"
+								title="Download CSV"
+							>
+								<Download className="h-4 w-4" />
+								<span className="hidden sm:inline text-sm">CSV</span>
+							</Button>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => window.print()}
+								className="flex items-center gap-1"
+								title="Print"
+							>
+								<Printer className="h-4 w-4" />
+								<span className="hidden sm:inline text-sm">Print</span>
+							</Button>
 						</div>
 
 						<Dialog open={open} onOpenChange={setOpen}>
@@ -734,6 +836,50 @@ export default function AgendaSection() {
 											<td className="px-6 py-4">{slot.personincharge}</td>
 											<td className="px-6 py-4">{slot.remarks || "-"}</td>
 											<td className="px-6 py-4">
+												{(() => {
+													const ap = hasMounted ? getAPForSlot(slot) : null;
+													const isEnding = endingSlots[slot.id];
+													const err = sessionErrors[slot.id];
+													const hasLocal = !!getSessionEndInfo(slot.id);
+													if (ap) {
+														return (
+															<div className="flex flex-col gap-1">
+																<span
+																	className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold ${ap.isLate ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}
+																>
+																	{ap.notation}
+																</span>
+																{hasLocal && (
+																	<Button
+																		variant="outline"
+																		size="sm"
+																		onClick={() => handleUndoSessionClick(slot)}
+																		className="h-6 px-2 text-xs text-gray-500"
+																	>
+																		<X className="h-3 w-3 mr-1" />
+																		Undo
+																	</Button>
+																)}
+															</div>
+														);
+													}
+													return (
+														<div className="flex flex-col gap-1">
+															<Button
+																variant="outline"
+																size="sm"
+																onClick={() => handleEndSessionClick(slot)}
+																disabled={isEnding}
+																className="h-7 px-2 text-xs text-orange-700 border-orange-300 hover:bg-orange-50"
+															>
+																{isEnding ? "Ending…" : "End Session"}
+															</Button>
+															{err && <p className="text-xs text-red-500">{err}</p>}
+														</div>
+													);
+												})()}
+											</td>
+											<td className="px-6 py-4">
 												<div className="flex items-center gap-2">
 													<Button
 														variant="outline"
@@ -834,6 +980,51 @@ export default function AgendaSection() {
 											<p className="text-sm text-gray-600">{slot.remarks}</p>
 										</div>
 									)}
+
+									{hasMounted &&
+										(() => {
+											const ap = getAPForSlot(slot);
+											const isEnding = endingSlots[slot.id];
+											const err = sessionErrors[slot.id];
+											const hasLocal = !!getSessionEndInfo(slot.id);
+											return (
+												<div className="flex flex-wrap items-center gap-2 pt-2 border-t">
+													{ap ? (
+														<>
+															<span
+																className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold ${ap.isLate ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}
+															>
+																{ap.notation}
+															</span>
+															{hasLocal && (
+																<Button
+																	variant="outline"
+																	size="sm"
+																	onClick={() => handleUndoSessionClick(slot)}
+																	className="h-7 px-2 text-xs text-gray-500"
+																>
+																	<X className="h-3 w-3 mr-1" />
+																	Undo
+																</Button>
+															)}
+														</>
+													) : (
+														<>
+															<Button
+																variant="outline"
+																size="sm"
+																onClick={() => handleEndSessionClick(slot)}
+																disabled={isEnding}
+																className="h-7 px-2 text-xs text-orange-700 border-orange-300 hover:bg-orange-50"
+															>
+																{isEnding ? "Ending…" : "End Session"}
+															</Button>
+															{err && <p className="text-xs text-red-500">{err}</p>}
+														</>
+													)}
+												</div>
+											);
+										})()}
 
 									<div className="flex items-center justify-end gap-2 pt-2 border-t">
 										<Button
