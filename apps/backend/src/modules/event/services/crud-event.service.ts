@@ -21,6 +21,7 @@ export async function listEvents(
 		startDate?: string;
 		endDate?: string;
 		location?: string;
+		createdBy?: string;
 	}
 ): Promise<EventType[]> {
 	// TODO implement query CRUD
@@ -44,11 +45,11 @@ export async function listEvents(
 		filtered = filtered.filter((event) =>
 			event.location.toLowerCase().includes(query.location.toLowerCase())
 		);
-		if (query?.createdBy) {
-			filtered = filtered.filter((event) =>
-				event.createdBy.toLowerCase().includes(query.createdBy.toLowerCase())
-			);
-		}
+	}
+	if (query?.createdBy) {
+		filtered = filtered.filter((event) =>
+			event.createdBy.toLowerCase().includes(query.createdBy.toLowerCase())
+		);
 	}
 	return filtered;
 }

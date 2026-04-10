@@ -1,13 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loading } from "@/components/organisms/loading/Loading";
-import { authHeaders } from "@/config/header";
-import { getSignInLink } from "@/config/link";
 import { useRateLimit } from "@/hooks/use-rate-limit";
 import { useSession } from "@/hooks/use-session";
-import { client } from "@/lib/client";
+import { createClient } from "@/lib/supabase";
 import { AuthenticatedUserLogin } from "./AuthenticatedUserLogin";
 import { UnAuthenticatedUserLogin } from "./UnauthenticatedUserLogin";
 
@@ -15,6 +13,7 @@ export function LoginSection() {
 	const { user, isLoading, refetch } = useSession();
 	const router = useRouter();
 	const [rateLimitMessage, setRateLimitMessage] = useState<string>("");
+	const supabase = useMemo(() => createClient(), []);
 
 	// Rate limit: 5 login attempts per minute
 	const loginRateLimit = useRateLimit({
@@ -54,24 +53,28 @@ export function LoginSection() {
 	}, [user, isLoading, router]);
 
 	const handleGoogleSignIn = useCallback(async () => {
-		const { success } = await loginRateLimit.execute(() => {
-			// Redirect to your backend's Google auth endpoint
-			router.push(getSignInLink());
+		const { success } = await loginRateLimit.execute(async () => {
+			const { error } = await supabase.auth.signInWithOAuth({
+				provider: "google",
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback`,
+				},
+			});
+
+			if (error) {
+				console.error("Error signing in:", error);
+				setRateLimitMessage(error.message);
+			}
 		});
 
 		if (!success && rateLimitMessage) {
 			console.warn(rateLimitMessage);
 		}
-	}, [router, loginRateLimit, rateLimitMessage]);
+	}, [supabase, loginRateLimit, rateLimitMessage]);
 
 	const handleSignOut = useCallback(async () => {
 		const { success } = await logoutRateLimit.execute(async () => {
-			await client.api.auth.logout.post(
-				{},
-				{
-					...authHeaders,
-				}
-			);
+			await supabase.auth.signOut();
 			refetch();
 			router.refresh();
 		});
@@ -79,7 +82,7 @@ export function LoginSection() {
 		if (!success && rateLimitMessage) {
 			console.warn(rateLimitMessage);
 		}
-	}, [refetch, router, logoutRateLimit, rateLimitMessage]);
+	}, [supabase, refetch, router, logoutRateLimit, rateLimitMessage]);
 
 	if (isLoading) {
 		return (

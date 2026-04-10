@@ -24,11 +24,11 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
 	.get(
 		"/session",
 		async ({ cookie: { session } }) => {
-			if (!session) {
+			if (!session?.value) {
 				return { user: null };
 			}
 
-			const { data, error } = await supabase.auth.getUser(session.value);
+			const { data, error } = await supabase.auth.getUser(session.value as string);
 			if (error || !data.user) {
 				return { user: null };
 			}
@@ -117,7 +117,7 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
 	.post(
 		"/logout",
 		({ cookie: { session }, set }) => {
-			if (!session) {
+			if (!session?.value) {
 				set.status = 400;
 				return { error: "No session to logout" };
 			}

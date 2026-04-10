@@ -1,13 +1,14 @@
 "use client";
 
-import { Clock, Menu, MoreHorizontal, Search, X } from "lucide-react";
+import { Clock, LogOut, Menu, MoreHorizontal, Search, X } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/atoms/button";
 import { Input } from "@/components/atoms/input";
 import { useSession } from "@/hooks/use-session";
+import { createClient } from "@/lib/supabase";
 import AgendaSection from "../../modules/event/AgendaSection";
 // Import all section components
 import OverviewSection from "../../modules/event/OverviewSection";
@@ -91,6 +92,7 @@ const getEventData = (eventId: string): Event => {
 
 export default function EventManagementSPA() {
 	const params = useParams();
+	const router = useRouter();
 	const eventId = params.eventId as string;
 	const [currentTime, setCurrentTime] = useState(new Date());
 	const [hasMounted, setHasMounted] = useState(false);
@@ -100,9 +102,28 @@ export default function EventManagementSPA() {
 		getEventData(eventId)
 	);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+	const userMenuRef = useRef<HTMLDivElement>(null);
 
 	// Use the client-side session hook instead of server action
 	const { user } = useSession();
+	const supabase = createClient();
+
+	const handleSignOut = async () => {
+		await supabase.auth.signOut();
+		router.push("/auth/login");
+	};
+
+	// Close the user menu when clicking outside
+	useEffect(() => {
+		function handleClickOutside(e: MouseEvent) {
+			if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+				setIsUserMenuOpen(false);
+			}
+		}
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
 
 	// Navigation items - all ready for backend
 	const navigationItems: NavigationItem[] = [
@@ -284,9 +305,30 @@ export default function EventManagementSPA() {
 							<div className="text-sm font-medium truncate">{user?.name || "Loading..."}</div>
 							<div className="text-xs text-gray-500 truncate">{user?.email || "Loading..."}</div>
 						</div>
-						<Button type="button" className="w-6 h-6 p-0 lg:flex hidden">
-							<MoreHorizontal className="w-4 h-4" />
-						</Button>
+
+						{/* Three-dot menu */}
+						<div ref={userMenuRef} className="relative hidden lg:flex">
+							<Button
+								type="button"
+								className="w-6 h-6 p-0"
+								onClick={() => setIsUserMenuOpen((prev) => !prev)}
+							>
+								<MoreHorizontal className="w-4 h-4" />
+							</Button>
+
+							{isUserMenuOpen && (
+								<div className="absolute bottom-8 right-0 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
+									<button
+										type="button"
+										onClick={handleSignOut}
+										className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+									>
+										<LogOut className="w-4 h-4" />
+										Sign out
+									</button>
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>

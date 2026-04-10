@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "bun --watch src/index.ts",
 		"dev:cf": "wrangler dev",
-		"build": "bun build src/index.ts --outdir ./dist --target=node",
+		"build": "bun build src/index.ts --outdir ./dist --target=node --minify --external @supabase/supabase-js --external postgres --external drizzle-orm",
 		"start": "bun run dist/index.js",
 		"typecheck": "bun tsc --noEmit",
 		"db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",

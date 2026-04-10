@@ -1,9 +1,16 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"version": 2,
+	"rewrites": [
+		{
+			"source": "/(.*)",
+			"destination": "/api/index"
+		}
+	],
 	"functions": {
-		"api/index.ts": {
-			"memory": 512
+		"api/**/*.ts": {
+			"memory": 1024,
+			"maxDuration": 30
 		}
 	}
 }

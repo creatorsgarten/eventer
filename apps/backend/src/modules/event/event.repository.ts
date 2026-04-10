@@ -11,16 +11,21 @@ class EventRepository {
 	async create(event: CreateEventDTO): Promise<EventType> {
 		try {
 			const id = uuidv4();
+			const startDate = new Date(event.startDate);
+			const endDate = new Date(event.endDate);
+
 			await this.db.insert(events).values({
 				...event,
 				id,
-				startDate: new Date(event.startDate), // Convert string to Date for database
-				endDate: new Date(event.endDate), // Convert string to Date for database
+				startDate,
+				endDate,
 			});
 
 			return {
 				...event,
 				id,
+				startDate,
+				endDate,
 			};
 		} catch (error) {
 			if (error instanceof Error) {
@@ -49,10 +54,10 @@ class EventRepository {
 
 	async update(id: string, event: UpdateEventDTO): Promise<EventType> {
 		try {
-			const updateData = {
+			const updateData: Partial<EventType> = {
 				...event,
-				...(event.startDate && { startDate: new Date(event.startDate) }), // Convert string to Date if provided
-				...(event.endDate && { endDate: new Date(event.endDate) }), // Convert string to Date if provided
+				startDate: new Date(event.startDate),
+				endDate: new Date(event.endDate),
 			};
 
 			const updated = await this.db
