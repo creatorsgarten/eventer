@@ -30,6 +30,8 @@ export const EventSchema = t.Object({
 	location: t.String(),
 	description: t.Nullable(t.String()),
 	createdBy: t.String(),
+	createdAt: t.Date(),
+	updatedAt: t.Date(),
 });
 
 export const CreateEventSchema = t.Object({
@@ -66,12 +68,11 @@ export const CreateAgendaSchema = t.Object({
 export const UpdateAgendaSchema = t.Object({
 	id: t.String(),
 	eventId: t.Optional(t.String()),
-	startTime: t.Optional(t.String()),
-	endTime: t.Optional(t.String()),
+	start: t.Optional(t.String()),
+	end: t.Optional(t.String()),
 	activity: t.Optional(t.String()),
-	remark: t.Optional(t.Nullable(t.String())),
-	picUserId: t.Optional(t.String()),
-	location: t.Optional(t.String()),
+	remarks: t.Optional(t.Nullable(t.String())),
+	personincharge: t.Optional(t.String()),
 	actualEndTime: t.Optional(t.Nullable(t.String())),
 });
 

@@ -2,3 +2,9 @@ name = "eventer-backend"
 compatibility_date = "2025-07-25"
 main = "src/index.ts"
 compatibility_flags = [ "nodejs_compat", "nodejs_compat_populate_process_env" ]
+
+# Secrets (set via: bunx wrangler secret put <NAME>)
+# DATABASE_URL  — Supabase Transaction Pooler URL (port 6543, ?pgbouncer=true)
+# SUPABASE_URL  — https://your-project.supabase.co
+# SUPABASE_KEY  — Supabase anon/service key
+# CORS_ORIGINS  — comma-separated allowed origins, e.g. https://app.vercel.app

@@ -13,7 +13,7 @@
 		"noImplicitOverride": true,
 		"module": "esnext",
 		"moduleResolution": "bundler",
-		"lib": ["esnext"],
+		"lib": ["esnext", "webworker"],
 		"baseUrl": ".",
 		"paths": {
 			"#backend/*": ["./src/*"]

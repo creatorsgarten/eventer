@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { db } from "#backend/infrastructure/db";
 import { supabase } from "#backend/infrastructure/db/supabase";
 import { UserRepository } from "#backend/modules/user/user.repository";
+import { rateLimit, rateLimitPresets } from "../../shared/middleware/rate-limit.middleware";
 import {
 	AuthCallbackSchema,
 	AuthResponseSchema,
@@ -13,14 +14,21 @@ import {
 const userRepository = new UserRepository(db);
 
 export const authRouter = new Elysia({ prefix: "/api/auth" })
+	// Apply strict rate limiting to all auth endpoints (5 requests per minute)
+	.use(
+		rateLimit({
+			...rateLimitPresets.strict,
+			message: "Too many authentication attempts. Please try again later.",
+		})
+	)
 	.get(
 		"/session",
 		async ({ cookie: { session } }) => {
-			if (!session) {
+			if (!session?.value) {
 				return { user: null };
 			}
 
-			const { data, error } = await supabase.auth.getUser(session.value);
+			const { data, error } = await supabase.auth.getUser(session.value as string);
 			if (error || !data.user) {
 				return { user: null };
 			}
@@ -109,7 +117,7 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
 	.post(
 		"/logout",
 		({ cookie: { session }, set }) => {
-			if (!session) {
+			if (!session?.value) {
 				set.status = 400;
 				return { error: "No session to logout" };
 			}

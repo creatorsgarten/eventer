@@ -20,9 +20,13 @@ const inter = Inter({
 
 interface UnAuthenticatedUserLoginProps {
 	handleGoogleSignIn: () => void;
+	rateLimitMessage?: string;
 }
 
-export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticatedUserLoginProps) {
+export function UnAuthenticatedUserLogin({
+	handleGoogleSignIn,
+	rateLimitMessage,
+}: UnAuthenticatedUserLoginProps) {
 	const [{ headerVisible, leftVisible, rightVisible }, setVisibility] = useState({
 		headerVisible: false,
 		leftVisible: false,
@@ -102,6 +106,14 @@ export function UnAuthenticatedUserLogin({ handleGoogleSignIn }: UnAuthenticated
 									เริ่มต้นจัดการอีเวนต์ของคุณ
 								</p>
 							</div>
+
+							{rateLimitMessage && (
+								<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+									<p className={`text-red-600 text-sm ${ibmPlexSansThai.className}`}>
+										⚠️ {rateLimitMessage}
+									</p>
+								</div>
+							)}
 
 							<button
 								type="button"

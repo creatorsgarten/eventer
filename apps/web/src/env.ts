@@ -3,6 +3,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const env = createEnv({
+	skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 	/*
 	 * Serverside Environment variables, not available on the client.
 	 * Will throw if you access these variables on the client.
@@ -16,6 +17,8 @@ export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_APP_URL: z.string().url().optional(),
 		NEXT_PUBLIC_BACKEND_URL: z.string().url().optional(),
+		NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+		NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
 	},
 	/*
 	 * Due to how Next.js bundles environment variables on Edge and Client,
@@ -26,5 +29,7 @@ export const env = createEnv({
 	runtimeEnv: {
 		NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
 		NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
+		NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+		NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 	},
 });

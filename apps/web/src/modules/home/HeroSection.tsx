@@ -99,7 +99,7 @@ export const HeroSection = () => {
 						}`}
 					>
 						{/* Mobile App Interface Image */}
-						<div className="flex items-start absolute left-0 top-0 scale-80 md:static md:justify-center md:scale-100">
+						<div className="flex items-start absolute left-0 top-0 scale-65 md:static md:justify-center md:scale-100">
 							<Image
 								src="/mainpic.svg"
 								alt="Eventer Mobile App Interface"

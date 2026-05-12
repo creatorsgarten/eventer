@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { db } from "#backend/infrastructure/db";
+import { rateLimit, rateLimitPresets } from "#backend/shared/middleware/rate-limit.middleware";
 import {
 	AgendaListResponseSchema,
 	AgendaSchema,
@@ -24,6 +25,13 @@ const agendaRepository = new AgendaRepository(db);
 //TODO : Implement useGetAgenda(eventId, currentDay)
 
 export const agendaRouter = new Elysia({ prefix: "/api/agenda" })
+	// Apply moderate rate limiting to agenda endpoints (30 requests per minute)
+	.use(
+		rateLimit({
+			...rateLimitPresets.moderate,
+			message: "Too many requests to agenda API. Please slow down.",
+		})
+	)
 
 	.get(
 		"/timer",

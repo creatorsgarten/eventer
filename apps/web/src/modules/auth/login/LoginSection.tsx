@@ -1,40 +1,88 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loading } from "@/components/organisms/loading/Loading";
-import { authHeaders } from "@/config/header";
-import { getSignInLink } from "@/config/link";
+import { useRateLimit } from "@/hooks/use-rate-limit";
 import { useSession } from "@/hooks/use-session";
-import { client } from "@/lib/client";
+import { createClient } from "@/lib/supabase";
 import { AuthenticatedUserLogin } from "./AuthenticatedUserLogin";
 import { UnAuthenticatedUserLogin } from "./UnauthenticatedUserLogin";
 
 export function LoginSection() {
 	const { user, isLoading, refetch } = useSession();
 	const router = useRouter();
+	const [rateLimitMessage, setRateLimitMessage] = useState<string>("");
+	const supabase = useMemo(() => createClient(), []);
 
-	const handleGoogleSignIn = useCallback(() => {
-		// Redirect to your backend's Google auth endpoint
-		router.push(getSignInLink());
-	}, [router]);
+	// Rate limit: 5 login attempts per minute
+	const loginRateLimit = useRateLimit({
+		maxAttempts: 5,
+		windowMs: 60000, // 1 minute
+		onLimitExceeded: (resetIn) => {
+			setRateLimitMessage(
+				`Too many login attempts. Please wait ${resetIn} seconds before trying again.`
+			);
+		},
+	});
 
-	const handleSignOut = useCallback(() => {
-		client.api.auth.logout
-			.post(
-				{},
-				{
-					...authHeaders,
-				}
-			)
-			.then(() => {
-				refetch();
-				router.refresh();
-			})
-			.catch((error) => {
-				console.error("Logout failed:", error);
+	// Rate limit: 3 logout attempts per minute
+	const logoutRateLimit = useRateLimit({
+		maxAttempts: 3,
+		windowMs: 60000, // 1 minute
+		onLimitExceeded: (resetIn) => {
+			setRateLimitMessage(
+				`Too many logout attempts. Please wait ${resetIn} seconds before trying again.`
+			);
+		},
+	});
+
+	// Clear rate limit message after it's been shown
+	useEffect(() => {
+		if (rateLimitMessage) {
+			const timer = setTimeout(() => setRateLimitMessage(""), 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [rateLimitMessage]);
+
+	// Redirect authenticated users to event page
+	useEffect(() => {
+		if (!isLoading && user) {
+			router.push("/event");
+		}
+	}, [user, isLoading, router]);
+
+	const handleGoogleSignIn = useCallback(async () => {
+		const { success } = await loginRateLimit.execute(async () => {
+			const { error } = await supabase.auth.signInWithOAuth({
+				provider: "google",
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback`,
+				},
 			});
-	}, [refetch, router]);
+
+			if (error) {
+				console.error("Error signing in:", error);
+				setRateLimitMessage(error.message);
+			}
+		});
+
+		if (!success && rateLimitMessage) {
+			console.warn(rateLimitMessage);
+		}
+	}, [supabase, loginRateLimit, rateLimitMessage]);
+
+	const handleSignOut = useCallback(async () => {
+		const { success } = await logoutRateLimit.execute(async () => {
+			await supabase.auth.signOut();
+			refetch();
+			router.refresh();
+		});
+
+		if (!success && rateLimitMessage) {
+			console.warn(rateLimitMessage);
+		}
+	}, [supabase, refetch, router, logoutRateLimit, rateLimitMessage]);
 
 	if (isLoading) {
 		return (
@@ -52,9 +100,15 @@ export function LoginSection() {
 				name={user.name}
 				avatarUrl={user.avatar_url}
 				handleSignOut={handleSignOut}
+				rateLimitMessage={rateLimitMessage}
 			/>
 		);
 	}
 
-	return <UnAuthenticatedUserLogin handleGoogleSignIn={handleGoogleSignIn} />;
+	return (
+		<UnAuthenticatedUserLogin
+			handleGoogleSignIn={handleGoogleSignIn}
+			rateLimitMessage={rateLimitMessage}
+		/>
+	);
 }

@@ -47,7 +47,7 @@ export function AuthCallback() {
 
 							{userInfo && (
 								<div className="mt-6 p-4 bg-white rounded-lg shadow border">
-									<h3 className="text-lg font-medium text-gray-900 mb-3">Welcome!</h3>
+									<h3 className="text-lg font-medium text-gray-900 mb-3">Welcome Back!</h3>
 									<div className="space-y-2">
 										<div className="flex items-center justify-center">
 											{userInfo.avatar_url && (
@@ -65,9 +65,11 @@ export function AuthCallback() {
 											</div>
 										</div>
 									</div>
-									<p className="text-xs text-gray-400 mt-3 animate-pulse">
-										Redirecting to dashboard in a few seconds...
-									</p>
+									<div className="mt-4">
+										<Button type="button" onClick={() => router.push("/")} className="w-full">
+											Go to Home
+										</Button>
+									</div>
 								</div>
 							)}
 						</>
