@@ -120,11 +120,6 @@
 	.animate-scroll {
 		gap: 1.5rem;
 	}
-
-	.animate-scroll img {
-		max-width: 5rem;
-		height: 2.5rem;
-	}
 }
 
 :root {

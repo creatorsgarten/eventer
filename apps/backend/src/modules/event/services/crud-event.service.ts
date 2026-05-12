@@ -31,9 +31,8 @@ export async function listEvents(
 	// in memory filtering
 	let filtered = allEvents;
 	if (query?.name) {
-		filtered = filtered.filter((event) =>
-			event.name.toLowerCase().includes(query.name.toLowerCase())
-		);
+		const name = query.name;
+		filtered = filtered.filter((event) => event.name.toLowerCase().includes(name.toLowerCase()));
 	}
 	if (query?.startDate) {
 		filtered = filtered.filter((event) => event.startDate >= new Date(query.startDate!));
@@ -42,13 +41,15 @@ export async function listEvents(
 		filtered = filtered.filter((event) => event.endDate <= new Date(query.endDate!));
 	}
 	if (query?.location) {
+		const location = query.location;
 		filtered = filtered.filter((event) =>
-			event.location.toLowerCase().includes(query.location.toLowerCase())
+			event.location.toLowerCase().includes(location.toLowerCase())
 		);
 	}
 	if (query?.createdBy) {
+		const createdBy = query.createdBy;
 		filtered = filtered.filter((event) =>
-			event.createdBy.toLowerCase().includes(query.createdBy.toLowerCase())
+			event.createdBy.toLowerCase().includes(createdBy.toLowerCase())
 		);
 	}
 	return filtered;

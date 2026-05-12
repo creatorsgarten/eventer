@@ -9,6 +9,7 @@ const envSchema = z.object({
 	SUPABASE_URL: z.string().default(""),
 	SUPABASE_KEY: z.string().default(""),
 	CORS_ORIGIN: z.string().default("http://localhost:3000"),
+	CORS_ORIGINS: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env ?? import.meta.env);

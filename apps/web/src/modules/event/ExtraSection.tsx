@@ -10,7 +10,11 @@ function formatDateTH(iso: string): string {
 	if (!iso) return "";
 	const d = new Date(iso);
 	if (Number.isNaN(d.getTime())) return iso;
-	return d.toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
+	return d.toLocaleDateString("th-TH", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	});
 }
 
 function buildSponsorTemplate(eventData: EventData): string {

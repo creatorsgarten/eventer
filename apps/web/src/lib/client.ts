@@ -21,15 +21,26 @@ const getBackendUrl = () => {
 };
 
 export const client = treaty<AppType>(getBackendUrl(), {
-	fetcher: (input, init) => {
-		// Let Eden Treaty handle Content-Type automatically
+	fetcher: async (input, init) => {
 		const headers = new Headers(init?.headers);
 		headers.set("X-Custom-Header", "betich");
 		headers.set("Referrer-Policy", "origin-when-cross-origin");
 
+		// Attach Supabase access token as Bearer so authMiddleware can verify it
+		if (typeof window !== "undefined") {
+			const { createClient } = await import("@/lib/supabase");
+			const supabase = createClient();
+			const {
+				data: { session },
+			} = await supabase.auth.getSession();
+			if (session?.access_token) {
+				headers.set("Authorization", `Bearer ${session.access_token}`);
+			}
+		}
+
 		return fetch(input, {
 			...init,
-			credentials: "include", // ✅ Send cookies
+			credentials: "include",
 			headers,
 		});
 	},

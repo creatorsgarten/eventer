@@ -8,4 +8,6 @@ export const events = table("events", {
 	location: text("location").notNull(),
 	description: text("description"),
 	createdBy: text("created_by").notNull(),
+	createdAt: timestamp("created_at").notNull().defaultNow(),
+	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

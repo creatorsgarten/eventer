@@ -138,14 +138,8 @@ export function useRateLimit(config: RateLimitConfig): RateLimitState {
 			// Record this attempt
 			attemptsRef.current.push(now);
 			updateState();
-
-			// Execute the action
-			try {
-				const result = await Promise.resolve(action());
-				return { success: true, result };
-			} catch (error) {
-				throw error;
-			}
+			const result = await Promise.resolve(action());
+			return { success: true, result };
 		},
 		[maxAttempts, windowMs, onLimitExceeded, updateState]
 	);

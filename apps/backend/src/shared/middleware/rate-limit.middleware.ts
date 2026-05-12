@@ -107,7 +107,7 @@ export function rateLimit(config: RateLimitConfig) {
 
 	return new Elysia({ name: "rate-limit" }).onBeforeHandle(({ request, set, headers }) => {
 		// Skip rate limiting if custom skip function returns true
-		if (skip && skip({ request })) {
+		if (skip?.({ request })) {
 			return;
 		}
 

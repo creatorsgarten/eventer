@@ -488,7 +488,7 @@ export default function AgendaSection({ eventData }: { eventData: EventData }) {
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
-	}, [sortedSlots, currentDay, currentDayData]);
+	}, [sortedSlots, currentDay, currentDayData, getAPForSlot]);
 
 	useEffect(() => {
 		setHasMounted(true);

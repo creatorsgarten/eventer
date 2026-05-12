@@ -10,15 +10,14 @@ import { userRouter } from "./modules/user";
 
 // Helper function to conditionally add swagger
 const conditionalSwagger = () => {
-	// Check if we're in Cloudflare Workers environment (caches is a global in Workers)
+	// Skip swagger in production or serverless environments
+	const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL === "1";
 	const isCloudflareWorkers = typeof caches !== "undefined";
 
-	if (isCloudflareWorkers) {
-		// Return a no-op plugin for Cloudflare Workers
+	if (isProduction || isCloudflareWorkers) {
 		return new Elysia({ name: "swagger-noop" });
 	}
 
-	// Use swagger in other environments
 	return swagger();
 };
 
@@ -27,8 +26,11 @@ const app = new Elysia({ aot: false })
 		cors({
 			origin:
 				process.env.NODE_ENV === "production"
-					? [/^https:\/\/.*\.betich\.me$/] // Only your domain in production
-					: [env.CORS_ORIGIN, /localhost:\d+/], // Allow localhost in dev
+					? (env.CORS_ORIGINS ?? "")
+							.split(",")
+							.map((o: string) => o.trim())
+							.filter(Boolean)
+					: [env.CORS_ORIGIN, /localhost:\d+/],
 			credentials: true,
 			preflight: true,
 			methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -64,9 +66,9 @@ const app = new Elysia({ aot: false })
 //     .use(authRouter)
 // );
 
-// Only listen when not in Cloudflare Workers environment
-const isCloudflareWorkers = typeof caches !== "undefined";
-if (!isCloudflareWorkers) {
+// Only listen in local development (not on Vercel or Cloudflare Workers)
+const isServerless = typeof caches !== "undefined" || process.env.VERCEL === "1";
+if (!isServerless) {
 	app.listen(
 		{
 			// hostname: process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost",

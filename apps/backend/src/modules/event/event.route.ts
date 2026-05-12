@@ -24,10 +24,11 @@ export const eventRouter = new Elysia({ prefix: "/api/event" })
 	.use(optionalAuthMiddleware)
 	.get(
 		"/:id",
-		async ({ params, error }) => {
+		async ({ params, set }) => {
 			const event = await getEventById(eventRepository, params.id);
 			if (!event) {
-				return error(404, { error: "Event not found" });
+				set.status = 404;
+				return { error: "Event not found" };
 			}
 			return event;
 		},
@@ -65,13 +66,13 @@ export const eventRouter = new Elysia({ prefix: "/api/event" })
 	.use(authMiddleware)
 	.post(
 		"/",
-		async ({ body }) => {
+		async ({ body, user }) => {
 			const transformedData = {
 				...body,
-				startDate: body.startDate, // Keep as string for database storage
-				endDate: body.endDate, // Keep as string for database storage
+				startDate: body.startDate,
+				endDate: body.endDate,
 				description: body.description ?? null,
-				createdBy: "user_placeholder", // TODO: Fix auth context injection
+				createdBy: user.id,
 			};
 			return await createEvent(eventRepository, transformedData);
 		},

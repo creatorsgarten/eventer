@@ -6,8 +6,8 @@ export function useAuthCallbackMutation() {
 		mutationKey: ["auth-callback"],
 		mutationFn: async (params: { access_token: string; refresh_token: string }) => {
 			console.log("Sending auth callback with params:", {
-				access_token: params.access_token.substring(0, 20) + "...",
-				refresh_token: params.refresh_token.substring(0, 20) + "...",
+				access_token: `${params.access_token.substring(0, 20)}...`,
+				refresh_token: `${params.refresh_token.substring(0, 20)}...`,
 			});
 
 			const response = await client.api.auth.callback.post(params);

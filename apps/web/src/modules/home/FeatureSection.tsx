@@ -43,15 +43,15 @@ export const FeatureSection = () => {
 	];
 
 	return (
-		<section className="bg-indigo-50 w-full py-14">
-			<div className="max-w-6xl mx-auto text-center">
-				<h2 className="text-gray-900 text-2xl font-bold mb-2">
+		<section className="bg-indigo-50 w-full py-10 lg:py-14">
+			<div className="max-w-6xl mx-auto text-center px-4">
+				<h2 className="text-gray-900 text-xl font-bold mb-2 sm:text-2xl">
 					เราจะช่วยให้การจัดอีเวนต์สะดวกขึ้นได้อย่างไร
 				</h2>
-				<p className="text-gray-900 text-base mb-10">
+				<p className="text-gray-900 text-sm mb-8 sm:text-base sm:mb-10">
 					เราออกแบบโดยอิงพื้นฐานจาก Pain Point นักจัดอีเวนต์หลากๆ ที่
 				</p>
-				<div className="flex justify-center gap-6 flex-wrap max-w-7xl mx-auto">
+				<div className="flex justify-center gap-4 flex-wrap max-w-7xl mx-auto lg:gap-6">
 					{features.map((feature, index) => (
 						<FeatureCard key={index} {...feature} />
 					))}

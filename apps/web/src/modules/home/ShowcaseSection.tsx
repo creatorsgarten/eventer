@@ -45,32 +45,32 @@ export const ShowcaseSection = () => {
 	}, []);
 
 	return (
-		<section className="py-20 px-5 max-w-6xl mx-auto md:py-12 md:px-4">
-			<h2 className="text-4xl font-bold text-gray-900 mb-15 text-left leading-tight md:text-3xl md:text-center">
+		<section className="py-10 px-4 max-w-6xl mx-auto lg:py-20 lg:px-5">
+			<h2 className="text-2xl font-bold text-gray-900 mb-8 text-center leading-tight sm:text-3xl lg:text-4xl lg:mb-15 lg:text-left">
 				พวกเราทำอะไรได้บ้าง ?
 			</h2>
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-75 items-center md:gap-8">
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-75 items-center">
 				{/* Left: List */}
 				<div className="flex flex-col gap-0">
 					{showcaseItems.map((item, idx) => (
 						<button
 							key={item.title}
-							className={`flex items-start gap-5 py-7 bg-transparent border-none cursor-pointer text-left transition-colors duration-300 border-b border-gray-200 hover:bg-gray-50 md:py-5 ${
+							className={`flex items-start gap-5 py-5 bg-transparent border-none cursor-pointer text-left transition-colors duration-300 border-b border-gray-200 hover:bg-gray-50 lg:py-7 ${
 								activeIndex === idx ? "bg-indigo-50" : ""
 							}`}
 							onClick={() => setActiveIndex(idx)}
 							type="button"
 						>
 							<div
-								className={`w-2 h-25 rounded-full transition-colors duration-300 flex-shrink-0 md:h-16 ${
+								className={`w-2 h-25 rounded-full transition-colors duration-300 flex-shrink-0 ${
 									activeIndex === idx ? "bg-purple-600" : "bg-gray-300"
 								}`}
 							/>
 							<div>
-								<h3 className="text-2xl font-semibold text-gray-900 mb-3 leading-tight md:text-xl">
+								<h3 className="text-xl font-semibold text-gray-900 mb-3 leading-tight lg:text-2xl">
 									{item.title}
 								</h3>
-								<p className="text-base text-gray-600 leading-relaxed font-normal md:text-sm">
+								<p className="text-sm text-gray-600 leading-relaxed font-normal lg:text-base">
 									{item.description.split("\n").map((line, i) => (
 										<span key={i}>
 											{line}
@@ -85,7 +85,7 @@ export const ShowcaseSection = () => {
 
 				{/* Right: Image */}
 				<div
-					className="animate-fadeInScale lg:order-2 order-1"
+					className="animate-fadeInScale order-first mx-auto block lg:order-2 lg:scale-120"
 					key={imgKey}
 					style={{
 						animation: "fadeInScale 0.5s cubic-bezier(0.23, 1.01, 0.32, 1)",
@@ -98,7 +98,7 @@ export const ShowcaseSection = () => {
 							alt={showcaseItems[activeIndex].title}
 							width={400}
 							height={400}
-							className="max-w-full max-h-[500px] h-auto rounded-xl scale-120 md:scale-100 md:mx-auto md:block"
+							className="max-w-full max-h-[300px] h-auto rounded-xl sm:max-h-[400px] lg:max-h-[500px]"
 							priority
 						/>
 					)}

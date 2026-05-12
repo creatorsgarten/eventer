@@ -1,524 +1,631 @@
 "use client";
 
 import {
-	Bell,
-	Check,
+	AlertCircle,
+	Calendar,
+	ChevronRight,
 	Clock,
-	Globe,
-	Lock,
+	Loader2,
 	LogOut,
-	Menu,
-	MoreHorizontal,
+	MapPin,
+	Plus,
 	Search,
 	X,
 } from "lucide-react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/atoms/button";
-import { Input } from "@/components/atoms/input";
-import { useGetAgenda } from "@/hooks/use-get-agenda";
-import { useGetEvent } from "@/hooks/use-get-event";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { useCreateEvent } from "@/hooks/use-create-event";
+import { type EventItem, useGetEvents } from "@/hooks/use-get-events";
 import { useSession } from "@/hooks/use-session";
-import { useSessionManager } from "@/hooks/use-session-manager";
 import { createClient } from "@/lib/supabase";
-import AgendaSection from "../../modules/event/AgendaSection";
-import ExtraSection from "../../modules/event/ExtraSection";
-import GanttSection from "../../modules/event/GanttSection";
-import OverviewSection from "../../modules/event/OverviewSection";
-import StaffSection from "../../modules/event/StaffSection";
 
-export interface EventData {
-	id: string;
-	name: string;
-	description: string;
-	startDate: string;
-	endDate: string;
-	location: string;
-	type: string;
-	isPublic: boolean;
-	createdAt: string;
-	updatedAt: string;
-	createdBy?: string;
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const CARD_GRADIENTS = [
+	["#7c3aed", "#a78bfa"],
+	["#0891b2", "#22d3ee"],
+	["#059669", "#34d399"],
+	["#d97706", "#fbbf24"],
+	["#dc2626", "#f87171"],
+	["#db2777", "#f472b6"],
+	["#2563eb", "#60a5fa"],
+	["#7c3aed", "#ec4899"],
+] as const;
+
+function getGradient(id: string): readonly [string, string] {
+	const hash = id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+	return CARD_GRADIENTS[hash % CARD_GRADIENTS.length] ?? CARD_GRADIENTS[0];
 }
 
-interface NavigationItem {
-	id: string;
-	label: string;
-	component: React.ComponentType<{ eventData: EventData }>;
-	badge?: number;
+function formatDateTH(date: string | Date) {
+	return new Date(date).toLocaleDateString("th-TH", {
+		day: "numeric",
+		month: "short",
+		year: "numeric",
+	});
 }
 
-const FALLBACK_EVENT: EventData = {
-	id: "",
-	name: "Event",
-	description: "",
-	startDate: new Date().toISOString().split("T")[0] ?? "",
-	endDate: new Date(Date.now() + 86400000).toISOString().split("T")[0] ?? "",
-	location: "TBD",
-	type: "custom",
-	isPublic: true,
-	createdAt: new Date().toISOString(),
-	updatedAt: new Date().toISOString(),
+function formatDateShortTH(date: string | Date) {
+	return new Date(date).toLocaleDateString("th-TH", {
+		day: "numeric",
+		month: "short",
+	});
+}
+
+function getDaysUntil(date: string | Date) {
+	return Math.ceil((new Date(date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+}
+
+// ─── Create Event Modal ───────────────────────────────────────────────────────
+
+interface CreateModalProps {
+	onClose: () => void;
+}
+
+function CreateEventModal({ onClose }: CreateModalProps) {
+	const router = useRouter();
+	const { createEventAsync, isPending } = useCreateEvent();
+	const firstInputRef = useRef<HTMLInputElement>(null);
+
+	const [form, setForm] = useState({
+		name: "",
+		startDate: "",
+		endDate: "",
+		location: "",
+		description: "",
+	});
+	const [error, setError] = useState<string | null>(null);
+
+	const set =
+		(field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+			setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError(null);
+
+		if (!form.name.trim()) return setError("กรุณากรอกชื่ออีเวนต์");
+		if (!form.startDate) return setError("กรุณาเลือกวันเริ่มต้น");
+		if (!form.endDate) return setError("กรุณาเลือกวันสิ้นสุด");
+		if (new Date(form.endDate) < new Date(form.startDate)) return setError("วันสิ้นสุดต้องอยู่หลังวันเริ่มต้น");
+		if (!form.location.trim()) return setError("กรุณากรอกสถานที่");
+
+		try {
+			const result = await createEventAsync({
+				name: form.name.trim(),
+				startDate: new Date(form.startDate).toISOString(),
+				endDate: new Date(form.endDate).toISOString(),
+				location: form.location.trim(),
+				description: form.description.trim() || null,
+			});
+			const newId = (result as { data?: { id?: string } })?.data?.id;
+			if (newId) {
+				router.push(`/event/${newId}`);
+			} else {
+				onClose();
+			}
+		} catch {
+			setError("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+		}
+	};
+
+	return (
+		<div
+			className="fixed inset-0 z-50 flex items-center justify-center p-4"
+			style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
+		>
+			<div
+				className="bg-white rounded-2xl shadow-2xl w-full max-w-md"
+				style={{ animation: "modalIn 0.2s ease both" }}
+			>
+				{/* Header */}
+				<div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+					<div>
+						<h2 className="text-lg font-bold text-gray-900">สร้างอีเวนต์ใหม่</h2>
+						<p className="text-xs text-gray-400 mt-0.5">กรอกข้อมูลเพื่อเริ่มจัดงาน</p>
+					</div>
+					<button
+						type="button"
+						onClick={onClose}
+						disabled={isPending}
+						className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors"
+					>
+						<X className="w-4 h-4" />
+					</button>
+				</div>
+
+				{/* Form */}
+				<form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+					{/* Name */}
+					<div>
+						<label htmlFor="event-name" className="block text-sm font-medium text-gray-700 mb-1.5">
+							ชื่ออีเวนต์ <span className="text-red-400">*</span>
+						</label>
+						<input
+							id="event-name"
+							ref={firstInputRef}
+							type="text"
+							value={form.name}
+							onChange={set("name")}
+							placeholder="เช่น งานคอนเสิร์ต Summer Vibes 2025"
+							className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition-all"
+						/>
+					</div>
+
+					{/* Dates row */}
+					<div className="grid grid-cols-2 gap-3">
+						<div>
+							<label
+								htmlFor="event-start-date"
+								className="block text-sm font-medium text-gray-700 mb-1.5"
+							>
+								วันเริ่มต้น <span className="text-red-400">*</span>
+							</label>
+							<input
+								id="event-start-date"
+								type="datetime-local"
+								value={form.startDate}
+								onChange={set("startDate")}
+								className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition-all"
+							/>
+						</div>
+						<div>
+							<label
+								htmlFor="event-end-date"
+								className="block text-sm font-medium text-gray-700 mb-1.5"
+							>
+								วันสิ้นสุด <span className="text-red-400">*</span>
+							</label>
+							<input
+								id="event-end-date"
+								type="datetime-local"
+								value={form.endDate}
+								min={form.startDate}
+								onChange={set("endDate")}
+								className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition-all"
+							/>
+						</div>
+					</div>
+
+					{/* Location */}
+					<div>
+						<label
+							htmlFor="event-location"
+							className="block text-sm font-medium text-gray-700 mb-1.5"
+						>
+							สถานที่ <span className="text-red-400">*</span>
+						</label>
+						<input
+							id="event-location"
+							type="text"
+							value={form.location}
+							onChange={set("location")}
+							placeholder="เช่น IMPACT Arena, เมืองทองธานี"
+							className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition-all"
+						/>
+					</div>
+
+					{/* Description */}
+					<div>
+						<label
+							htmlFor="event-description"
+							className="block text-sm font-medium text-gray-700 mb-1.5"
+						>
+							รายละเอียด <span className="text-gray-300 font-normal">(ไม่บังคับ)</span>
+						</label>
+						<textarea
+							id="event-description"
+							value={form.description}
+							onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+							placeholder="รายละเอียดเพิ่มเติมของอีเวนต์..."
+							rows={3}
+							className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 resize-none transition-all"
+						/>
+					</div>
+
+					{/* Error */}
+					{error && (
+						<div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 rounded-xl px-3.5 py-2.5 border border-red-100">
+							<AlertCircle className="w-4 h-4 flex-shrink-0" />
+							{error}
+						</div>
+					)}
+
+					{/* Actions */}
+					<div className="flex gap-3 pt-1">
+						<button
+							type="button"
+							onClick={onClose}
+							disabled={isPending}
+							className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+						>
+							ยกเลิก
+						</button>
+						<button
+							type="submit"
+							disabled={isPending}
+							className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+						>
+							{isPending ? (
+								<>
+									<Loader2 className="w-4 h-4 animate-spin" />
+									กำลังสร้าง...
+								</>
+							) : (
+								"สร้างอีเวนต์"
+							)}
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
+}
+
+// ─── Event Card ───────────────────────────────────────────────────────────────
+
+function EventCard({ event, index }: { event: EventItem; index: number }) {
+	const router = useRouter();
+	const [from, to] = getGradient(event.id);
+	const startD = new Date(event.startDate);
+	const endD = new Date(event.endDate);
+	const isSameDay = startD.toDateString() === endD.toDateString();
+	const daysUntil = getDaysUntil(event.startDate);
+	const isOngoing = daysUntil <= 0 && endD >= new Date();
+	const isPast = endD < new Date();
+
+	return (
+		// biome-ignore lint/a11y/useSemanticElements: card layout requires div with nested interactive elements
+		<div
+			className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col"
+			style={{ animationDelay: `${index * 50}ms`, animation: "fadeUp 0.4s ease both" }}
+			onClick={() => router.push(`/event/${event.id}`)}
+			onKeyDown={(e) => e.key === "Enter" && router.push(`/event/${event.id}`)}
+			role="button"
+			tabIndex={0}
+		>
+			{/* Gradient header */}
+			<div
+				className="h-28 relative flex flex-col justify-between p-4"
+				style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+			>
+				<div className="flex justify-between items-start">
+					<span
+						className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+							isPast
+								? "bg-black/20 text-white/80"
+								: isOngoing
+									? "bg-white/30 text-white animate-pulse"
+									: "bg-white/20 text-white"
+						}`}
+					>
+						{isPast
+							? "ผ่านมาแล้ว"
+							: isOngoing
+								? "กำลังจัดอีเวนต์"
+								: daysUntil === 0
+									? "วันนี้!"
+									: `อีก ${daysUntil} วัน`}
+					</span>
+					<div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm flex-shrink-0">
+						<span className="text-white font-bold text-base leading-none">
+							{event.name.charAt(0).toUpperCase()}
+						</span>
+					</div>
+				</div>
+				<div className="flex items-center gap-1.5 bg-black/15 backdrop-blur-sm rounded-lg px-3 py-1.5 w-fit">
+					<Calendar className="w-3 h-3 text-white/80 flex-shrink-0" />
+					<span className="text-white text-xs font-medium">
+						{isSameDay
+							? formatDateShortTH(event.startDate)
+							: `${formatDateShortTH(event.startDate)} – ${formatDateShortTH(event.endDate)}`}
+					</span>
+				</div>
+			</div>
+
+			{/* Body */}
+			<div className="p-4 flex flex-col flex-1">
+				<h3 className="font-bold text-gray-900 text-base leading-snug mb-1.5 line-clamp-2 group-hover:text-purple-600 transition-colors duration-200">
+					{event.name}
+				</h3>
+				{event.description && (
+					<p className="text-gray-400 text-xs leading-relaxed mb-2.5 line-clamp-2">
+						{event.description}
+					</p>
+				)}
+				<div className="flex items-center gap-1.5 text-gray-400 text-xs mb-auto mt-1">
+					<MapPin className="w-3 h-3 flex-shrink-0 text-gray-300" />
+					<span className="truncate">{event.location}</span>
+				</div>
+				<div className="flex items-center gap-1.5 text-gray-300 text-xs mt-2.5 mb-3">
+					<Clock className="w-3 h-3 flex-shrink-0" />
+					<span>
+						{isSameDay
+							? formatDateTH(event.startDate)
+							: `${formatDateTH(event.startDate)} – ${formatDateTH(event.endDate)}`}
+					</span>
+				</div>
+				<button
+					type="button"
+					onClick={(e) => {
+						e.stopPropagation();
+						router.push(`/event/${event.id}`);
+					}}
+					className="w-full flex items-center justify-center gap-1 text-purple-600 text-sm font-medium hover:bg-purple-50 rounded-xl py-2 transition-colors border border-purple-100 group-hover:border-purple-200 group-hover:bg-purple-50"
+				>
+					จัดการอีเวนต์
+					<ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+				</button>
+			</div>
+		</div>
+	);
+}
+
+function SkeletonCard() {
+	return (
+		<div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
+			<div className="h-28 bg-gradient-to-br from-gray-200 to-gray-100" />
+			<div className="p-4 space-y-3">
+				<div className="h-4 bg-gray-100 rounded-lg w-3/4" />
+				<div className="h-3 bg-gray-100 rounded w-full" />
+				<div className="h-3 bg-gray-100 rounded w-2/3" />
+				<div className="h-3 bg-gray-100 rounded w-1/2 mt-2" />
+				<div className="h-9 bg-gray-50 rounded-xl mt-3" />
+			</div>
+		</div>
+	);
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+type FilterTab = "all" | "upcoming" | "ongoing" | "past";
+
+const FILTER_LABELS: Record<FilterTab, string> = {
+	all: "ทั้งหมด",
+	upcoming: "กำลังจะมา",
+	ongoing: "กำลังจัดอีเวนต์",
+	past: "ผ่านมาแล้ว",
 };
 
-export default function EventManagementSPA() {
-	const params = useParams();
+export default function EventsListPage() {
 	const router = useRouter();
-	const eventId = params.eventId as string;
-
-	const [currentTime, setCurrentTime] = useState(new Date());
-	const [hasMounted, setHasMounted] = useState(false);
-	const [activeSection, setActiveSection] = useState("overview");
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-	const [isNotifOpen, setIsNotifOpen] = useState(false);
-	const [isPublic, setIsPublic] = useState(true);
-	const [savedFeedback, setSavedFeedback] = useState(false);
-	const [searchQuery, setSearchQuery] = useState("");
-
-	const userMenuRef = useRef<HTMLDivElement>(null);
-	const notifRef = useRef<HTMLDivElement>(null);
-
 	const { user } = useSession();
+	const { events, isLoading } = useGetEvents();
+	const [search, setSearch] = useState("");
+	const [filter, setFilter] = useState<FilterTab>("all");
+	const [showCreate, setShowCreate] = useState(false);
 	const supabase = createClient();
-
-	// Fetch real event data from backend
-	const { event: backendEvent, isLoading: eventLoading } = useGetEvent(eventId);
-
-	// Build merged event data: backend fields take precedence, fall back to defaults
-	const eventData: EventData = backendEvent
-		? {
-				id: String(backendEvent.id ?? eventId),
-				name: String(backendEvent.name ?? "Event"),
-				description: String(backendEvent.description ?? ""),
-				startDate:
-					backendEvent.startDate instanceof Date
-						? ((backendEvent.startDate as Date).toISOString().split("T")[0] ?? "")
-						: (String(backendEvent.startDate ?? "").split("T")[0] ?? ""),
-				endDate:
-					backendEvent.endDate instanceof Date
-						? ((backendEvent.endDate as Date).toISOString().split("T")[0] ?? "")
-						: (String(backendEvent.endDate ?? "").split("T")[0] ?? ""),
-				location: String(backendEvent.location ?? "TBD"),
-				type: "custom",
-				isPublic,
-				createdAt: new Date().toISOString(),
-				updatedAt: new Date().toISOString(),
-				createdBy: String(backendEvent.createdBy ?? ""),
-			}
-		: { ...FALLBACK_EVENT, id: eventId, isPublic };
-
-	// Session manager for AP notation notifications
-	const { getLatestAPNotation, sessionEnds } = useSessionManager();
-	const { data: agendaData } = useGetAgenda();
-
-	// Build notification list from late sessions
-	const notifications = sessionEnds
-		.filter((se) => se.difference > 0)
-		.sort((a, b) => b.actualEndTime.getTime() - a.actualEndTime.getTime())
-		.slice(0, 10)
-		.map((se) => {
-			const slot = (agendaData ?? []).find(
-				(s: { id: string; activity?: string }) => s.id === se.slotId
-			);
-			return {
-				id: se.slotId,
-				message: `"${slot?.activity ?? se.slotId}" ended AP+${se.difference}m late`,
-				time: se.actualEndTime,
-			};
-		});
-
-	const latestAP = hasMounted ? getLatestAPNotation() : null;
-	const unreadCount = notifications.length;
 
 	const handleSignOut = async () => {
 		await supabase.auth.signOut();
 		router.push("/auth/login");
 	};
 
-	const handleSave = useCallback(() => {
-		// Sections auto-save via mutations; this triggers visual confirmation
-		setSavedFeedback(true);
-		setTimeout(() => setSavedFeedback(false), 2000);
-	}, []);
+	const now = new Date();
 
-	// Close dropdowns on outside click
-	useEffect(() => {
-		function handleClickOutside(e: MouseEvent) {
-			if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-				setIsUserMenuOpen(false);
-			}
-			if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-				setIsNotifOpen(false);
-			}
+	const filtered = events.filter((event) => {
+		if (search) {
+			const q = search.toLowerCase();
+			const matches =
+				event.name.toLowerCase().includes(q) ||
+				(event.description ?? "").toLowerCase().includes(q) ||
+				event.location.toLowerCase().includes(q);
+			if (!matches) return false;
 		}
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, []);
+		const start = new Date(event.startDate);
+		const end = new Date(event.endDate);
+		if (filter === "upcoming") return start > now;
+		if (filter === "ongoing") return start <= now && end >= now;
+		if (filter === "past") return end < now;
+		return true;
+	});
 
-	useEffect(() => {
-		setHasMounted(true);
-		const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-		return () => clearInterval(timer);
-	}, []);
-
-	// Sync isPublic from backend when it loads (default true)
-	useEffect(() => {
-		if (backendEvent) setIsPublic(true);
-	}, [backendEvent]);
-
-	const formatTime = (date: Date) => {
-		const h = date.getHours().toString().padStart(2, "0");
-		const m = date.getMinutes().toString().padStart(2, "0");
-		const s = date.getSeconds().toString().padStart(2, "0");
-		return `${h}:${m}:${s}`;
+	const counts: Record<FilterTab, number> = {
+		all: events.length,
+		upcoming: events.filter((e) => new Date(e.startDate) > now).length,
+		ongoing: events.filter((e) => new Date(e.startDate) <= now && new Date(e.endDate) >= now)
+			.length,
+		past: events.filter((e) => new Date(e.endDate) < now).length,
 	};
-
-	const navigationItems: NavigationItem[] = [
-		{ id: "overview", label: "Overview", component: OverviewSection },
-		{ id: "agenda", label: "Agenda (AP)", component: AgendaSection },
-		{ id: "gantt", label: "Gantt Chart", component: GanttSection },
-		{ id: "teams", label: "Staff & Participant", component: StaffSection },
-		{ id: "extra", label: "Extra", component: ExtraSection },
-	];
-
-	// Filter navigation by search
-	const filteredNavItems = searchQuery
-		? navigationItems.filter((item) => item.label.toLowerCase().includes(searchQuery.toLowerCase()))
-		: navigationItems;
-
-	const handleSectionChange = (sectionId: string) => {
-		setActiveSection(sectionId);
-		window.history.replaceState({}, "", `?section=${sectionId}`);
-	};
-
-	const currentSection = navigationItems.find((item) => item.id === activeSection);
-	const CurrentComponent = currentSection?.component ?? OverviewSection;
 
 	return (
-		<div className="h-screen bg-gray-50 flex overflow-hidden">
-			{/* Mobile Menu Overlay */}
-			{isMobileMenuOpen && (
-				<div
-					className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-					onClick={() => setIsMobileMenuOpen(false)}
-					onKeyDown={(e) => e.key === "Escape" && setIsMobileMenuOpen(false)}
-					role="button"
-					tabIndex={0}
-					aria-label="Close mobile menu"
-				/>
-			)}
+		<>
+			<style>{`
+				@keyframes fadeUp {
+					from { opacity: 0; transform: translateY(16px); }
+					to   { opacity: 1; transform: translateY(0); }
+				}
+				@keyframes modalIn {
+					from { opacity: 0; transform: scale(0.96) translateY(8px); }
+					to   { opacity: 1; transform: scale(1) translateY(0); }
+				}
+			`}</style>
 
-			{/* Left Sidebar */}
-			<div
-				className={`
-					${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-					lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50
-					w-64 bg-white border-r border-gray-200 flex flex-col h-full
-					transition-transform duration-300 ease-in-out
-				`}
-			>
-				{/* Mobile close */}
-				<div className="lg:hidden flex justify-end p-4">
-					<button
-						type="button"
-						onClick={() => setIsMobileMenuOpen(false)}
-						className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-					>
-						<X className="w-6 h-6" />
-					</button>
-				</div>
+			{showCreate && <CreateEventModal onClose={() => setShowCreate(false)} />}
 
-				{/* Logo */}
-				<div className="p-4 lg:p-6 border-b border-gray-200">
-					<div className="flex items-center gap-2">
-						<div className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center">
-							<span className="text-white font-bold text-sm">E</span>
-						</div>
-						<span className="font-bold text-xl">Eventer</span>
-					</div>
-				</div>
-
-				{/* Search */}
-				<div className="p-4 border-b border-gray-200">
-					<div className="relative">
-						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-						<Input
-							placeholder="ค้นหาเมนู"
-							className="pl-10 bg-gray-50 border-gray-200 text-sm"
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-						/>
-					</div>
-				</div>
-
-				{/* Navigation */}
-				<div className="flex-1 p-4 overflow-y-auto">
-					<div className="space-y-2">
-						<div className="text-sm font-medium text-purple-600 bg-purple-50 px-3 py-2 rounded-lg truncate">
-							{eventLoading ? "Loading..." : eventData.name}
-						</div>
-						<div className="ml-4 space-y-1">
-							{filteredNavItems.map((item) => (
-								<button
-									key={item.id}
-									type="button"
-									onClick={() => {
-										handleSectionChange(item.id);
-										setIsMobileMenuOpen(false);
-									}}
-									className={`w-full text-left text-sm px-3 py-2 rounded cursor-pointer transition-colors ${
-										activeSection === item.id
-											? "text-purple-600 bg-purple-50 font-medium"
-											: "text-gray-600 hover:bg-gray-50"
-									}`}
-								>
-									<div className="flex items-center justify-between">
-										<span>{item.label}</span>
-										{item.badge !== undefined && (
-											<span className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full text-xs">
-												{item.badge}
-											</span>
-										)}
-									</div>
-								</button>
-							))}
-						</div>
-
-						{/* Notifications entry */}
-						<button
-							type="button"
-							onClick={() => setIsNotifOpen((p) => !p)}
-							className="w-full text-left text-sm text-gray-600 px-3 py-2 hover:bg-gray-50 rounded cursor-pointer"
-						>
-							การแจ้งเตือน
-							{unreadCount > 0 && (
-								<span className="ml-2 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-medium">
-									{unreadCount}
-								</span>
-							)}
-						</button>
-
-						{/* Latest AP notation badge */}
-						{latestAP && (
-							<div
-								className={`mx-3 px-3 py-2 rounded-lg text-xs font-medium ${
-									latestAP.isLate
-										? "bg-red-50 text-red-700 border border-red-200"
-										: "bg-green-50 text-green-700 border border-green-200"
-								}`}
-							>
-								Event running: {latestAP.notation}
+			<div className="min-h-screen bg-gray-50">
+				{/* Navbar */}
+				<header className="bg-white border-b border-gray-100 sticky top-0 z-20 shadow-sm">
+					<div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+						<div className="flex items-center gap-2.5 flex-shrink-0">
+							<div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+								<span className="text-white font-bold text-sm">E</span>
 							</div>
-						)}
-					</div>
-				</div>
+							<span className="font-bold text-gray-900 text-lg tracking-tight hidden sm:block">
+								Eventer
+							</span>
+						</div>
 
-				{/* Bottom Section */}
-				<div className="p-4 border-t border-gray-200 space-y-3">
-					<div className="hidden lg:block text-sm text-gray-600">
-						<a
-							href="mailto:support@eventer.app"
-							className="flex items-center gap-2 mb-2 hover:text-purple-600"
-						>
-							<div className="w-4 h-4 bg-gray-300 rounded-full" />
-							<span>ติดต่อซัพพอร์ต</span>
-						</a>
-						<button
-							type="button"
-							onClick={() => handleSectionChange("extra")}
-							className="flex items-center gap-2 hover:text-purple-600"
-						>
-							<div className="w-4 h-4 bg-gray-300 rounded-full" />
-							<span>ตั้งค่าการใช้งาน</span>
-						</button>
-					</div>
-
-					<div className="flex items-center gap-3">
-						{user?.avatar_url ? (
-							<Image
-								src={user.avatar_url}
-								alt="Profile"
-								width={32}
-								height={32}
-								className="w-8 h-8 rounded-full object-cover"
+						<div className="relative hidden md:block flex-1 max-w-sm">
+							<Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 w-4 h-4" />
+							<input
+								value={search}
+								onChange={(e) => setSearch(e.target.value)}
+								placeholder="ค้นหาอีเวนต์..."
+								className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:bg-white focus:ring-2 focus:ring-purple-100 focus:border-purple-300 transition-all"
 							/>
-						) : (
-							<div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-								<span className="text-white font-medium text-sm">
-									{user?.name?.charAt(0)?.toUpperCase() ?? "U"}
-								</span>
-							</div>
-						)}
-						<div className="flex-1 min-w-0">
-							<div className="text-sm font-medium truncate">{user?.name ?? "Loading..."}</div>
-							<div className="text-xs text-gray-500 truncate">{user?.email ?? "Loading..."}</div>
 						</div>
 
-						<div ref={userMenuRef} className="relative hidden lg:flex">
-							<Button
-								type="button"
-								className="w-6 h-6 p-0"
-								onClick={() => setIsUserMenuOpen((p) => !p)}
-							>
-								<MoreHorizontal className="w-4 h-4" />
-							</Button>
-							{isUserMenuOpen && (
-								<div className="absolute bottom-8 right-0 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
-									<button
-										type="button"
-										onClick={handleSignOut}
-										className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-									>
-										<LogOut className="w-4 h-4" />
-										Sign out
-									</button>
-								</div>
-							)}
-						</div>
-					</div>
-				</div>
-			</div>
-
-			{/* Main Content Area */}
-			<div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-				{/* Header */}
-				<div className="bg-white border-b border-gray-200 px-4 lg:px-6 py-3 lg:py-4 sticky top-0 z-30 flex-shrink-0">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-3 min-w-0 flex-1">
+						<div className="flex items-center gap-2 sm:gap-3">
 							<button
 								type="button"
-								onClick={() => setIsMobileMenuOpen(true)}
-								className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+								onClick={() => setShowCreate(true)}
+								className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-3.5 py-2 text-sm font-medium transition-colors shadow-sm flex-shrink-0"
 							>
-								<Menu className="w-6 h-6" />
+								<Plus className="w-4 h-4" />
+								<span className="hidden sm:inline">สร้างอีเวนต์ใหม่</span>
 							</button>
 
-							<div className="min-w-0 flex-1">
-								<div className="hidden sm:flex items-center gap-2 text-sm text-gray-500 mb-1">
-									<button
-										type="button"
-										onClick={() => router.push("/")}
-										className="hover:text-purple-600 transition-colors"
-									>
-										หน้าหลัก
-									</button>
-									<span>/</span>
-									<span className="truncate">{currentSection?.label ?? "Overview"}</span>
-								</div>
-								<h1 className="text-lg lg:text-2xl font-bold text-gray-900 truncate">
-									{eventLoading ? "Loading..." : eventData.name}
-								</h1>
-								<div className="text-xs lg:text-sm text-gray-500 flex items-center gap-1 mt-1">
-									<Clock className="w-3 h-3 flex-shrink-0" />
-									<span>{hasMounted ? formatTime(currentTime) : "--:--:--"}</span>
-									{latestAP && (
-										<span
-											className={`ml-2 px-1.5 py-0.5 rounded text-xs font-mono font-semibold ${
-												latestAP.isLate ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-											}`}
-										>
-											{latestAP.notation}
+							<div className="flex items-center gap-2 pl-2 border-l border-gray-100">
+								{user?.avatar_url ? (
+									<Image
+										src={user.avatar_url}
+										alt="Profile"
+										width={32}
+										height={32}
+										className="w-8 h-8 rounded-full object-cover ring-2 ring-purple-100"
+									/>
+								) : (
+									<div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+										<span className="text-purple-700 font-bold text-sm">
+											{user?.name?.charAt(0)?.toUpperCase() ?? "U"}
 										</span>
-									)}
-								</div>
-							</div>
-						</div>
-
-						<div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
-							{/* Notifications bell */}
-							<div ref={notifRef} className="relative">
-								<button
-									type="button"
-									onClick={() => setIsNotifOpen((p) => !p)}
-									className="relative p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
-									aria-label="Notifications"
-								>
-									<Bell className="w-5 h-5" />
-									{unreadCount > 0 && (
-										<span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-											{unreadCount > 9 ? "9+" : unreadCount}
-										</span>
-									)}
-								</button>
-
-								{isNotifOpen && (
-									<div className="absolute top-10 right-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-										<div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-											<span className="font-semibold text-sm">การแจ้งเตือน</span>
-											{unreadCount > 0 && (
-												<span className="text-xs text-gray-500">{unreadCount} รายการ</span>
-											)}
-										</div>
-										<div className="max-h-64 overflow-y-auto">
-											{notifications.length === 0 ? (
-												<div className="px-4 py-6 text-center text-sm text-gray-400">
-													ไม่มีการแจ้งเตือน
-												</div>
-											) : (
-												notifications.map((n) => (
-													<div
-														key={n.id}
-														className="px-4 py-3 border-b border-gray-50 hover:bg-gray-50 text-sm"
-													>
-														<p className="text-gray-800">{n.message}</p>
-														<p className="text-xs text-gray-400 mt-1">
-															{n.time.toLocaleTimeString("th-TH")}
-														</p>
-													</div>
-												))
-											)}
-										</div>
 									</div>
 								)}
+								<span className="text-sm font-medium text-gray-700 hidden lg:block max-w-[120px] truncate">
+									{user?.name ?? ""}
+								</span>
+								<button
+									type="button"
+									onClick={handleSignOut}
+									className="p-2 rounded-lg text-gray-300 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+									title="ออกจากระบบ"
+								>
+									<LogOut className="w-4 h-4" />
+								</button>
 							</div>
-
-							{/* Save button */}
-							<Button
-								type="button"
-								size="sm"
-								onClick={handleSave}
-								className="hidden sm:flex items-center gap-1 text-gray-700 bg-transparent border border-gray-200 hover:bg-gray-50"
-							>
-								{savedFeedback ? (
-									<>
-										<Check className="w-3 h-3 text-green-600" />
-										<span className="text-green-600">Saved</span>
-									</>
-								) : (
-									"Save"
-								)}
-							</Button>
-
-							{/* Public / Private toggle */}
-							<Button
-								type="button"
-								size="sm"
-								onClick={() => setIsPublic((p) => !p)}
-								className={`rounded-xl lg:rounded-2xl px-3 lg:px-5 py-1 lg:py-2 text-xs lg:text-sm font-medium transition-colors duration-200 flex items-center gap-1.5 ${
-									isPublic
-										? "bg-orange-500 hover:bg-orange-600 text-white"
-										: "bg-gray-700 hover:bg-gray-800 text-white"
-								}`}
-							>
-								{isPublic ? (
-									<Globe className="w-3 h-3 lg:w-4 lg:h-4" />
-								) : (
-									<Lock className="w-3 h-3 lg:w-4 lg:h-4" />
-								)}
-								<span className="hidden sm:inline">{isPublic ? "Public" : "Private"}</span>
-							</Button>
 						</div>
 					</div>
-				</div>
+				</header>
 
-				{/* Dynamic Content */}
-				<div className="flex-1 overflow-hidden">
-					{CurrentComponent && <CurrentComponent eventData={eventData} />}
-				</div>
+				<main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+					{/* Title row */}
+					<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+						<div>
+							<h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+								อีเวนต์ของฉัน
+							</h1>
+							<p className="text-gray-400 text-sm mt-1">จัดการและติดตามอีเวนต์ทั้งหมดของคุณ</p>
+						</div>
+						{!isLoading && events.length > 0 && (
+							<div className="flex gap-4 text-center">
+								<div>
+									<p className="text-xl font-bold text-gray-900">{events.length}</p>
+									<p className="text-xs text-gray-400">ทั้งหมด</p>
+								</div>
+								<div className="w-px bg-gray-100" />
+								<div>
+									<p className="text-xl font-bold text-purple-600">{counts.upcoming}</p>
+									<p className="text-xs text-gray-400">กำลังจะมา</p>
+								</div>
+								{counts.ongoing > 0 && (
+									<>
+										<div className="w-px bg-gray-100" />
+										<div>
+											<p className="text-xl font-bold text-green-500">{counts.ongoing}</p>
+											<p className="text-xs text-gray-400">กำลังจัด</p>
+										</div>
+									</>
+								)}
+							</div>
+						)}
+					</div>
+
+					{/* Mobile search */}
+					<div className="relative md:hidden mb-4">
+						<Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 w-4 h-4" />
+						<input
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							placeholder="ค้นหาอีเวนต์..."
+							className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-300"
+						/>
+					</div>
+
+					{/* Filter tabs */}
+					<div className="flex gap-2 mb-7 overflow-x-auto pb-1">
+						{(Object.keys(FILTER_LABELS) as FilterTab[]).map((tab) => (
+							<button
+								key={tab}
+								type="button"
+								onClick={() => setFilter(tab)}
+								className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+									filter === tab
+										? "bg-purple-600 text-white shadow-sm"
+										: "bg-white border border-gray-200 text-gray-500 hover:border-purple-200 hover:text-purple-600"
+								}`}
+							>
+								{FILTER_LABELS[tab]}
+								{counts[tab] > 0 && (
+									<span
+										className={`text-xs px-1.5 py-0.5 rounded-full ${
+											filter === tab ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
+										}`}
+									>
+										{counts[tab]}
+									</span>
+								)}
+							</button>
+						))}
+					</div>
+
+					{/* Grid */}
+					{isLoading ? (
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+							{Array.from({ length: 8 }).map((_, i) => (
+								<SkeletonCard key={i} />
+							))}
+						</div>
+					) : filtered.length === 0 ? (
+						<div className="flex flex-col items-center justify-center py-28 text-center">
+							<div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-5 border border-purple-100">
+								<Calendar className="w-8 h-8 text-purple-300" />
+							</div>
+							<h3 className="text-lg font-semibold text-gray-700 mb-2">
+								{search || filter !== "all" ? "ไม่พบอีเวนต์ที่ตรงกัน" : "ยังไม่มีอีเวนต์"}
+							</h3>
+							<p className="text-gray-400 text-sm max-w-xs mb-5">
+								{search || filter !== "all"
+									? "ลองค้นหาด้วยคำอื่นหรือเปลี่ยนตัวกรอง"
+									: "กดปุ่มด้านล่างเพื่อสร้างอีเวนต์แรกของคุณ"}
+							</p>
+							{!search && filter === "all" && (
+								<button
+									type="button"
+									onClick={() => setShowCreate(true)}
+									className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-5 py-2.5 text-sm font-medium transition-colors shadow-sm"
+								>
+									<Plus className="w-4 h-4" />
+									สร้างอีเวนต์ใหม่
+								</button>
+							)}
+						</div>
+					) : (
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+							{filtered.map((event, i) => (
+								<EventCard key={event.id} event={event} index={i} />
+							))}
+						</div>
+					)}
+
+					{!isLoading && events.length > 0 && (
+						<p className="text-center text-xs text-gray-300 mt-10">
+							แสดง {filtered.length} จาก {events.length} อีเวนต์
+						</p>
+					)}
+				</main>
 			</div>
-		</div>
+		</>
 	);
 }

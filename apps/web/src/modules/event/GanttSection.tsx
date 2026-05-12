@@ -41,7 +41,10 @@ export default function GanttSection({ eventData }: { eventData: EventData }) {
 			return {
 				day: i + 1,
 				date: date.toISOString().split("T")[0] ?? "",
-				displayDate: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+				displayDate: date.toLocaleDateString("en-US", {
+					month: "short",
+					day: "numeric",
+				}),
 			};
 		});
 	}, [eventData.startDate, eventData.endDate]);
@@ -63,13 +66,18 @@ export default function GanttSection({ eventData }: { eventData: EventData }) {
 	}, [agendaSlots, currentDayData]);
 
 	// Axis spans: round to full hours
-	const { axisStart, axisEnd, totalMinutes, hourMarks } = useMemo(() => {
+	const { axisStart, totalMinutes, hourMarks } = useMemo(() => {
 		if (daySlots.length === 0) {
 			const base = new Date();
 			base.setHours(8, 0, 0, 0);
 			const baseEnd = new Date(base);
 			baseEnd.setHours(18, 0, 0, 0);
-			return { axisStart: base, axisEnd: baseEnd, totalMinutes: 600, hourMarks: [] };
+			return {
+				axisStart: base,
+				axisEnd: baseEnd,
+				totalMinutes: 600,
+				hourMarks: [],
+			};
 		}
 
 		const earliest = new Date(daySlots[0]!.start);
@@ -88,7 +96,12 @@ export default function GanttSection({ eventData }: { eventData: EventData }) {
 			cursor.setHours(cursor.getHours() + 1);
 		}
 
-		return { axisStart: earliest, axisEnd: latest, totalMinutes: span, hourMarks: marks };
+		return {
+			axisStart: earliest,
+			axisEnd: latest,
+			totalMinutes: span,
+			hourMarks: marks,
+		};
 	}, [daySlots]);
 
 	const toPercent = (iso: string) => {
@@ -175,7 +188,9 @@ export default function GanttSection({ eventData }: { eventData: EventData }) {
 									<div
 										key={h.toISOString()}
 										className="absolute top-0 bottom-0 border-l border-gray-100"
-										style={{ left: `calc(144px + ${left}% * (100% - 144px) / 100)` }}
+										style={{
+											left: `calc(144px + ${left}% * (100% - 144px) / 100)`,
+										}}
 									/>
 								);
 							})}

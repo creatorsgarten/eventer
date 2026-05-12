@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
+const connectSrcExtra = backendUrl ? ` ${backendUrl}` : "";
+
 const nextConfig = {
 	async headers() {
 		return [
@@ -27,8 +30,7 @@ const nextConfig = {
 					},
 					{
 						key: "Content-Security-Policy",
-						value:
-							"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https://lh3.googleusercontent.com data:; font-src 'self' data:; connect-src 'self' https://*.supabase.co http://localhost:*;",
+						value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https://lh3.googleusercontent.com data:; font-src 'self' data:; connect-src 'self' https://*.supabase.co http://localhost:*${connectSrcExtra};`,
 					},
 				],
 			},
